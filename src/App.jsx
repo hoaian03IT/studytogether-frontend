@@ -1,17 +1,27 @@
-import { Button } from "@nextui-org/react";
-import clsx from "clsx";
-import { useState } from "react";
+import { Route, Routes } from "react-router-dom";
+import { publicRoutes } from "./config/routes";
+import { Suspense } from "react";
+import { Loading } from "./components/loading";
 
 function App() {
-    const [isSpinning, setIsSpinning] = useState(false);
     return (
         <div className="h-screen w-screen flex justify-center items-center flex-col gap-32">
-            <h1 className={clsx("mt-36 text-3xl font-bold underline", isSpinning ? "animate-spinner-ease-spin" : "")}>
-                Welcome to our project
-            </h1>
-            <Button className="w-200" onClick={() => setIsSpinning(!isSpinning)}>
-                {!isSpinning ? "Click to spin" : "Stop it!!"}
-            </Button>
+            <Routes>
+                {publicRoutes.map((route) => {
+                    const Component = route.component;
+                    return (
+                        <Route
+                            key={route.path}
+                            path={route.path}
+                            element={
+                                <Suspense fallback={<Loading />}>
+                                    <Component />
+                                </Suspense>
+                            }
+                        />
+                    );
+                })}
+            </Routes>
         </div>
     );
 }
