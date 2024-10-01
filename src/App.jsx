@@ -5,7 +5,7 @@ import { Loading } from "./components/loading";
 
 function App() {
     return (
-        <div className="h-screen w-screen flex justify-center items-center flex-col gap-32">
+        <div >
             <Routes>
                 {publicRoutes.map((route) => {
                     const Component = route.component;
