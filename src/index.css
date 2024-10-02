@@ -3,6 +3,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer base {
+    :root {
+      --color-primary:  #83CBE3;
+      --color-secondary: 111 114 185;
+      
+      /* ... */
+    }
+  }
 
 * {
     margin: 0;

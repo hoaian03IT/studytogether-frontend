@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from './Header';  
 
-const Homepage = () => {
+const ForgotPass = () => {
   return (
     <div>
       <Header /> 
@@ -11,6 +11,5 @@ const Homepage = () => {
     </div>
   );
 }
- 
 
-export default Homepage;
+export default ForgotPass;
