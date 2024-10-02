@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const WelcomeBack = () => {
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center text-center p-8 pb-40">
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center text-center p-8 pb-40">
       <img src="/src/assets/check.png" alt="reset successfully" />
 
       <h1 className="text-3xl font-bold mb-4 mt-6">Chào mừng bạn trở lại</h1>
