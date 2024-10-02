@@ -1,28 +1,32 @@
 import { Route, Routes } from "react-router-dom";
 import { publicRoutes } from "./config/routes";
-import { Suspense } from "react";
+import { Fragment, Suspense } from "react";
 import { Loading } from "./components/loading";
 
 function App() {
     return (
         <div>
-            <Suspense fallback={<Loading />}>
-                <Routes>
-                    {publicRoutes.map((route) => {
-                        const Component = route.component;
-                        return (
-                            <Route
-                                key={route.path}
-                                path={route.path}
-                                element={<Component />}
-                            />
-                        );
-                    })}
-                </Routes>
-            </Suspense>
+            <Routes>
+                {publicRoutes.map((route) => {
+                    const Component = route.component;
+                    const Layout = route.layout ? route.layout : Fragment;
+                    return (
+                        <Route
+                            key={route.path}
+                            path={route.path}
+                            element={
+                                <Layout>
+                                    <Suspense fallback={<Loading />}>
+                                        <Component />
+                                    </Suspense>
+                                </Layout>
+                            }
+                        />
+                    );
+                })}
+            </Routes>
         </div>
     );
 }
 
 export default App;
-

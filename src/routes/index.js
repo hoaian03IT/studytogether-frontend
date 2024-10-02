@@ -4,4 +4,6 @@ export const pathname = {
     signIn: "/sign-in",
     profile: "/profile",
     changePasswordPage: "/change-password",
+    languages: "/language",
+    vocabularySet: "vocabulary-set",
 };

@@ -1,16 +1,5 @@
-import React from 'react';
-import Header from './Header';  
-
 const Homepage = () => {
-  return (
-    <div>
-      <Header /> 
-      <main className="content">
-        
-      </main>
-    </div>
-  );
-}
- 
+    return <div className="w-full">Home page</div>;
+};
 
 export default Homepage;
