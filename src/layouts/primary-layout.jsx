@@ -1,17 +1,13 @@
 import { Header } from "../components/header";
-import SideBar from "../components/SideBar";
 
 const PrimaryLayout = ({ children }) => {
-  return (
-    <div className="w-screen">
-      <Header />
-      <main className="container flex justify-center items-center min-h-screen w-full">
-        <div className="flex items-start gap-10 w-full">
-          <SideBar />
-          {children}
+    return (
+        <div className="w-screen">
+            <Header />
+            <main className="mt-16 container flex justify-center items-center w-full">
+                <div>{children}</div>
+            </main>
         </div>
-      </main>
-    </div>
-  );
+    );
 };
 export default PrimaryLayout;
