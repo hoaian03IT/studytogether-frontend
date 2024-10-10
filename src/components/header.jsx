@@ -14,7 +14,7 @@ const languages = [
     { id: "vi", name: "Tiếng Việt", image: VNFlag },
 ];
 
-export const Header = () => {
+export const Header = ({ fluid = false }) => {
     const [language, setLanguage] = useState(languages[0]);
     const [showLanguageOption, setShowLanguageOption] = useState(false);
 
@@ -23,8 +23,8 @@ export const Header = () => {
         setShowLanguageOption(false);
     };
     return (
-        <div className="w-screen bg-cyan-200 fixed top-0 z-50">
-            <Navbar maxWidth="xl" className="bg-transparent">
+        <div className="w-full bg-cyan-200 sticky top-0 z-50">
+            <Navbar maxWidth={fluid ? "full" : "xl"} className="bg-transparent">
                 <NavbarBrand as={Link} to={pathname.home}>
                     <img src={logo} alt="study-together" />
                 </NavbarBrand>
