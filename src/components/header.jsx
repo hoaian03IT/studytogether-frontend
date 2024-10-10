@@ -23,7 +23,7 @@ export const Header = ({ fluid = false }) => {
         setShowLanguageOption(false);
     };
     return (
-        <div className="w-full bg-cyan-200 sticky top-0 z-50">
+        <div className="w-full bg-primary sticky top-0 z-50">
             <Navbar maxWidth={fluid ? "full" : "xl"} className="bg-transparent">
                 <NavbarBrand as={Link} to={pathname.home}>
                     <img src={logo} alt="study-together" />
@@ -101,7 +101,7 @@ export const Header = ({ fluid = false }) => {
                         </Button>
                     </NavbarItem>
                     <NavbarItem className="hidden lg:flex">
-                        <Button as={Link} to={pathname.signIn} radius="sm" className="bg-orange-500 text-white">
+                        <Button as={Link} to={pathname.signIn} radius="sm" className="bg-secondary">
                             Đăng nhập
                         </Button>
                     </NavbarItem>

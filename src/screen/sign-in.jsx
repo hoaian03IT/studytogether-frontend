@@ -15,7 +15,7 @@ const SignIn = () => {
     return (
         <form className="w-[60%]">
             <div className="flex flex-col items-center">
-                {/* <div className="bg-orange-500 rounded-full w-10 h-10 mb-3.5"></div> */}
+                {/* <div className="bg-secondary rounded-full w-10 h-10 mb-3.5"></div> */}
                 <h2 className="text-3xl font-bold mb-2">Đăng nhập</h2>
                 <p className="text-small mb-10 text-gray-600">Để bắt đầu hành trình học tập của bạn</p>
             </div>
@@ -60,10 +60,12 @@ const SignIn = () => {
                         Lưu tài khoản
                     </label>
                 </div>
-                <Link to="/forgot-password" className="text-sm text-blue-500 ml-9 underline" >Quên mật khẩu</Link>
+                <Link to="/forgot-password" className="text-sm text-blue-500 ml-9 underline">
+                    Quên mật khẩu
+                </Link>
             </div>
 
-            <Button size="lg" radius="sm" className="bg-orange-500 w-full text-white mb-4">
+            <Button size="lg" radius="sm" className="bg-secondary w-full text-white mb-4">
                 Đăng nhập
             </Button>
 

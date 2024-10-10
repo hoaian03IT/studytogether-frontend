@@ -77,7 +77,7 @@ const ResetPassword = () => {
                 </div>
 
                 {/* reset mk*/}
-                <Button size="lg" className="w-full bg-orange-500 text-white" onClick={handleResetPassword}>
+                <Button size="lg" className="w-full bg-secondary text-white" onClick={handleResetPassword}>
                     Đặt lại mật khẩu
                 </Button>
             </div>

@@ -47,12 +47,12 @@ const ForgotPassword = () => {
                         labelPlacement="outside"
                         label={<p className="text-sm">Nhập mã</p>}
                     />
-                    <Button size="lg" className="bg-orange-500 text-white mt-6">
+                    <Button size="lg" className="bg-secondary text-white mt-6">
                         Nhận mã
                     </Button>
                 </div>
 
-                <Button size="lg" className="w-full bg-orange-500 text-white mt-4" onClick={handleContinue}>
+                <Button size="lg" className="w-full bg-secondary text-white mt-4" onClick={handleContinue}>
                     Tiếp tục
                 </Button>
             </div>

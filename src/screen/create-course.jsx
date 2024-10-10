@@ -136,7 +136,7 @@ const CreateCourse = () => {
                         className="bg-gray-300 text-gray-700 px-4 py-2 rounded">
                         Hủy
                     </Button>
-                    <Button type="button" onClick={handleSubmit} className="bg-orange-500 px-4 py-2 rounded">
+                    <Button type="button" onClick={handleSubmit} className="bg-secondary px-4 py-2 rounded">
                         Lưu
                     </Button>
                 </div>
