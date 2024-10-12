@@ -32,7 +32,7 @@ const Profile = () => {
     return (
         <div className="bg-white p-8 rounded w-full">
             <h1 className="text-2xl font-semibold mb-4 ">Chỉnh sửa hồ sơ</h1>
-            <div className="text-gray-700 mb p-6 b bg-gradient-to-r from-blue-300 to-red-100 rounded-lg ">
+            <div className=" ">
                 Xin chào, Phuong Thao
             </div>
             <div className="flex items-center mb-6 pt-10">

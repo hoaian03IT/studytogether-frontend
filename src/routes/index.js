@@ -8,5 +8,6 @@ export const pathname = {
     profile: "/profile",
     languages: "/language",
     vocabularySet: "/vocabulary-set",
-    createCourse: "/create-course"
+    createCourse: "/create-course",
+    listCourse:"/list-course",
 };
