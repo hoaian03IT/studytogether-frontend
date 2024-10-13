@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { Button, Input } from "@nextui-org/react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
-import axios from "axios";
-import { baseURL } from "../config/config";
 
 const SignUp = () => {
     const [email, setEmail] = useState("");
@@ -12,42 +10,17 @@ const SignUp = () => {
     const [password, setPassword] = useState("");
     const [cfpassword, setcfPassWord] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState(null);
-    const navigate = useNavigate();
-    const axiosInstance = axios.create({ baseURL });
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
     const toggleConfirmPasswordVisibility = () => {
-        setShowPassword(!showConfirmPassword);
+        setShowPassword(!cfpassword);
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (password !== cfpassword) {
-            setError("Mật khẩu không khớp");
-            return;
-        }
-        try {
-            const response = await axiosInstance.post("/register", {
-                email: email,
-                username: UserName,
-                password: password,
-            });
-            console.log("Sign-up response: ", response);
-            if (response.status === 201) {
-                // Registration successful, redirect to login page
-                navigate("/sign-in");
-            } else {
-                const message = response.data.message;
-                setError(message);
-            }
-        } catch (error) {
-            console.log("ERR", error);
-            setError(error.response.data.message);
-        }
     };
 
     return (
@@ -139,7 +112,6 @@ const SignUp = () => {
             <Button size="lg" radius="sm" type="submit" className="bg-secondary w-full text-white mb-4">
                 Đăng ký
             </Button>
-            {error && <p className="text-red-500">{error}</p>}
 
             <div className="text-center mb-4 font-semibold">HOẶC</div>
 

@@ -9,16 +9,16 @@ const SidebarMainItem = memo(function SidebarMainItem({ path, icon, label, isExp
             to={path}
             className={({ isActive }) =>
                 clsx(
-                    "py-3 flex items-center justify-items-center cursor-pointer hover:bg-stone-100 rounded-md transition-all",
+                    "py-3 flex items-center justify-start cursor-pointer hover:bg-stone-100 rounded-md transition-all pl-3",
                     isActive ? "bg-stone-200" : "",
-                    isExpanded ? "px-4" : "px-2"
+                    isExpanded ? "pr-4" : "pr-0"
                 )
             }>
-            <Icon className="size-8 p-0.5" />
+            <Icon className="size-8" />
             <span
                 className={clsx(
-                    "overflow-hidden text-nowrap transition-all font-semibold",
-                    isExpanded ? "w-52 ml-4" : "w-0"
+                    "overflow-hidden text-nowrap transition-all font-semibold ml-4",
+                    isExpanded ? "xl:w-44 2xl:w-52 md:w-36 " : "w-0"
                 )}>
                 {label}
             </span>

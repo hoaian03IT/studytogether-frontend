@@ -6,40 +6,43 @@ import { MdOutlineNotificationsActive } from "react-icons/md";
 import { LuGamepad2 } from "react-icons/lu";
 import { MdSearch } from "react-icons/md";
 import clsx from "clsx";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { SidebarMainItem } from "./sidebar-main-item";
-
-const sidebarItems = [
-    {
-        label: "Các khoá học",
-        icon: MdOutlineCollectionsBookmark,
-        path: "/courses",
-    },
-    {
-        label: "Flashcards",
-        icon: TbCards,
-        path: "/flashcards",
-    },
-    {
-        label: "Trò chơi",
-        icon: LuGamepad2,
-        path: "/games",
-    },
-    {
-        label: "Thông báo",
-        icon: MdOutlineNotificationsActive,
-        path: "/notifications",
-    },
-    {
-        label: "Tìm kiếm",
-        icon: MdSearch,
-        path: "/",
-    },
-];
+import { TranslationContext } from "./providers/TranslationProvider";
 
 function SidebarMain() {
+    const { translation } = useContext(TranslationContext);
+
     const [streak, setStreak] = useState(0);
     const [isExpanded, setIsExpanded] = useState(true);
+
+    const sidebarItems = [
+        {
+            label: translation("sidebar-main.courses"),
+            icon: MdOutlineCollectionsBookmark,
+            path: "/courses",
+        },
+        {
+            label: translation("sidebar-main.flash-card"),
+            icon: TbCards,
+            path: "/flashcards",
+        },
+        {
+            label: translation("sidebar-main.game"),
+            icon: LuGamepad2,
+            path: "/games",
+        },
+        {
+            label: translation("sidebar-main.notification"),
+            icon: MdOutlineNotificationsActive,
+            path: "/notifications",
+        },
+        {
+            label: translation("sidebar-main.search"),
+            icon: MdSearch,
+            path: "/",
+        },
+    ];
 
     const handleToggleExpanded = () => {
         setIsExpanded(!isExpanded);
@@ -49,12 +52,12 @@ function SidebarMain() {
         <div className="px-2 py-2 h-full bg-white shadow-small rounded-md">
             <div
                 className={clsx(
-                    "py-4 flex items-center justify-between border-b-stone-200 border-b-1 transition-all",
-                    isExpanded ? "px-4" : "px-2"
+                    "py-4 px-3 flex items-center justify-between border-b-stone-200 border-b-1 transition-all",
+                    isExpanded ? "" : ""
                 )}>
-                <div>
+                <div className="">
                     <button
-                        className={clsx("p-0.5", isExpanded ? "animate-[spin-half_0.2s_ease-in-out_1]" : "")}
+                        className={clsx("", isExpanded ? "animate-[spin-half_0.2s_ease-in-out_1]" : "")}
                         onClick={handleToggleExpanded}>
                         <HiOutlineViewList className="size-8" />
                     </button>

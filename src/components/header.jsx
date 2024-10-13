@@ -2,29 +2,23 @@ import { Button, Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@nextui-
 import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/popover";
 import logo from "../assets/logo-no-background.png";
 import { Link, NavLink } from "react-router-dom";
-import englishFlag from "../assets/united-kingdom.png";
-import VNFlag from "../assets/vietnam-flag.png";
 import { pathname } from "../routes";
-import { useState } from "react";
-import { FaSortDown, FaSortUp } from "react-icons/fa";
+import { useContext, useState } from "react";
+import { FaSortDown } from "react-icons/fa";
 import clsx from "clsx";
-
-const languages = [
-    { id: "en", name: "English", image: englishFlag },
-    { id: "vi", name: "Tiếng Việt", image: VNFlag },
-];
+import { TranslationContext } from "./providers/TranslationProvider";
 
 export const Header = ({ fluid = false }) => {
-    const [language, setLanguage] = useState(languages[0]);
+    const { language, toggleLanguageOption, languageSets, translation } = useContext(TranslationContext);
     const [showLanguageOption, setShowLanguageOption] = useState(false);
 
     const handleSelectLanguage = (language) => {
-        setLanguage(language);
+        toggleLanguageOption(language);
         setShowLanguageOption(false);
     };
     return (
-        <div className="w-full bg-primary sticky top-0 z-50">
-            <Navbar maxWidth={fluid ? "full" : "xl"} className="bg-transparent">
+        <div className="sticky top-0 z-50">
+            <Navbar maxWidth={fluid ? "full" : "xl"} className="bg-my-primary">
                 <NavbarBrand as={Link} to={pathname.home}>
                     <img src={logo} alt="study-together" />
                 </NavbarBrand>
@@ -36,7 +30,7 @@ export const Header = ({ fluid = false }) => {
                             className={({ isActive }) =>
                                 clsx("text-xl", isActive ? "underline font-bold" : "font-semibold")
                             }>
-                            Trang chủ
+                            {translation("header.home")}
                         </NavLink>
                     </NavbarItem>
                     <NavbarItem>
@@ -45,7 +39,7 @@ export const Header = ({ fluid = false }) => {
                             className={({ isActive }) =>
                                 clsx("text-xl", isActive ? "underline font-bold" : "font-semibold")
                             }>
-                            Bộ từ vựng
+                            {translation("header.courses")}
                         </NavLink>
                     </NavbarItem>
                     <NavbarItem>
@@ -54,7 +48,7 @@ export const Header = ({ fluid = false }) => {
                             className={({ isActive }) =>
                                 clsx("text-xl", isActive ? "underline font-bold" : "font-semibold")
                             }>
-                            Ngôn ngữ học
+                            {translation("header.learning-language")}
                         </NavLink>
                     </NavbarItem>
                 </NavbarContent>
@@ -75,7 +69,7 @@ export const Header = ({ fluid = false }) => {
                             </PopoverTrigger>
                             <PopoverContent className="rounded-sm px-0">
                                 <div className="py-1 flex flex-col">
-                                    {languages.map((language) => {
+                                    {languageSets.map((language) => {
                                         return (
                                             <button
                                                 key={language.id}
@@ -93,16 +87,15 @@ export const Header = ({ fluid = false }) => {
                                 </div>
                             </PopoverContent>
                         </Popover>
-                        <Popover></Popover>
                     </NavbarItem>
                     <NavbarItem>
                         <Button as={Link} to={pathname.signUp} radius="sm" className="bg-white">
-                            Đăng ký
+                            {translation("header.sign-up")}
                         </Button>
                     </NavbarItem>
                     <NavbarItem className="hidden lg:flex">
                         <Button as={Link} to={pathname.signIn} radius="sm" className="bg-secondary">
-                            Đăng nhập
+                            {translation("header.sign-in")}
                         </Button>
                     </NavbarItem>
                 </NavbarContent>

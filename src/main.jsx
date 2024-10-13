@@ -5,6 +5,8 @@ import "./index.css";
 import { NextUIProvider } from "@nextui-org/react";
 import { BrowserRouter } from "react-router-dom";
 import axios from "axios";
+import "./config/i18next.js";
+import { TranslationProvider } from "./components/providers/TranslationProvider.jsx";
 
 axios.defaults.baseURL = "http://localhost:3000";
 
@@ -12,7 +14,9 @@ createRoot(document.getElementById("root")).render(
     <StrictMode>
         <BrowserRouter>
             <NextUIProvider>
-                <App />
+                <TranslationProvider>
+                    <App />
+                </TranslationProvider>
             </NextUIProvider>
         </BrowserRouter>
     </StrictMode>
