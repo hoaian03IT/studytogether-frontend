@@ -1,3 +1,4 @@
+import { Footer } from "../components/footer";
 import { Header } from "../components/header";
 import { SidebarMain } from "../components/sidebar-main";
 
@@ -9,7 +10,10 @@ const PrimaryLayout = ({ children }) => {
                 <div className="sticky top-0 bottom-0 flex-shrink-0 flex-grow-0 basis-auto">
                     <SidebarMain />
                 </div>
-                <div className="flex-1">{children}</div>
+                <div className="flex-1 flex flex-col">
+                    <div className="flex-1">{children}</div>
+                    <Footer />
+                </div>
             </main>
         </div>
     );
