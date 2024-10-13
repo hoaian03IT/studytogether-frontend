@@ -1,0 +1,49 @@
+{
+    "translation": {
+        "header": {
+            "home": "Home",
+            "courses": "Vocabulary courses",
+            "learning-language": "Learning Languages",
+            "sign-in": "Sign in",
+            "sign-up": "Sign up"
+        },
+        "sidebar-main": {
+            "courses": "Our Courses",
+            "flash-card": "Flashcards",
+            "game": "Games",
+            "notification": "Notifications",
+            "search": "Search Courses"
+        },
+        "footer": {
+            "course-info": {
+                "title": "Vocabulary courses",
+                "en-course": "English Vocabulary",
+                "vi-course": "Vietnamese Vocabulary"
+            },
+            "contact-info": {
+                "title": "Contact information",
+                "address": "257 Nguyen Van Linh, Da Nang, Vietnam"
+            },
+            "comments": {
+                "ph-input": "Your email",
+                "ph-textarea": "Write your comments here...",
+                "btn-send": "Send"
+            }
+        },
+        "sign-in-page": {
+            "title": "Sign in",
+            "sub-title": "To start your learning journey",
+            "username-label": "Email or username",
+            "password-label": "Password",
+            "save-account": "Save your account",
+            "forgot-password": "Forgot password?",
+            "sign-in-btn": "Sign in",
+            "or": "Or",
+            "sign-in-google": "Sign in with Google",
+            "sign-in-facebook": "Sign in with Facebook",
+            "not-yet-account": "You do not have an account yet?",
+            "sign-up": "Sign up",
+            "now": "now"
+        }
+    }
+}

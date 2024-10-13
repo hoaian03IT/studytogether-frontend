@@ -1,0 +1,49 @@
+{
+    "translation": {
+        "header": {
+            "home": "Trang chủ",
+            "courses": "Khoá từ vựng",
+            "learning-language": "Ngôn ngữ học",
+            "sign-in": "Đăng nhập",
+            "sign-up": "Đăng ký"
+        }, 
+        "sidebar-main": {
+            "courses": "Các khoá học",
+            "flash-card": "Flashcards",
+            "game": "Trò chơi",
+            "notification": "Thông báo",
+            "search": "Tìm kiếm khoá học"
+        },
+        "footer": {
+            "course-info": {
+                "title": "Khoá học từ vựng",
+                "en-course": "Từ vựng Tiếng Anh",
+                "vi-course": "Từ vựng Tiếng Việt"
+            },
+            "contact-info": {
+                "title": "Thông tin liên hệ",
+                "address": "257 Nguyễn Văn Linh, Đà Nẵng, Việt Nam"
+            },
+            "comments": {
+                "ph-input": "Email của bạn",
+                "ph-textarea": "Viết ý kiến của bạn ở đây...",
+                "btn-send": "Gửi"
+            }
+        },
+        "sign-in-page": {
+            "title": "Đăng nhập",
+            "sub-title": "Để bắt đầu hành trình học tập của bạn",
+            "username-label": "Email hoặc tên đăng nhập",
+            "password-label": "Mật khẩu",
+            "save-account": "Lưu tài khoản",
+            "forgot-password": "Quên mật khẩu?",
+            "sign-in-btn": "Đăng nhập",
+            "or": "Hoặc",
+            "sign-in-google": "Đăng nhập với Google",
+            "sign-in-facebook": "Đăng nhập với Facebook",
+            "not-yet-account": "Bạn chưa có tài khoản?",
+            "sign-up": "Đăng ký",
+            "now": "ngay"
+        }
+    }
+}
