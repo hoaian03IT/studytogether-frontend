@@ -21,7 +21,7 @@ export const Footer = () => {
     };
 
     return (
-        <footer className="bg-my-primary">
+        <footer className="bg-my-primary py-4 px-6">
             <div className="container flex justify-between items-start max-w-screen-xl py-4">
                 <div>
                     <Image src={logo} alt="StudyTogether" className="w-60" />
@@ -67,19 +67,19 @@ export const Footer = () => {
                                 <Input
                                     type="email"
                                     placeholder={translation("footer.comments.ph-input")}
-                                    radius="none"
+                                    radius="sm"
                                     size="sm"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
-                                <Button color="default" radius="none" size="sm" className="text-sm" type="submit">
+                                <Button color="default" radius="sm" size="sm" className="text-sm" type="submit">
                                     {translation("footer.comments.btn-send")}
                                 </Button>
                             </div>
                             <Textarea
                                 size="sm"
                                 placeholder={translation("footer.comments.ph-textarea")}
-                                radius="none"
+                                radius="sm"
                                 value={comments}
                                 onChange={(e) => setComments(e.target.value)}
                             />

@@ -2,8 +2,8 @@
     "translation": {
         "header": {
             "home": "Home",
-            "courses": "Vocabulary courses",
-            "learning-language": "Learning Languages",
+            "courses": "Courses",
+            "learning-language": "Languages",
             "sign-in": "Sign in",
             "sign-up": "Sign up"
         },
@@ -42,7 +42,21 @@
             "sign-in-google": "Sign in with Google",
             "sign-in-facebook": "Sign in with Facebook",
             "not-yet-account": "You do not have an account yet?",
-            "sign-up": "Sign up",
+            "now": "now"
+        },
+        "sign-up-page": {
+            "title": "Sign up",
+            "sub-title": "Participate with the unlimited learning experience",
+            "email-label": "Email",
+            "password-label": "Password",
+            "confirm-password-label": "Confirm password",
+            "accept-rules-policies": "I have read and agree to ",
+            "policies": "the terms and policies",
+            "submit-btn": "Sign up",
+            "or": "or",
+            "sign-up-with-google": "Sign up with Google",
+            "sign-up-with-facebook": "Sign up with Facebook",
+            "had-account": "Have you had account?",
             "now": "now"
         }
     }

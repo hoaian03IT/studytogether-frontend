@@ -1,22 +1,24 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-
 import { Button, Input } from "@nextui-org/react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
+import { TranslationContext } from "../components/providers/TranslationProvider";
 
 const SignUp = () => {
+    const { translation } = useContext(TranslationContext);
+
     const [email, setEmail] = useState("");
-    const [UserName, setUserName] = useState("");
     const [password, setPassword] = useState("");
     const [cfpassword, setcfPassWord] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const [showCfPassword, setShowCfPassword] = useState(false);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
     const toggleConfirmPasswordVisibility = () => {
-        setShowPassword(!cfpassword);
+        setShowCfPassword(!showCfPassword);
     };
 
     const handleSubmit = async (event) => {
@@ -27,8 +29,8 @@ const SignUp = () => {
         <form className="w-[60%]" onSubmit={handleSubmit}>
             <div className="flex flex-col items-center">
                 {/* <div className="bg-secondary rounded-full w-10 h-10 mb-3.5"></div> */}
-                <h2 className="text-3xl font-bold mb-2">Đăng ký</h2>
-                <p className="text-sm mb-5 text-gray-600">Để tham gia trải nghiệm học tập không giới hạn</p>
+                <h2 className="text-3xl font-bold mb-2">{translation("sign-up-page.title")}</h2>
+                <p className="text-sm mb-5 text-gray-600">{translation("sign-up-page.sub-title")}</p>
             </div>
 
             <div className="mb-4">
@@ -41,22 +43,7 @@ const SignUp = () => {
                     size="lg"
                     radius="sm"
                     labelPlacement="outside"
-                    label={<p className="text-sm">Email</p>}
-                    required
-                />
-            </div>
-
-            <div className="relative mb-5 mt-10">
-                <Input
-                    type="text"
-                    placeholder="username"
-                    value={UserName}
-                    onChange={(e) => setUserName(e.target.value)}
-                    className="w-full"
-                    size="lg"
-                    radius="sm"
-                    labelPlacement="outside"
-                    label={<p className="text-sm">Tên đăng nhập</p>}
+                    label={<p className="text-sm">{translation("sign-up-page.email-label")}</p>}
                     required
                 />
             </div>
@@ -71,7 +58,7 @@ const SignUp = () => {
                     size="lg"
                     radius="sm"
                     labelPlacement="outside"
-                    label={<p className="text-sm">Mật khẩu</p>}
+                    label={<p className="text-sm">{translation("sign-up-page.password-label")}</p>}
                     required
                 />
                 <span
@@ -82,7 +69,7 @@ const SignUp = () => {
             </div>
             <div className="relative mb-5 mt-10">
                 <Input
-                    type={showPassword ? "text" : "password"}
+                    type={showCfPassword ? "text" : "password"}
                     placeholder="*************"
                     value={cfpassword}
                     onChange={(e) => setcfPassWord(e.target.value)}
@@ -90,13 +77,13 @@ const SignUp = () => {
                     size="lg"
                     radius="sm"
                     labelPlacement="outside"
-                    label={<p className="text-sm">Xác nhận mật khẩu</p>}
+                    label={<p className="text-sm">{translation("sign-up-page.confirm-password-label")}</p>}
                     required
                 />
                 <span
                     onClick={toggleConfirmPasswordVisibility}
                     className="absolute inset-y-0 right-3 flex items-center cursor-pointer">
-                    {showPassword ? <BsEyeFill className="size-5" /> : <BsEyeSlashFill className="size-5" />}
+                    {showCfPassword ? <BsEyeFill className="size-5" /> : <BsEyeSlashFill className="size-5" />}
                 </span>
             </div>
 
@@ -104,16 +91,17 @@ const SignUp = () => {
                 <div className="flex items-center">
                     <input type="checkbox" id="saveAccount" className="mr-2" />
                     <label htmlFor="saveAccount" className="text-sm">
-                        Tôi đồng ý với các chính sách và điều khoản
+                        {translation("sign-up-page.accept-rules-policies")}&nbsp;
+                        <strong className="underline font-normal">{translation("sign-up-page.policies")}</strong>
                     </label>
                 </div>
             </div>
 
             <Button size="lg" radius="sm" type="submit" className="bg-secondary w-full text-white mb-4">
-                Đăng ký
+                {translation("sign-up-page.submit-btn")}
             </Button>
 
-            <div className="text-center mb-4 font-semibold">HOẶC</div>
+            <div className="text-center mb-4 font-semibold">{translation("sign-up-page.or")}</div>
 
             <div className="flex flex-col">
                 <Button variant="bordered" radius="sm" size="lg" className="border py-3 mb-4">
@@ -137,7 +125,7 @@ const SignUp = () => {
                             fill="#1976D2"
                             d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"></path>
                     </svg>
-                    <span>Tiếp tục với Google</span>
+                    <span>{translation("sign-up-page.sign-up-with-google")}</span>
                 </Button>
                 <Button variant="bordered" radius="sm" size="lg" className="border py-3">
                     <svg
@@ -152,16 +140,16 @@ const SignUp = () => {
                             fill="#fff"
                             d="M26.572,29.036h4.917l0.772-4.995h-5.69v-2.73c0-2.075,0.678-3.915,2.619-3.915h3.119v-4.359c-0.548-0.074-1.707-0.236-3.897-0.236c-4.573,0-7.254,2.415-7.254,7.917v3.323h-4.701v4.995h4.701v13.729C22.089,42.905,23.032,43,24,43c0.875,0,1.729-0.08,2.572-0.194V29.036z"></path>
                     </svg>
-                    <span>Tiếp tục với Facebook</span>
+                    <span>{translation("sign-up-page.sign-up-with-facebook")}</span>
                 </Button>
             </div>
 
             <p className="mt-4 text-center text-sm">
-                Bạn đã có tài khoản?&nbsp;
+                {translation("sign-up-page.had-account")}&nbsp;
                 <Link to="/sign-in" className="text-blue-500 underline">
-                    Đăng nhập
+                    {translation("sign-in-page.title")}
                 </Link>
-                &nbsp;ngay
+                &nbsp; {translation("sign-up-page.now")}
             </p>
         </form>
     );

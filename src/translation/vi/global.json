@@ -42,7 +42,21 @@
             "sign-in-google": "Đăng nhập với Google",
             "sign-in-facebook": "Đăng nhập với Facebook",
             "not-yet-account": "Bạn chưa có tài khoản?",
-            "sign-up": "Đăng ký",
+            "now": "ngay"
+        },
+        "sign-up-page": {
+            "title": "Đăng ký",
+            "sub-title": "Để tham gia trải nghiệm học tập không giới hạn",
+            "email-label": "Email",
+            "password-label": "Mật khẩu",
+            "confirm-password-label": "Xác nhận mật khẩu",
+            "accept-rules-policies": "Tôi đã đọc và đồng ý với",
+            "policies": "chính sách và điều khoản",
+            "submit-btn": "Đăng ký",
+            "or": "hoặc",
+            "sign-up-with-google": "Đăng ký với Google",
+            "sign-up-with-facebook": "Đăng ký với Facebook",
+            "had-account": "Bạn đã có tài khoản?",
             "now": "ngay"
         }
     }

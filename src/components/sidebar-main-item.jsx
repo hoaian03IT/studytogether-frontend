@@ -18,7 +18,7 @@ const SidebarMainItem = memo(function SidebarMainItem({ path, icon, label, isExp
             <span
                 className={clsx(
                     "overflow-hidden text-nowrap transition-all font-semibold ml-4",
-                    isExpanded ? "xl:w-44 2xl:w-52 md:w-36 " : "w-0"
+                    isExpanded ? "md:w-32 xl:w-36" : "w-0"
                 )}>
                 {label}
             </span>

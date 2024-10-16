@@ -117,7 +117,7 @@ const SignIn = () => {
             <p className="mt-4 text-center text-sm">
                 {translation("sign-in-page.not-yet-account")}&nbsp;
                 <Link to="/sign-up" className="text-blue-500 underline">
-                    {translation("sign-in-page.sign-up")}
+                    {translation("sign-up-page.title")}
                 </Link>
                 &nbsp;{translation("sign-in-page.now")}
             </p>

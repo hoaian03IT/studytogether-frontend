@@ -24,12 +24,12 @@ export default {
                 light: {
                     colors: {
                         "my-primary": {
-                            DEFAULT: "#83cbe3",
+                            DEFAULT: "#5cc6ee",
                             foreground: "#000000",
                         },
-                        focus: "#83cbe3",
+                        focus: "#5cc6ee",
                         secondary: {
-                            DEFAULT: "#ff971e",
+                            DEFAULT: "#ffa43a",
                             foreground: "#000000",
                         },
                     },

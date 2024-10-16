@@ -49,10 +49,10 @@ function SidebarMain() {
     };
 
     return (
-        <div className="px-2 py-2 h-full bg-white shadow-small rounded-md">
+        <div className="px-2 py-2 h-full bg-white shadow-small">
             <div
                 className={clsx(
-                    "py-4 px-3 flex items-center justify-between border-b-stone-200 border-b-1 transition-all",
+                    "py-2 px-3 flex items-center justify-between border-b-stone-200 border-b-1 transition-all",
                     isExpanded ? "" : ""
                 )}>
                 <div className="">
