@@ -15,6 +15,11 @@ class AuthServiceClass {
         const res = await http.post("/auth/login/google", { token: token, role }, { withCredentials: true });
         return res;
     }
+
+    async facebookLogin({ token, role }) {
+        const res = await http.post("/auth/login/facebook", { token: token, role }, { withCredentials: true });
+        return res;
+    }
 }
 
 const AuthService = new AuthServiceClass();

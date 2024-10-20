@@ -61,5 +61,6 @@
             "now": "now",
             "success-message": "Welcome to StudyTogether"
         }
-    }
+    },
+    "error-message": "An error occurred. Please try again later."	
 }

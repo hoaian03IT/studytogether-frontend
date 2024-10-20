@@ -61,5 +61,6 @@
             "now": "ngay",
             "success-message": "Chào mừng đến với StudyTogether"
         }
-    }
+    },
+    "error-message": "Đã xảy ra lỗi. Vui lòng thử lại sau"
 }

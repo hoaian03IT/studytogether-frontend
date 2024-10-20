@@ -1,9 +1,9 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Checkbox, Input, Radio, RadioGroup } from "@nextui-org/react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import { TranslationContext } from "../components/providers/TranslationProvider";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { userState } from "../recoil/atoms/user.atom";
 import { toast } from "react-toastify";
 import { useMutation } from "@tanstack/react-query";
@@ -11,8 +11,8 @@ import { AuthService } from "../apis/auth.api";
 import { pathname } from "../routes";
 import { useQueryString } from "../hooks/useQueryString";
 import { validationForm } from "../utils/validateForm";
-import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
-import { http } from "../config/http";
+import { useGoogleLogin } from "@react-oauth/google";
+import FacebookLogin from "@greatsumini/react-facebook-login";
 
 const SignUp = () => {
     const queryString = useQueryString();
@@ -26,7 +26,7 @@ const SignUp = () => {
     const [role, setRole] = useState("learner");
     const [acceptPolicy, setAcceptPolicy] = useState(false);
 
-    const setUser = useSetRecoilState(userState);
+    const [user, setUser] = useRecoilState(userState);
 
     const navigate = useNavigate();
 
@@ -42,6 +42,10 @@ const SignUp = () => {
     });
 
     const handleUpdateUserState = ({ status, data }) => {
+        if (user.isLogged) {
+            toast.error(translation("error-message"));
+            return;
+        }
         if (status === 200) {
             setUser({
                 info: {
@@ -101,7 +105,7 @@ const SignUp = () => {
         if (canSubmit) mutation.mutate({ email: email.value, password: password.value, role });
     };
 
-    const googleLoginHandle = useGoogleLogin({
+    const googleLoginSuccessHandler = useGoogleLogin({
         onSuccess: (credentials) => {
             AuthService.googleLogin({ token: credentials.access_token, role })
                 .then((res) => {
@@ -115,6 +119,11 @@ const SignUp = () => {
             toast.error(err.response.data.message || err.message);
         },
     });
+
+    const facebookLoginSuccessHandler = async (response) => {
+        const res = await AuthService.facebookLogin({ token: response.accessToken, role });
+        handleUpdateUserState({ status: res.status, data: res.data });
+    };
 
     return (
         <form className="w-[60%]" onSubmit={handleSubmit}>
@@ -229,7 +238,7 @@ const SignUp = () => {
                     radius="sm"
                     size="lg"
                     className="border py-3 mb-4"
-                    onClick={googleLoginHandle}>
+                    onClick={googleLoginSuccessHandler}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         x="0px"
@@ -252,22 +261,30 @@ const SignUp = () => {
                     </svg>
                     <span>{translation("sign-up-page.sign-up-with-google")}</span>
                 </Button>
-
-                <Button variant="bordered" radius="sm" size="sm " className="border py-3">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        x="0px"
-                        y="0px"
-                        width="100"
-                        height="100"
-                        viewBox="0 0 48 48">
-                        <path fill="#039be5" d="M24 5A19 19 0 1 0 24 43A19 19 0 1 0 24 5Z"></path>
-                        <path
-                            fill="#fff"
-                            d="M26.572,29.036h4.917l0.772-4.995h-5.69v-2.73c0-2.075,0.678-3.915,2.619-3.915h3.119v-4.359c-0.548-0.074-1.707-0.236-3.897-0.236c-4.573,0-7.254,2.415-7.254,7.917v3.323h-4.701v4.995h4.701v13.729C22.089,42.905,23.032,43,24,43c0.875,0,1.729-0.08,2.572-0.194V29.036z"></path>
-                    </svg>
-                    <span>{translation("sign-up-page.sign-up-with-facebook")}</span>
-                </Button>
+                <FacebookLogin
+                    appId="1710572403124150"
+                    onSuccess={facebookLoginSuccessHandler}
+                    onFail={(error) => {
+                        toast.error(error.response.data.message || error.message);
+                    }}
+                    render={({ onClick }) => (
+                        <Button variant="bordered" radius="sm" size="lg" className="border py-3" onClick={onClick}>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                x="0px"
+                                y="0px"
+                                width="100"
+                                height="100"
+                                viewBox="0 0 48 48">
+                                <path fill="#039be5" d="M24 5A19 19 0 1 0 24 43A19 19 0 1 0 24 5Z"></path>
+                                <path
+                                    fill="#fff"
+                                    d="M26.572,29.036h4.917l0.772-4.995h-5.69v-2.73c0-2.075,0.678-3.915,2.619-3.915h3.119v-4.359c-0.548-0.074-1.707-0.236-3.897-0.236c-4.573,0-7.254,2.415-7.254,7.917v3.323h-4.701v4.995h4.701v13.729C22.089,42.905,23.032,43,24,43c0.875,0,1.729-0.08,2.572-0.194V29.036z"></path>
+                            </svg>
+                            <span>{translation("sign-up-page.sign-up-with-facebook")}</span>
+                        </Button>
+                    )}
+                />
             </div>
             <p className="mt-4 text-center text-sm">
                 {translation("sign-up-page.had-account")}&nbsp;
