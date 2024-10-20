@@ -5,10 +5,7 @@
 @tailwind utilities;
 @layer base {
     :root {
-        --color-primary: #83cbe3;
-        --color-secondary: 111 114 185;
-
-        /* ... */
+        --navbar-height: 3rem;
     }
 }
 

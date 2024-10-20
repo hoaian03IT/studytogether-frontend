@@ -18,7 +18,7 @@ export const Header = ({ fluid = false }) => {
     };
     return (
         <div className="sticky top-0 z-50">
-            <Navbar maxWidth={fluid ? "full" : "xl"} className="bg-my-primary">
+            <Navbar maxWidth={fluid ? "full" : "xl"} className="bg-my-primary h-[3.5rem]">
                 <NavbarBrand as={Link} to={pathname.home}>
                     <img src={logo} alt="study-together" />
                 </NavbarBrand>

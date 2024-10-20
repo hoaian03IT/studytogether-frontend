@@ -1,22 +1,103 @@
 import { useContext, useState } from "react";
-import { Link } from "react-router-dom";
-import { Button, Input } from "@nextui-org/react";
+import { Link, useNavigate } from "react-router-dom";
+import { Button, Checkbox, Input } from "@nextui-org/react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import { TranslationContext } from "../components/providers/TranslationProvider";
+import { useMutation } from "@tanstack/react-query";
+import { AuthService } from "../apis/auth.api";
+import { toast } from "react-toastify";
+import { useSetRecoilState } from "recoil";
+import { userState } from "../recoil/atoms/user.atom";
+import { useQueryString } from "../hooks/useQueryString";
+import { pathname } from "../routes";
+import { validationForm } from "../utils/validateForm";
+import { useGoogleLogin } from "@react-oauth/google";
 
 const SignIn = () => {
     const { translation } = useContext(TranslationContext);
+    const setUser = useSetRecoilState(userState);
 
-    const [emailOrUsername, setEmailOrUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [usernameOrEmail, setUsernameOrEmail] = useState({ value: "", error: "" });
+    const [password, setPassword] = useState({ value: "", error: "" });
     const [showPassword, setShowPassword] = useState(false);
+    const [saveAccount, setSaveAccount] = useState(false);
+
+    const navigate = useNavigate();
+    const queryString = useQueryString();
+
+    const mutation = useMutation({
+        mutationFn: AuthService.loginUserAccount,
+        onSuccess: (res) => handleUpdateUserState({ status: res.status, data: res.data }),
+        onError: async (error) => {
+            toast.warn(error.response.data.message);
+        },
+    });
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        let canSubmit = true;
+        if (!validationForm.email(usernameOrEmail.value) && !validationForm.username(usernameOrEmail.value)) {
+            setUsernameOrEmail((prev) => ({
+                ...prev,
+                error: "Invalid email or username",
+            }));
+            canSubmit = false;
+        } else {
+            setUsernameOrEmail((prev) => ({ ...prev, error: "" }));
+        }
+        if (!validationForm.password(password.value)) {
+            setPassword((prev) => ({
+                ...prev,
+                error: "Invalid password (include upper, lower, number and specials, at least 8 characters)",
+            }));
+            canSubmit = false;
+        } else {
+            setPassword((prev) => ({ ...prev, error: "" }));
+        }
+
+        if (canSubmit) mutation.mutate({ usernameOrEmail: usernameOrEmail.value, password: password.value });
+    };
+
+    const handleUpdateUserState = ({ status, data }) => {
+        if (status === 200) {
+            setUser({
+                info: {
+                    username: data.username,
+                    phone: data.phone,
+                    firstName: data["first name"],
+                    lastName: data["last name"],
+                    avatar: data["avatar image"],
+                    email: data.email,
+                    role: data.role,
+                },
+                isLogged: true,
+            });
+            toast.success(`${translation("sign-in-page.success-message")}, ${data.username}`);
+            navigate(queryString.redirect ? queryString.redirect : pathname.home);
+        }
+    };
+
+    const googleLoginHandle = useGoogleLogin({
+        onSuccess: (credentials) => {
+            AuthService.googleLogin({ token: credentials.access_token })
+                .then((res) => {
+                    handleUpdateUserState({ status: res.status, data: res.data });
+                })
+                .catch((err) => {
+                    toast.error(err.response.data.message || err.message);
+                });
+        },
+        onError: (err) => {
+            toast.error(err.response.data.message || err.message);
+        },
+    });
+
     return (
-        <form className="w-[60%]">
+        <form className="w-[60%]" onSubmit={handleSubmit}>
             <div className="flex flex-col items-center">
                 <h2 className="text-3xl font-bold mb-2">{translation("sign-in-page.title")}</h2>
                 <p className="text-small mb-10 text-gray-600">{translation("sign-in-page.sub-title")}</p>
@@ -26,13 +107,16 @@ const SignIn = () => {
                 <Input
                     type="text"
                     placeholder="user@example.com"
-                    value={emailOrUsername}
-                    onChange={(e) => setEmailOrUsername(e.target.value)}
+                    value={usernameOrEmail.value}
+                    onChange={(e) => setUsernameOrEmail((prev) => ({ ...prev, value: e.target.value }))}
                     className="w-full"
                     size="lg"
                     radius="sm"
                     labelPlacement="outside"
                     label={<p className="text-sm">{translation("sign-in-page.username-label")}</p>}
+                    isInvalid={!!usernameOrEmail.error}
+                    errorMessage={usernameOrEmail.error}
+                    required
                 />
             </div>
 
@@ -40,41 +124,53 @@ const SignIn = () => {
                 <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="*************"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={password.value}
+                    onChange={(e) => setPassword((prev) => ({ ...prev, value: e.target.value }))}
                     className="w-full"
                     size="lg"
                     radius="sm"
                     labelPlacement="outside"
                     label={<p className="text-sm">{translation("sign-in-page.password-label")}</p>}
+                    isInvalid={!!password.error}
+                    errorMessage={password.error}
+                    required
+                    endContent={
+                        <span
+                            onClick={togglePasswordVisibility}
+                            className="absolute inset-y-0 right-3 flex items-center cursor-pointer">
+                            {showPassword ? <BsEyeFill className="size-5" /> : <BsEyeSlashFill className="size-5" />}
+                        </span>
+                    }
                 />
-                <span
-                    onClick={togglePasswordVisibility}
-                    className="absolute inset-y-0 right-3 flex items-center cursor-pointer">
-                    {showPassword ? <BsEyeFill className="size-5" /> : <BsEyeSlashFill className="size-5" />}
-                </span>
             </div>
 
             <div className="flex justify-between mb-4">
                 <div className="flex items-center">
-                    <input type="checkbox" id="saveAccount" className="mr-2" />
-                    <label htmlFor="saveAccount" className="text-sm">
-                        {translation("sign-in-page.save-account")}
-                    </label>
+                    <Checkbox
+                        checked={saveAccount}
+                        onChange={(e) => setSaveAccount(e.target.checked)}
+                        color="secondary"
+                    />
+                    <label className="text-sm">{translation("sign-in-page.save-account")}</label>
                 </div>
                 <Link to="/forgot-password" className="text-sm text-blue-500 ml-9 underline">
                     {translation("sign-in-page.forgot-password")}
                 </Link>
             </div>
 
-            <Button size="lg" radius="sm" className="bg-secondary w-full text-white mb-4">
+            <Button type="submit" size="lg" radius="sm" className="bg-secondary w-full text-white mb-4">
                 {translation("sign-in-page.sign-in-btn")}
             </Button>
 
             <div className="text-center mb-4 font-semibold uppercase">{translation("sign-in-page.or")}</div>
 
             <div className="flex flex-col">
-                <Button variant="bordered" radius="sm" size="lg" className="border py-3 mb-4">
+                <Button
+                    variant="bordered"
+                    radius="sm"
+                    size="lg"
+                    className="border py-3 mb-4"
+                    onClick={googleLoginHandle}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         x="0px"

@@ -42,7 +42,8 @@
             "sign-in-google": "Sign in with Google",
             "sign-in-facebook": "Sign in with Facebook",
             "not-yet-account": "You do not have an account yet?",
-            "now": "now"
+            "now": "now",
+            "success-message": "Welcome back"
         },
         "sign-up-page": {
             "title": "Sign up",
@@ -57,7 +58,8 @@
             "sign-up-with-google": "Sign up with Google",
             "sign-up-with-facebook": "Sign up with Facebook",
             "had-account": "Have you had account?",
-            "now": "now"
+            "now": "now",
+            "success-message": "Welcome to StudyTogether"
         }
     }
 }

@@ -1,17 +1,64 @@
-import { useContext, useState } from "react";
-import { Link } from "react-router-dom";
-import { Button, Input } from "@nextui-org/react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { Button, Checkbox, Input, Radio, RadioGroup } from "@nextui-org/react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
 import { TranslationContext } from "../components/providers/TranslationProvider";
+import { useSetRecoilState } from "recoil";
+import { userState } from "../recoil/atoms/user.atom";
+import { toast } from "react-toastify";
+import { useMutation } from "@tanstack/react-query";
+import { AuthService } from "../apis/auth.api";
+import { pathname } from "../routes";
+import { useQueryString } from "../hooks/useQueryString";
+import { validationForm } from "../utils/validateForm";
+import { GoogleLogin, useGoogleLogin } from "@react-oauth/google";
+import { http } from "../config/http";
 
 const SignUp = () => {
+    const queryString = useQueryString();
     const { translation } = useContext(TranslationContext);
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [cfpassword, setcfPassWord] = useState("");
+    const [email, setEmail] = useState({ value: "", error: "" });
+    const [password, setPassword] = useState({ value: "", error: "" });
+    const [cfpassword, setcfPassWord] = useState({ value: "", error: "" });
     const [showPassword, setShowPassword] = useState(false);
     const [showCfPassword, setShowCfPassword] = useState(false);
+    const [role, setRole] = useState("learner");
+    const [acceptPolicy, setAcceptPolicy] = useState(false);
+
+    const setUser = useSetRecoilState(userState);
+
+    const navigate = useNavigate();
+
+    const mutation = useMutation({
+        mutationFn: AuthService.createUserAccount,
+        onSuccess: (res) => {
+            handleUpdateUserState({ status: res.status, data: res.data });
+        },
+
+        onError: async (error) => {
+            toast.warn(error.response.data.message);
+        },
+    });
+
+    const handleUpdateUserState = ({ status, data }) => {
+        if (status === 200) {
+            setUser({
+                info: {
+                    username: data.username,
+                    phone: data.phone,
+                    firstName: data["first name"],
+                    lastName: data["last name"],
+                    avatar: data["avatar image"],
+                    email: data.email,
+                    role: data.role,
+                },
+                isLogged: true,
+            });
+            toast.success(translation("sign-up-page.success-message"));
+            navigate(queryString.redirect ? queryString.redirect : pathname.home);
+        }
+    };
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -23,28 +70,84 @@ const SignUp = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        let canSubmit = true;
+        if (!validationForm.email(email.value)) {
+            setEmail((prev) => ({ ...prev, error: "Invalid email (maximum 254 character, include username@domain)" }));
+            canSubmit = false;
+        } else {
+            setEmail((prev) => ({ ...prev, error: "" }));
+        }
+        if (!validationForm.password(password.value)) {
+            setPassword((prev) => ({
+                ...prev,
+                error: "Invalid password (include upper, lower, number and specials, at least 8 characters)",
+            }));
+            canSubmit = false;
+        } else {
+            setPassword((prev) => ({ ...prev, error: "" }));
+        }
+        if (password.value !== cfpassword.value) {
+            setcfPassWord((prev) => ({ ...prev, error: "Passwords do not match" }));
+            canSubmit = false;
+        } else {
+            setcfPassWord((prev) => ({ ...prev, error: "" }));
+        }
+
+        if (!acceptPolicy) {
+            toast.warn("You have to accept our policies");
+            canSubmit = false;
+        }
+
+        if (canSubmit) mutation.mutate({ email: email.value, password: password.value, role });
     };
+
+    const googleLoginHandle = useGoogleLogin({
+        onSuccess: (credentials) => {
+            AuthService.googleLogin({ token: credentials.access_token, role })
+                .then((res) => {
+                    handleUpdateUserState({ status: res.status, data: res.data });
+                })
+                .catch((err) => {
+                    toast.error(err.response.data.message || err.message);
+                });
+        },
+        onError: (err) => {
+            toast.error(err.response.data.message || err.message);
+        },
+    });
 
     return (
         <form className="w-[60%]" onSubmit={handleSubmit}>
             <div className="flex flex-col items-center">
-                {/* <div className="bg-secondary rounded-full w-10 h-10 mb-3.5"></div> */}
                 <h2 className="text-3xl font-bold mb-2">{translation("sign-up-page.title")}</h2>
                 <p className="text-sm mb-5 text-gray-600">{translation("sign-up-page.sub-title")}</p>
             </div>
-
+            <div className="flex justify-center items-center">
+                <span className="mr-4">You are:</span>
+                <RadioGroup
+                    orientation="horizontal"
+                    color="secondary"
+                    defaultValue="learner"
+                    onValueChange={setRole}
+                    value={role}>
+                    <Radio value="learner">Learner</Radio>
+                    <Radio value="teacher">Teacher</Radio>
+                </RadioGroup>
+            </div>
             <div className="mb-4">
                 <Input
                     type="text"
                     placeholder="user@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={email.value}
+                    onChange={(e) => setEmail((prev) => ({ ...prev, value: e.target.value }))}
                     className="w-full"
                     size="lg"
                     radius="sm"
                     labelPlacement="outside"
                     label={<p className="text-sm">{translation("sign-up-page.email-label")}</p>}
                     required
+                    errorMessage={email.error}
+                    isInvalid={!!email.error}
                 />
             </div>
 
@@ -52,59 +155,81 @@ const SignUp = () => {
                 <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="*************"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={password.value}
+                    onChange={(e) => setPassword((prev) => ({ ...prev, value: e.target.value }))}
                     className="w-full"
                     size="lg"
                     radius="sm"
                     labelPlacement="outside"
                     label={<p className="text-sm">{translation("sign-up-page.password-label")}</p>}
                     required
+                    errorMessage={password.error}
+                    isInvalid={!!password.error}
+                    endContent={
+                        <span
+                            onClick={togglePasswordVisibility}
+                            className="absolute inset-y-0 right-3 flex items-center cursor-pointer">
+                            {showPassword ? <BsEyeFill className="size-5" /> : <BsEyeSlashFill className="size-5" />}
+                        </span>
+                    }
                 />
-                <span
-                    onClick={togglePasswordVisibility}
-                    className="absolute inset-y-0 right-3 flex items-center cursor-pointer">
-                    {showPassword ? <BsEyeFill className="size-5" /> : <BsEyeSlashFill className="size-5" />}
-                </span>
             </div>
             <div className="relative mb-5 mt-10">
                 <Input
                     type={showCfPassword ? "text" : "password"}
                     placeholder="*************"
-                    value={cfpassword}
-                    onChange={(e) => setcfPassWord(e.target.value)}
+                    value={cfpassword.value}
+                    onChange={(e) => setcfPassWord((prev) => ({ ...prev, value: e.target.value }))}
                     className="w-full"
                     size="lg"
                     radius="sm"
                     labelPlacement="outside"
                     label={<p className="text-sm">{translation("sign-up-page.confirm-password-label")}</p>}
                     required
+                    errorMessage={cfpassword.error}
+                    isInvalid={!!cfpassword.error}
+                    endContent={
+                        <span
+                            onClick={toggleConfirmPasswordVisibility}
+                            className="absolute inset-y-0 right-3 flex items-center cursor-pointer">
+                            {showCfPassword ? <BsEyeFill className="size-5" /> : <BsEyeSlashFill className="size-5" />}
+                        </span>
+                    }
                 />
-                <span
-                    onClick={toggleConfirmPasswordVisibility}
-                    className="absolute inset-y-0 right-3 flex items-center cursor-pointer">
-                    {showCfPassword ? <BsEyeFill className="size-5" /> : <BsEyeSlashFill className="size-5" />}
-                </span>
             </div>
-
             <div className="flex justify-between mb-4">
                 <div className="flex items-center">
-                    <input type="checkbox" id="saveAccount" className="mr-2" />
-                    <label htmlFor="saveAccount" className="text-sm">
+                    <Checkbox
+                        color="secondary"
+                        checked={acceptPolicy}
+                        type="checkbox"
+                        onChange={(e) => setAcceptPolicy(e.target.checked)}
+                        isRequired={true}
+                    />
+                    <label className="text-sm select-none">
                         {translation("sign-up-page.accept-rules-policies")}&nbsp;
-                        <strong className="underline font-normal">{translation("sign-up-page.policies")}</strong>
+                        <Link to="/" target="_blank" className="underline font-normal">
+                            {translation("sign-up-page.policies")}
+                        </Link>
                     </label>
                 </div>
             </div>
-
-            <Button size="lg" radius="sm" type="submit" className="bg-secondary w-full text-white mb-4">
+            <Button
+                size="lg"
+                radius="sm"
+                type="submit"
+                className="bg-secondary w-full text-white mb-4"
+                isLoading={mutation.isPending}>
                 {translation("sign-up-page.submit-btn")}
             </Button>
-
             <div className="text-center mb-4 font-semibold">{translation("sign-up-page.or")}</div>
-
             <div className="flex flex-col">
-                <Button variant="bordered" radius="sm" size="lg" className="border py-3 mb-4">
+                <Button
+                    variant="bordered"
+                    radius="sm"
+                    size="lg"
+                    className="border py-3 mb-4"
+                    onClick={googleLoginHandle}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         x="0px"
@@ -127,7 +252,8 @@ const SignUp = () => {
                     </svg>
                     <span>{translation("sign-up-page.sign-up-with-google")}</span>
                 </Button>
-                <Button variant="bordered" radius="sm" size="lg" className="border py-3">
+
+                <Button variant="bordered" radius="sm" size="sm " className="border py-3">
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         x="0px"
@@ -143,7 +269,6 @@ const SignUp = () => {
                     <span>{translation("sign-up-page.sign-up-with-facebook")}</span>
                 </Button>
             </div>
-
             <p className="mt-4 text-center text-sm">
                 {translation("sign-up-page.had-account")}&nbsp;
                 <Link to="/sign-in" className="text-blue-500 underline">
