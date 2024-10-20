@@ -12,6 +12,9 @@ import VNFlag from "../assets/vietnam-flag.png"
 import { TbTextPlus } from "react-icons/tb";
 import { CgAttachment } from "react-icons/cg";
 import { LuPlus } from "react-icons/lu";
+import { ImBin } from "react-icons/im";c
+import { FaImage } from "react-icons/fa";
+
 
 
 
@@ -199,13 +202,15 @@ function VocabularyApp() {
             <button onClick={() => setShowFileModal(true)}
              className='flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2'><CgAttachment  className='size-6 mr-1' />
             <span > Thêm từ tệp</span></button>
-            <button className='flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2'><LuPlus className='size-6 mr-1' />
+            <button onClick={handleAddGroup} className='flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2'><LuPlus className='size-6 mr-1' />
             <span > Thêm nhóm/cấp độ</span></button>
           </div>
           
+
+
        <div className="bg-white p-6 rounded-lg shadow-md mb-6 flex">    
         {/* Left Section - Inputs */}
-        <div className="w-1/3  bg-gray-50 rounded-lg shadow p-6 border-r  ">
+        <div className="w-1/3  bg-gray-50 rounded-lg shadow p-6 pr-0 border-r  ">
       
           {/* Vocabulary and Definition Inputs */}
           <div className="flex-col gap-6">
@@ -252,7 +257,7 @@ function VocabularyApp() {
             <select
               value={selectedGroup}
               onChange={(e) => setSelectedGroup(e.target.value)}
-              className="p-2 border border-gray-300 rounded-md w-full"
+              className="p-2 border border-gray-300 rounded-md w-1/2"
             >
               <option value="">Chọn nhóm</option>
               {groups.map((group, index) => (
@@ -261,20 +266,14 @@ function VocabularyApp() {
                 </option>
               ))}
             </select>
-            <div className="flex mt-2">
+            <div className="w-1/2 flex mt-2">
               <input
                 type="text"
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
                 placeholder="Nhập tên nhóm"
-                className="p-2 border border-gray-300 rounded-md flex-grow"
+                className=" p-2 pr-0 mt-2 border border-gray-300 rounded-md flex-grow"
               />
-              <button
-                onClick={handleAddGroup}
-                className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-md"
-              >
-                Thêm nhóm
-              </button>
             </div>
           </div>
 
@@ -288,44 +287,61 @@ function VocabularyApp() {
         </div>
 
         {/* Right Section - Vocabulary List */}
-        <div className="w-2/3 pl-6 ">
-          <h2 className="text-lg font-semibold mb-4 mt-8">Danh sách từ vựng</h2>
-          {vocabList.length === 0 ? (
-            <p className="text-gray-500">Chưa có từ vựng nào được thêm.</p>
-          ) : (
-            <ul className="space-y-4">
-              {vocabList.map((item, index) => (
-                <li
-                  key={index}
-                  className="flex justify-between bg-gray-100 p-4 rounded-md"
-                >
-                  <div>
-                    <p className="font-bold">{item.vocabulary}</p>
-                    <p>{item.definition}</p>
-                    {item.audio && (
-                      <audio controls className="mt-2">
-                        <source src={URL.createObjectURL(item.audio)} type="audio/mpeg" />
-                      </audio>
-                    )}
-                    {item.image && (
-                      <img
-                        src={URL.createObjectURL(item.image)}
-                        alt="Hình ảnh minh họa"
-                        className="mt-2 h-12 w-12 object-cover"
-                      />
-                    )}
-                  </div>
-                  <button
-                    onClick={() => handleDelete(index)}
-                    className="text-red-500 hover:text-red-700 transition"
-                  >
-                    <i className="fas fa-trash-alt"></i>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+
+<div className="w-2/3 pl-6 border rounded-lg overflow-hidden ml-6">
+  <div className="grid grid-cols-4 bg-blue-100 p-2">
+    <span className="font-bold text-blue-400">Từ vựng</span>
+    <span className="font-bold text-blue-400">Định nghĩa</span>
+  </div>
+  {vocabList.length === 0 ? (
+    <p className="text-gray-500">Chưa có từ vựng nào được thêm.</p>
+  ) : (
+    <ul className="space-y-2">
+      {vocabList.map((item, index) => (
+        <li key={index} className="grid grid-cols-4 bg-gray-100 p-3 rounded-md items-center gap-x-2">
+          {/* Vocabulary Column */}
+          <div className="flex items-center col-span-1">
+            <p className="font-bold">{item.vocabulary}</p>
+          </div>
+
+          {/* Definition Column */}
+          <div className="flex items-center col-span-1">
+            <p>{item.definition}</p>
+          </div>
+
+          {/* Audio and Image Column */}
+          <div className="flex items-center justify-center col-span-1 gap-2">
+            {item.audio && (
+              <audio controls className="h-8">
+                <source src={URL.createObjectURL(item.audio)} type="audio/mpeg" />
+              </audio>
+            )}
+             <div className="flex items-center justify-center col-span-1 gap-2"></div>
+            {item.image && (
+              <img
+                src={URL.createObjectURL(item.image)}
+                alt="Hình ảnh minh họa"
+                className="h-12 w-12 object-cover"
+              />
+            )}
+          </div>
+
+          {/* Delete Button Column */}
+          <div className="flex justify-end items-center col-span-1">
+            <button
+              onClick={() => handleDelete(index)}
+              className="text-red-500 hover:text-red-700 transition"
+            >
+              <ImBin />
+            </button>
+          </div>
+        </li>
+      ))}
+    </ul>
+  )}
+</div>
+
+
       </div>
 
       {showTextModal && (

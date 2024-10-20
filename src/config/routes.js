@@ -14,6 +14,7 @@ const SignUpPage = lazy(() => import("../screen/sign-up"));
 const ProfilePage = lazy(() => import("../screen/profile"));
 const CreateCourse = lazy(() => import("../screen/create-course"));
 const ListCourse = lazy(() => import("../screen/list-course"));
+const AddVocab = lazy(() => import("../screen/add-vocab"));
 
 export const publicRoutes = [
     { path: pathname.home, component: HomePage, layout: PrimaryLayout },
@@ -31,7 +32,7 @@ export const publicRoutes = [
     {
         path: pathname.changePasswordSuccessfully,
         component: ForgotSuccessfullyPage,
-        layout: PrimaryLayout,
+        layout: null,
     },
     { path: pathname.signUp, component: SignUpPage, layout: SecondaryLayout },
     { path: pathname.profile, component: ProfilePage, layout: ProfileLayout },
@@ -41,4 +42,5 @@ export const publicRoutes = [
         layout: PrimaryLayout,
     },
     { path: pathname.listCourse, component: ListCourse, layout: PrimaryLayout },
+    { path: pathname.addVocab, component: AddVocab, layout: PrimaryLayout },
 ];
