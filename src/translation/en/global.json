@@ -1,11 +1,19 @@
 {
     "translation": {
+        "profile": "Profile",
+        "notification": "Notifications",
+        "setting": "Settings",
+        "support": "Support",
+        "sign-out": "Sign out",
+        "sign-in":"Sign in",
+        "sign-up":"Sign up",
+        "security": "Security",
+        "save": "Save",
+        "cancel": "Cancel",
         "header": {
             "home": "Home",
             "courses": "Courses",
-            "learning-language": "Languages",
-            "sign-in": "Sign in",
-            "sign-up": "Sign up"
+            "learning-language": "Languages"
         },
         "sidebar-main": {
             "courses": "Our Courses",
@@ -31,13 +39,11 @@
             }
         },
         "sign-in-page": {
-            "title": "Sign in",
             "sub-title": "To start your learning journey",
             "username-label": "Email or username",
             "password-label": "Password",
             "save-account": "Save your account",
             "forgot-password": "Forgot password?",
-            "sign-in-btn": "Sign in",
             "or": "Or",
             "sign-in-google": "Sign in with Google",
             "sign-in-facebook": "Sign in with Facebook",
@@ -46,14 +52,12 @@
             "success-message": "Welcome back"
         },
         "sign-up-page": {
-            "title": "Sign up",
             "sub-title": "Participate with the unlimited learning experience",
             "email-label": "Email",
             "password-label": "Password",
             "confirm-password-label": "Confirm password",
             "accept-rules-policies": "I have read and agree to ",
             "policies": "the terms and policies",
-            "submit-btn": "Sign up",
             "or": "or",
             "sign-up-with-google": "Sign up with Google",
             "sign-up-with-facebook": "Sign up with Facebook",

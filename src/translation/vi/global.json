@@ -1,11 +1,19 @@
 {
     "translation": {
+        "profile": "Hồ sơ",
+        "notification": "Thông báo",
+        "setting": "Cài đặt",
+        "support": "Hỗ trợ",
+        "sign-out": "Đăng xuất",
+        "sign-in":"Đăng nhập",
+        "sign-up":"Đăng ký",
+        "security": "Bảo mật",
+        "save": "Lưu lại",
+        "cancel": "Huỷ bỏ",
         "header": {
             "home": "Trang chủ",
             "courses": "Khoá từ vựng",
-            "learning-language": "Ngôn ngữ học",
-            "sign-in": "Đăng nhập",
-            "sign-up": "Đăng ký"
+            "learning-language": "Ngôn ngữ học"
         }, 
         "sidebar-main": {
             "courses": "Các khoá học",
@@ -31,13 +39,11 @@
             }
         },
         "sign-in-page": {
-            "title": "Đăng nhập",
             "sub-title": "Để bắt đầu hành trình học tập của bạn",
             "username-label": "Email hoặc tên đăng nhập",
             "password-label": "Mật khẩu",
             "save-account": "Lưu tài khoản",
             "forgot-password": "Quên mật khẩu?",
-            "sign-in-btn": "Đăng nhập",
             "or": "Hoặc",
             "sign-in-google": "Đăng nhập với Google",
             "sign-in-facebook": "Đăng nhập với Facebook",
@@ -46,14 +52,12 @@
             "success-message": "Chào mừng trờ lại"
         },
         "sign-up-page": {
-            "title": "Đăng ký",
             "sub-title": "Để tham gia trải nghiệm học tập không giới hạn",
             "email-label": "Email",
             "password-label": "Mật khẩu",
             "confirm-password-label": "Xác nhận mật khẩu",
             "accept-rules-policies": "Tôi đã đọc và đồng ý với",
             "policies": "chính sách và điều khoản",
-            "submit-btn": "Đăng ký",
             "or": "hoặc",
             "sign-up-with-google": "Đăng ký với Google",
             "sign-up-with-facebook": "Đăng ký với Facebook",

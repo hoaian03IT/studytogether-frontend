@@ -112,7 +112,7 @@ const SignIn = () => {
     return (
         <form className="w-[60%]" onSubmit={handleSubmit}>
             <div className="flex flex-col items-center">
-                <h2 className="text-3xl font-bold mb-2">{translation("sign-in-page.title")}</h2>
+                <h2 className="text-3xl font-bold mb-2">{translation("sign-in")}</h2>
                 <p className="text-small mb-10 text-gray-600">{translation("sign-in-page.sub-title")}</p>
             </div>
 
@@ -172,7 +172,7 @@ const SignIn = () => {
             </div>
 
             <Button type="submit" size="lg" radius="sm" className="bg-secondary w-full text-white mb-4">
-                {translation("sign-in-page.sign-in-btn")}
+                {translation("sign-in")}
             </Button>
 
             <div className="text-center mb-4 font-semibold uppercase">{translation("sign-in-page.or")}</div>
@@ -235,7 +235,7 @@ const SignIn = () => {
             <p className="mt-4 text-center text-sm">
                 {translation("sign-in-page.not-yet-account")}&nbsp;
                 <Link to="/sign-up" className="text-blue-500 underline">
-                    {translation("sign-up-page.title")}
+                    {translation("sign-up")}
                 </Link>
                 &nbsp;{translation("sign-in-page.now")}
             </p>

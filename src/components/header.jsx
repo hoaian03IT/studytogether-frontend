@@ -1,14 +1,18 @@
-import { Button, Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@nextui-org/react";
+import { Button, Navbar, NavbarBrand, NavbarContent, NavbarItem, User } from "@nextui-org/react";
 import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/popover";
 import logo from "../assets/logo-no-background.png";
 import { Link, NavLink } from "react-router-dom";
 import { pathname } from "../routes";
-import { useContext, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import { FaSortDown } from "react-icons/fa";
 import clsx from "clsx";
 import { TranslationContext } from "./providers/TranslationProvider";
+import { useRecoilValue } from "recoil";
+import { userState } from "../recoil/atoms/user.atom";
+import { UserHeader } from "./user.header";
 
 export const Header = ({ fluid = false }) => {
+    const user = useRecoilValue(userState);
     const { language, toggleLanguageOption, languageSets, translation } = useContext(TranslationContext);
     const [showLanguageOption, setShowLanguageOption] = useState(false);
 
@@ -88,16 +92,22 @@ export const Header = ({ fluid = false }) => {
                             </PopoverContent>
                         </Popover>
                     </NavbarItem>
-                    <NavbarItem>
-                        <Button as={Link} to={pathname.signUp} radius="sm" className="bg-white">
-                            {translation("header.sign-up")}
-                        </Button>
-                    </NavbarItem>
-                    <NavbarItem className="hidden lg:flex">
-                        <Button as={Link} to={pathname.signIn} radius="sm" className="bg-secondary">
-                            {translation("header.sign-in")}
-                        </Button>
-                    </NavbarItem>
+                    {user.isLogged ? (
+                        <UserHeader userState={user} />
+                    ) : (
+                        <Fragment>
+                            <NavbarItem>
+                                <Button as={Link} to={pathname.signUp} radius="sm" className="bg-white">
+                                    {translation("sign-up")}
+                                </Button>
+                            </NavbarItem>
+                            <NavbarItem className="hidden lg:flex">
+                                <Button as={Link} to={pathname.signIn} radius="sm" className="bg-secondary text-white">
+                                    {translation("sign-in")}
+                                </Button>
+                            </NavbarItem>
+                        </Fragment>
+                    )}
                 </NavbarContent>
             </Navbar>
         </div>

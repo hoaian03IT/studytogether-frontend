@@ -128,7 +128,7 @@ const SignUp = () => {
     return (
         <form className="w-[60%]" onSubmit={handleSubmit}>
             <div className="flex flex-col items-center">
-                <h2 className="text-3xl font-bold mb-2">{translation("sign-up-page.title")}</h2>
+                <h2 className="text-3xl font-bold mb-2">{translation("sign-up")}</h2>
                 <p className="text-sm mb-5 text-gray-600">{translation("sign-up-page.sub-title")}</p>
             </div>
             <div className="flex justify-center items-center">
@@ -229,7 +229,7 @@ const SignUp = () => {
                 type="submit"
                 className="bg-secondary w-full text-white mb-4"
                 isLoading={mutation.isPending}>
-                {translation("sign-up-page.submit-btn")}
+                {translation("sign-up")}
             </Button>
             <div className="text-center mb-4 font-semibold">{translation("sign-up-page.or")}</div>
             <div className="flex flex-col">
@@ -289,7 +289,7 @@ const SignUp = () => {
             <p className="mt-4 text-center text-sm">
                 {translation("sign-up-page.had-account")}&nbsp;
                 <Link to="/sign-in" className="text-blue-500 underline">
-                    {translation("sign-in-page.title")}
+                    {translation("sign-in")}
                 </Link>
                 &nbsp; {translation("sign-up-page.now")}
             </p>
