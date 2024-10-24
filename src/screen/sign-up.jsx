@@ -30,12 +30,28 @@ const SignUp = () => {
 
     const navigate = useNavigate();
 
-    const mutation = useMutation({
+    const mutationNormalSubmit = useMutation({
         mutationFn: AuthService.createUserAccount,
         onSuccess: (res) => {
             handleUpdateUserState({ status: res.status, data: res.data });
         },
 
+        onError: async (error) => {
+            toast.warn(error.response.data.message);
+        },
+    });
+
+    const mutationFacebookLogin = useMutation({
+        mutationFn: AuthService.facebookLogin,
+        onSuccess: (res) => handleUpdateUserState({ status: res.status, data: res.data }),
+        onError: async (error) => {
+            toast.warn(error.response.data.message);
+        },
+    });
+
+    const mutationGoogleLogin = useMutation({
+        mutationFn: AuthService.googleLogin,
+        onSuccess: (res) => handleUpdateUserState({ status: res.status, data: res.data }),
         onError: async (error) => {
             toast.warn(error.response.data.message);
         },
@@ -103,27 +119,20 @@ const SignUp = () => {
             canSubmit = false;
         }
 
-        if (canSubmit) mutation.mutate({ email: email.value, password: password.value, role });
+        if (canSubmit) mutationNormalSubmit.mutate({ email: email.value, password: password.value, role });
     };
 
     const googleLoginSuccessHandler = useGoogleLogin({
         onSuccess: (credentials) => {
-            AuthService.googleLogin({ token: credentials.access_token, role })
-                .then((res) => {
-                    handleUpdateUserState({ status: res.status, data: res.data });
-                })
-                .catch((err) => {
-                    toast.error(err.response.data.message || err.message);
-                });
+            mutationGoogleLogin.mutate({ token: credentials.access_token, role });
         },
         onError: (err) => {
             toast.error(err.response.data.message || err.message);
         },
     });
 
-    const facebookLoginSuccessHandler = async (response) => {
-        const res = await AuthService.facebookLogin({ token: response.accessToken, role });
-        handleUpdateUserState({ status: res.status, data: res.data });
+    const facebookLoginSuccessHandler = (response) => {
+        mutationFacebookLogin.mutate({ token: response.accessToken, role });
     };
 
     return (
@@ -229,7 +238,7 @@ const SignUp = () => {
                 radius="sm"
                 type="submit"
                 className="bg-secondary w-full text-white mb-4"
-                isLoading={mutation.isPending}>
+                isLoading={mutationNormalSubmit.isPending}>
                 {translation("sign-up")}
             </Button>
             <div className="text-center mb-4 font-semibold">{translation("sign-up-page.or")}</div>
