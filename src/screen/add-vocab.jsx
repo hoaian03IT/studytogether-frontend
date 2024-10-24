@@ -12,8 +12,11 @@ import VNFlag from "../assets/vietnam-flag.png"
 import { TbTextPlus } from "react-icons/tb";
 import { CgAttachment } from "react-icons/cg";
 import { LuPlus } from "react-icons/lu";
-import { ImBin } from "react-icons/im";c
-import { FaImage } from "react-icons/fa";
+import { ImBin } from "react-icons/im";
+import { IoVolumeHigh } from "react-icons/io5";
+import { FaMicrophone } from "react-icons/fa";
+import { AiOutlinePicture } from "react-icons/ai";
+
 
 
 
@@ -69,13 +72,16 @@ function VocabularyApp() {
   const [definition, setDefinition] = useState('');
   const [vocabList, setVocabList] = useState([]);
   const [audio, setAudio] = useState(null);
-  const [image, setImage] = useState(null);
+  const [currentAudio, setCurrentAudio] = useState(null); 
+  const [image, setImage] = useState(null); ` `
   const [groupName, setGroupName] = useState('');
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState('');
   const [showTextModal, setShowTextModal] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false); 
+  const [selectedItemToDelete, setSelectedItemToDelete] = useState(null);
   const [languageVocab, setLanguageVocab] = useState({
     id: "en",
     name: "English",
@@ -101,18 +107,58 @@ function VocabularyApp() {
         group: selectedGroup,
       };
       setVocabList([...vocabList, newVocab]);
-      // Clear input fields
       setVocabulary('');
       setDefinition('');
       setAudio(null);
       setImage(null);
     }
   };
+  const handleAudioChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setAudio(file);
+    }
+  };
 
-  // Delete vocabulary from the list
-  const handleDelete = (index) => {
-    const updatedList = vocabList.filter((_, i) => i !== index);
+  const toggleAudio = (audioFile) => {
+    // Stop and reset the current audio if it exists
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+      setCurrentAudio(null);
+    }
+
+    // Create a new Audio instance and play it if different
+    const newAudio = new Audio(URL.createObjectURL(audioFile));
+    newAudio.play();
+    setCurrentAudio(newAudio);
+
+    // Stop playback when the audio ends
+    newAudio.onended = () => {
+      setCurrentAudio(null);
+    };
+  };
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setImage(URL.createObjectURL(file)); // Preview the selected image
+    }
+  };
+
+  
+  // Delete vocabulary 
+  const DeleteConfirmation = (index) => {
+    setSelectedItemToDelete(index);
+    setShowDeleteModal(true);
+  };
+
+  // Confirm and delete the vocabulary item
+  const handleConfirmDelete = () => {
+    const updatedList = vocabList.filter((_, i) => i !== selectedItemToDelete);
     setVocabList(updatedList);
+    setShowDeleteModal(false);
+    setSelectedItemToDelete(null); 
   };
 
   // Add group
@@ -194,7 +240,6 @@ function VocabularyApp() {
         </div>
       )}
 
-
           <div className='flex mb-4'>
             <button onClick={() => setShowTextModal(true)}
              className='flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2'><TbTextPlus className='size-6 mr-1' />
@@ -206,7 +251,6 @@ function VocabularyApp() {
             <span > Thêm nhóm/cấp độ</span></button>
           </div>
           
-
 
        <div className="bg-white p-6 rounded-lg shadow-md mb-6 flex">    
         {/* Left Section - Inputs */}
@@ -251,6 +295,53 @@ function VocabularyApp() {
           </div>
           </div>
 
+          {/* Add audio */}  
+          <div className=' flex gap-10 mt-6 '>      
+          <div className="mt-4">
+           <button
+              onClick={() => document.getElementById('audioInput').click()}
+              className="flex items-center gap-2 text-sm font-medium cursor-pointer bg-white border border-gray-300 p-2 rounded-md hover:bg-gray-100  transition"
+              >
+              <FaMicrophone />
+              <span>Thêm âm thanh</span>
+          </button>
+        <input
+            type="file"
+            accept=".mp3, .mp4"
+            onChange={handleAudioChange}
+            id="audioInput"
+            className="hidden"
+            />
+          </div>
+
+          {/*add image */}
+          <div className="mt-4">
+           <button
+              onClick={() => document.getElementById('imageInput').click()}
+              className="relative flex items-center gap-2 p-7 text-4xl cursor-pointer bg-white border-2 border-dashed border-gray-300 p-2 rounded-md hover:bg-gray-100  transition"
+              style={{ width: '100px', height: '100px' }}
+              >
+               {image ? (
+            <img
+              src={image}
+              alt="Preview"
+              className="absolute inset-0 h-full w-full object-cover rounded-md"
+              style={{ objectFit: "contain" }}
+            />
+          ) : (
+            <AiOutlinePicture />
+          )}
+          </button>
+        <input
+            type="file"
+            accept=".jpg, .png"
+            onChange={handleImageChange}
+            id="imageInput"
+            className="hidden"
+            />
+          </div>
+          </div> 
+          
           {/* Group/Level Dropdown */}
           <div className="mt-4">
             <label className="block text-sm font-medium">Nhóm/Cấp độ</label>
@@ -286,50 +377,40 @@ function VocabularyApp() {
           </button>
         </div>
 
-        {/* Right Section - Vocabulary List */}
-
-<div className="w-2/3 pl-6 border rounded-lg overflow-hidden ml-6">
-  <div className="grid grid-cols-4 bg-blue-100 p-2">
-    <span className="font-bold text-blue-400">Từ vựng</span>
-    <span className="font-bold text-blue-400">Định nghĩa</span>
-  </div>
-  {vocabList.length === 0 ? (
-    <p className="text-gray-500">Chưa có từ vựng nào được thêm.</p>
-  ) : (
-    <ul className="space-y-2">
-      {vocabList.map((item, index) => (
-        <li key={index} className="grid grid-cols-4 bg-gray-100 p-3 rounded-md items-center gap-x-2">
-          {/* Vocabulary Column */}
-          <div className="flex items-center col-span-1">
-            <p className="font-bold">{item.vocabulary}</p>
+     
+    
+        <div className="w-2/3 pl-6 border rounded-lg overflow-hidden ml-6">
+          <div className="grid grid-cols-5 bg-blue-100 p-2">
+            <span className="font-bold text-blue-400">Từ vựng</span>
+            <span className="font-bold text-blue-400">Định nghĩa</span>
+            <span className="font-bold text-blue-400">Audio</span>
+            <span className="font-bold text-blue-400">Hình ảnh</span>
+            <span className="font-bold text-blue-400">Action</span>
           </div>
+          {vocabList.length === 0 ? (
+            <p className="text-gray-500">Chưa có từ vựng nào được thêm.</p>
+          ) : (
+            <ul className="space-y-2">
+              {vocabList.map((item, index) => (
+                <li key={index} className="grid grid-cols-5 bg-gray-100 p-3 rounded-md items-center gap-x-2">
+                  <p className="font-bold">{item.vocabulary}</p>
+                  <p>{item.definition}</p>
 
-          {/* Definition Column */}
-          <div className="flex items-center col-span-1">
-            <p>{item.definition}</p>
-          </div>
+                  <div className="col-span-1 flex justify-center">
+                  {item.audio && (
+                    <button
+                      onClick={() => toggleAudio(item.audio)}
+                      className="text-blue-500 hover:text-blue-700 transition"
+                    >
+                      <IoVolumeHigh size={24} />
+                    </button>
+                  )}
+                </div>
 
-          {/* Audio and Image Column */}
-          <div className="flex items-center justify-center col-span-1 gap-2">
-            {item.audio && (
-              <audio controls className="h-8">
-                <source src={URL.createObjectURL(item.audio)} type="audio/mpeg" />
-              </audio>
-            )}
-             <div className="flex items-center justify-center col-span-1 gap-2"></div>
-            {item.image && (
-              <img
-                src={URL.createObjectURL(item.image)}
-                alt="Hình ảnh minh họa"
-                className="h-12 w-12 object-cover"
-              />
-            )}
-          </div>
-
-          {/* Delete Button Column */}
-          <div className="flex justify-end items-center col-span-1">
+          
+          <div className="flex-row justify-end items-end col-span-1">
             <button
-              onClick={() => handleDelete(index)}
+               onClick={() => DeleteConfirmation(index)}
               className="text-red-500 hover:text-red-700 transition"
             >
               <ImBin />
@@ -340,7 +421,6 @@ function VocabularyApp() {
     </ul>
   )}
 </div>
-
 
       </div>
 
@@ -360,7 +440,7 @@ function VocabularyApp() {
             ></textarea>
             <div className="flex justify-end">
               <button
-                onClick={() => setShowTextModal(false)}
+                onClick={() => promptDeleteConfirmation(index)}
                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2"
               >
                 Hủy
@@ -415,8 +495,37 @@ function VocabularyApp() {
           </div>
         </div>
       )}
+
+{showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-lg font-semibold">Xác nhận xóa</h2>
+              <button onClick={() => setShowDeleteModal(false)}>
+                <IoIosCloseCircle className="size-6" />
+              </button>
+            </div>
+            <p className="text-gray-500 mb-4">Bạn có chắc chắn muốn xóa từ vựng này không?</p>
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md"
+              >
+                Hủy
+              </button>
+              <button
+                  onClick={handleConfirmDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+              >
+                Xóa
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 export default VocabularyApp;
+
