@@ -16,6 +16,7 @@ import { ImBin } from "react-icons/im";
 import { IoVolumeHigh } from "react-icons/io5";
 import { FaMicrophone } from "react-icons/fa";
 import { AiOutlinePicture } from "react-icons/ai";
+import { FcEditImage } from "react-icons/fc";
 
 
 
@@ -77,6 +78,7 @@ function VocabularyApp() {
   const [groupName, setGroupName] = useState('');
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState('');
+  const [showGroupInput, setShowGroupInput] = useState(false);
   const [showTextModal, setShowTextModal] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -168,6 +170,23 @@ function VocabularyApp() {
       setGroupName('');
     }
   };
+  
+  const saveGroup = () => {
+    if (groupName) {
+      setGroups([...groups, { name: groupName, visible: true }]);
+      setSelectedGroup(groupName);
+      setGroupName('');
+      setShowGroupInput(false);
+    }
+  };
+  const toggleGroupVisibility = (groupName) => {
+    setGroups(groups.map(group => group.name === groupName ? { ...group, visible: !group.visible } : group));
+  };
+
+  const deleteGroup = (groupName) => {
+    setGroups(groups.filter(group => group.name !== groupName));
+    setVocabList(vocabList.filter(item => item.group !== groupName));
+  };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen" >
@@ -189,6 +208,8 @@ function VocabularyApp() {
           <span className="material-icons">KINH DOANH</span>
         </button>
       </div>
+
+          
 
       {/* Content Section */}
       <div className="bg-white p-6 rounded-lg shadow-md relative mt-6 mb-6">
@@ -247,11 +268,47 @@ function VocabularyApp() {
             <button onClick={() => setShowFileModal(true)}
              className='flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2'><CgAttachment  className='size-6 mr-1' />
             <span > Thêm từ tệp</span></button>
-            <button onClick={handleAddGroup} className='flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2'><LuPlus className='size-6 mr-1' />
+            <button onClick={setShowGroupInput} className='flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2'><LuPlus className='size-6 mr-1' />
             <span > Thêm nhóm/cấp độ</span></button>
           </div>
-          
 
+           {/* Group Input */}
+           {showGroupInput && (
+        <div className="bg-white p-6 rounded-lg shadow-md mt-4 mb-4">
+          <input
+            type="text"
+            value={groupName}
+            onChange={(e) => setGroupName(e.target.value)}
+            placeholder="Nhập tên nhóm"
+            className="p-2 border border-gray-300 rounded-md w-1/2"
+          />
+          <button
+            onClick={saveGroup}
+            className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+          >
+            Lưu
+          </button>
+        </div>
+      )}
+
+      {/* Groups List */}
+      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+        {groups.map((group, index) => (
+          <div key={index} className="flex justify-between items-center mb-2 bg-blue-100 p-2 rounded">
+            <span className="font-bold">{group.name}</span>
+            <div className="flex gap-2">
+              <button onClick={() => toggleGroupVisibility(group.name)}>
+                {group.visible ? "Ẩn" : "Hiện"}
+              </button>
+              <button onClick={() => deleteGroup(group.name)}>
+                <ImBin />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+          
+     
        <div className="bg-white p-6 rounded-lg shadow-md mb-6 flex">    
         {/* Left Section - Inputs */}
         <div className="w-1/3  bg-gray-50 rounded-lg shadow p-6 pr-0 border-r  ">
@@ -312,6 +369,12 @@ function VocabularyApp() {
             id="audioInput"
             className="hidden"
             />
+
+            {audio && (
+            <p className="mt-2 text-sm text-gray-600">
+            {audio.name}
+            </p>
+                 )}
           </div>
 
           {/*add image */}
@@ -352,20 +415,11 @@ function VocabularyApp() {
             >
               <option value="">Chọn nhóm</option>
               {groups.map((group, index) => (
-                <option key={index} value={group}>
-                  {group}
+                <option key={index} value={group.name}>
+                  {group.name}
                 </option>
               ))}
             </select>
-            <div className="w-1/2 flex mt-2">
-              <input
-                type="text"
-                value={groupName}
-                onChange={(e) => setGroupName(e.target.value)}
-                placeholder="Nhập tên nhóm"
-                className=" p-2 pr-0 mt-2 border border-gray-300 rounded-md flex-grow"
-              />
-            </div>
           </div>
 
           {/* Add Button */}
@@ -378,7 +432,6 @@ function VocabularyApp() {
         </div>
 
      
-    
         <div className="w-2/3 pl-6 border rounded-lg overflow-hidden ml-6">
           <div className="grid grid-cols-5 bg-blue-100 p-2">
             <span className="font-bold text-blue-400">Từ vựng</span>
@@ -396,7 +449,7 @@ function VocabularyApp() {
                   <p className="font-bold">{item.vocabulary}</p>
                   <p>{item.definition}</p>
 
-                  <div className="col-span-1 flex justify-center">
+                  <div className="col-span-1 flex ">
                   {item.audio && (
                     <button
                       onClick={() => toggleAudio(item.audio)}
@@ -404,6 +457,13 @@ function VocabularyApp() {
                     >
                       <IoVolumeHigh size={24} />
                     </button>
+                  )}
+                </div>
+                <div className="col-span-1 flex ">
+                  {item.image ? (
+                    <FcEditImage size={24} />
+                  ) : (
+                    <span></span> 
                   )}
                 </div>
 
