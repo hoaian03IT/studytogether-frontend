@@ -57,6 +57,7 @@ const SignUp = () => {
                     email: data.email,
                     role: data.role,
                 },
+                token: data.token,
                 isLogged: true,
             });
             toast.success(translation("sign-up-page.success-message"));

@@ -79,6 +79,7 @@ const SignIn = () => {
                     email: data.email,
                     role: data.role,
                 },
+                token: data.token,
                 isLogged: true,
             });
             toast.success(`${translation("sign-in-page.success-message")}, ${data.username}`);
@@ -171,7 +172,12 @@ const SignIn = () => {
                 </Link>
             </div>
 
-            <Button type="submit" size="lg" radius="sm" className="bg-secondary w-full text-white mb-4">
+            <Button
+                type="submit"
+                size="lg"
+                radius="sm"
+                className="bg-secondary w-full text-white mb-4"
+                isLoading={mutation.isPending}>
                 {translation("sign-in")}
             </Button>
 
