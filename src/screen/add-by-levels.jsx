@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { RiUserShared2Fill } from "react-icons/ri";
 import { IoIosCloseCircle } from "react-icons/io";
-import { PiPencilDuotone } from "react-icons/pi";
-import { FaBook } from "react-icons/fa";
-import { MdLibraryBooks } from "react-icons/md";
-import { LiaSellcast } from "react-icons/lia";
 import { FaSortDown } from "react-icons/fa";
 import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/popover";
 import englishFlag from "../assets/united-kingdom.png";
@@ -67,14 +63,14 @@ const LanguageDropdown = ({ language, onSelectLanguage }) => {
   );
 };
 
-function AddVocab() {
+function AddLevels() {
   const [showPermissionModal, setShowPermissionModal] = useState(false);
   const [vocabulary, setVocabulary] = useState('');
   const [definition, setDefinition] = useState('');
   const [vocabList, setVocabList] = useState([]);
   const [audio, setAudio] = useState(null);
   const [currentAudio, setCurrentAudio] = useState(null); 
-  const [image, setImage] = useState(null);  
+  const [image, setImage] = useState(null); ` `
   const [groupName, setGroupName] = useState('');
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState('');
@@ -164,50 +160,29 @@ function AddVocab() {
   };
 
   // Add group
-  const handleAddGroup = () => {
-    if (groupName) {
-      setGroups([...groups, groupName]);
-      setGroupName('');
-    }
-  };
-  
   const saveGroup = () => {
     if (groupName) {
       setGroups([...groups, { name: groupName, visible: true }]);
       setSelectedGroup(groupName);
       setGroupName('');
-      setShowGroupInput(false);
+      setShowGroupInput(false); // Hide the input after saving
     }
-  };
-  const toggleGroupVisibility = (groupName) => {
-    setGroups(groups.map(group => group.name === groupName ? { ...group, visible: !group.visible } : group));
   };
 
   const deleteGroup = (groupName) => {
     setGroups(groups.filter(group => group.name !== groupName));
     setVocabList(vocabList.filter(item => item.group !== groupName));
   };
+    const toggleGroupVisibility = (groupName) => {
+    setGroups(groups.map(group => group.name === groupName ? { ...group, visible: !group.visible } : group));
+  };
+
+
+
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen" >
-      <div className="flex gap-6 justify-center items-center bg-white  shadow-md rounded-lg ">
-        <button className="px-6 py-4 bg-blue-100 border-b-4 border-blue-500 font-bold flex items-center gap-2" >
-        <PiPencilDuotone className='size-6' />
-          <span className="material-icons"> TỪ VỰNG</span>
-        </button>
-        <button className="px-6 py-4 text-gray-600 flex items-center gap-2">
-        <FaBook className='size-6' />
-          <span className="material-icons">VÍ DỤ VÀ BÀI TẬP</span>
-        </button>
-        <button className="px-6 py-4 text-gray-600 flex items-center gap-2">
-        <MdLibraryBooks className='size-8' />
-          <span className="material-icons">CHI TIẾT KHÓA</span>
-        </button>
-        <button className="px-6 py-4 text-gray-600 flex items-center gap-2">
-        <LiaSellcast className='size-8'/>
-          <span className="material-icons">KINH DOANH</span>
-        </button>
-      </div>
+    
 
           
 
@@ -272,43 +247,7 @@ function AddVocab() {
             <span > Thêm nhóm/cấp độ</span></button>
           </div>
 
-           {/* Group Input */}
-           {showGroupInput && (
-        <div className="bg-white p-6 rounded-lg shadow-md mt-4 mb-4">
-          <input
-            type="text"
-            value={groupName}
-            onChange={(e) => setGroupName(e.target.value)}
-            placeholder="Nhập tên nhóm"
-            className="p-2 border border-gray-300 rounded-md w-1/2"
-          />
-          <button
-            onClick={saveGroup}
-            className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
-          >
-            Lưu
-          </button>
-        </div>
-      )}
-
-      {/* Groups List */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-        {groups.map((group, index) => (
-          <div key={index} className="flex justify-between items-center mb-2 bg-blue-100 p-2 rounded">
-            <span className="font-bold">{group.name}</span>
-            <div className="flex gap-2">
-              <button onClick={() => toggleGroupVisibility(group.name)}>
-                {group.visible ? "Ẩn" : "Hiện"}
-              </button>
-              <button onClick={() => deleteGroup(group.name)}>
-                <ImBin />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-          
-     
+           
        <div className="bg-white p-6 rounded-lg shadow-md mb-6 flex">    
         {/* Left Section - Inputs */}
         <div className="w-1/3  bg-gray-50 rounded-lg shadow p-6 pr-0 border-r  ">
@@ -440,45 +379,79 @@ function AddVocab() {
             <span className="font-bold text-blue-400">Hình ảnh</span>
             <span className="font-bold text-blue-400">Action</span>
           </div>
-          {vocabList.length === 0 ? (
-            <p className="text-gray-500">Chưa có từ vựng nào được thêm.</p>
-          ) : (
-            <ul className="space-y-2">
-              {vocabList.map((item, index) => (
-                <li key={index} className="grid grid-cols-5 bg-gray-100 p-3 rounded-md items-center gap-x-2">
-                  <p className="font-bold">{item.vocabulary}</p>
-                  <p>{item.definition}</p>
+          {groups.map((group, index) => (
+    <div key={index} className="bg-blue-100 p-2 mt-2 rounded-md">
+      {/* Group/Level Header */}
+      <div className="flex justify-between items-center">
+        <span className="font-bold text-blue-400">{group.name}</span>
+        <div className="flex gap-2">
+          <button onClick={() => toggleGroupVisibility(group.name)}>
+            {group.visible ? "Ẩn" : "Hiện"}
+          </button>
+          <button onClick={() => deleteGroup(group.name)}>
+            <ImBin />
+          </button>
+        </div>
+      </div>
+      
+      {/* Vocabulary under this group */}
+      {vocabList.filter(item => item.group === group.name).length === 0 ? (
+        <p className="text-gray-500 mt-2">Không có từ vựng nào trong nhóm này.</p>
+      ) : (
+        <ul className="space-y-2 mt-2">
+          {vocabList.filter(item => item.group === group.name).map((item, idx) => (
+            <li key={idx} className="grid grid-cols-5 bg-gray-100 p-3 rounded-md items-center gap-x-2">
+              <p className="font-bold">{item.vocabulary}</p>
+              <p>{item.definition}</p>
+              <div className="col-span-1 flex ">
+                {item.audio && (
+                  <button
+                    onClick={() => toggleAudio(item.audio)}
+                    className="text-blue-500 hover:text-blue-700 transition"
+                  >
+                    <IoVolumeHigh size={24} />
+                  </button>
+                )}
+              </div>
+              <div className="col-span-1 flex ">
+                {item.image ? (
+                  <FcEditImage size={24} />
+                ) : (
+                  <span></span>
+                )}
+              </div>
+              <div className="flex-row justify-end items-end col-span-1">
+                <button
+                  onClick={() => DeleteConfirmation(idx)}
+                  className="text-red-500 hover:text-red-700 transition"
+                >
+                  <ImBin />
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  ))}
 
-                  <div className="col-span-1 flex ">
-                  {item.audio && (
-                    <button
-                      onClick={() => toggleAudio(item.audio)}
-                      className="text-blue-500 hover:text-blue-700 transition"
-                    >
-                      <IoVolumeHigh size={24} />
-                    </button>
-                  )}
-                </div>
-                <div className="col-span-1 flex ">
-                  {item.image ? (
-                    <FcEditImage size={24} />
-                  ) : (
-                    <span></span> 
-                  )}
-                </div>
 
-          
-          <div className="flex-row justify-end items-end col-span-1">
-            <button
-               onClick={() => DeleteConfirmation(index)}
-              className="text-red-500 hover:text-red-700 transition"
-            >
-              <ImBin />
-            </button>
-          </div>
-        </li>
-      ))}
-    </ul>
+{showGroupInput && (
+    <div className="mt-4 bg-gray-100 p-3 rounded-md">
+      <input
+        type="text"
+        value={groupName}
+        onChange={(e) => setGroupName(e.target.value)}
+        placeholder="Nhập tên nhóm"
+        className="p-2 border border-gray-300 rounded-md w-3/4"
+      />
+      <button
+        onClick={saveGroup}
+        className="ml-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
+      >
+        Lưu
+      </button>
+    </div>
   )}
 </div>
 
@@ -587,4 +560,4 @@ function AddVocab() {
   );
 }
 
-export default AddVocab;
+export default AddLevels;

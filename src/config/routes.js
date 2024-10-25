@@ -15,6 +15,7 @@ const ProfilePage = lazy(() => import("../screen/profile"));
 const CreateCourse = lazy(() => import("../screen/create-course"));
 const ListCourse = lazy(() => import("../screen/list-course"));
 const AddVocab = lazy(() => import("../screen/add-vocab"));
+const AddLevels = lazy(() => import("../screen/add-by-levels"));
 
 export const publicRoutes = [
     { path: pathname.home, component: HomePage, layout: PrimaryLayout },
@@ -43,4 +44,5 @@ export const publicRoutes = [
     },
     { path: pathname.listCourse, component: ListCourse, layout: PrimaryLayout },
     { path: pathname.addVocab, component: AddVocab, layout: PrimaryLayout },
+    { path: pathname.addbyLevels, component: AddLevels, layout: PrimaryLayout },
 ];
