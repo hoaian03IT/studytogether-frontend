@@ -320,7 +320,7 @@ function AddLevels() {
           <div className="mt-4">
            <button
               onClick={() => document.getElementById('imageInput').click()}
-              className="relative flex items-center gap-2 p-7 text-4xl cursor-pointer bg-white border-2 border-dashed border-gray-300 p-2 rounded-md hover:bg-gray-100  transition"
+              className="relative flex items-center gap-2 p-7 text-4xl cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-md hover:bg-gray-100  transition"
               style={{ width: '100px', height: '100px' }}
               >
                {image ? (

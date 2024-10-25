@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { RiUserShared2Fill } from "react-icons/ri";
 import { IoIosCloseCircle } from "react-icons/io";
 import { PiPencilDuotone } from "react-icons/pi";
@@ -75,10 +76,6 @@ function AddVocab() {
   const [audio, setAudio] = useState(null);
   const [currentAudio, setCurrentAudio] = useState(null); 
   const [image, setImage] = useState(null);  
-  const [groupName, setGroupName] = useState('');
-  const [groups, setGroups] = useState([]);
-  const [selectedGroup, setSelectedGroup] = useState('');
-  const [showGroupInput, setShowGroupInput] = useState(false);
   const [showTextModal, setShowTextModal] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -106,7 +103,6 @@ function AddVocab() {
         definition,
         audio,
         image,
-        group: selectedGroup,
       };
       setVocabList([...vocabList, newVocab]);
       setVocabulary('');
@@ -163,30 +159,7 @@ function AddVocab() {
     setSelectedItemToDelete(null); 
   };
 
-  // Add group
-  const handleAddGroup = () => {
-    if (groupName) {
-      setGroups([...groups, groupName]);
-      setGroupName('');
-    }
-  };
-  
-  const saveGroup = () => {
-    if (groupName) {
-      setGroups([...groups, { name: groupName, visible: true }]);
-      setSelectedGroup(groupName);
-      setGroupName('');
-      setShowGroupInput(false);
-    }
-  };
-  const toggleGroupVisibility = (groupName) => {
-    setGroups(groups.map(group => group.name === groupName ? { ...group, visible: !group.visible } : group));
-  };
 
-  const deleteGroup = (groupName) => {
-    setGroups(groups.filter(group => group.name !== groupName));
-    setVocabList(vocabList.filter(item => item.group !== groupName));
-  };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen" >
@@ -268,46 +241,16 @@ function AddVocab() {
             <button onClick={() => setShowFileModal(true)}
              className='flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2'><CgAttachment  className='size-6 mr-1' />
             <span > Thêm từ tệp</span></button>
-            <button onClick={setShowGroupInput} className='flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2'><LuPlus className='size-6 mr-1' />
-            <span > Thêm nhóm/cấp độ</span></button>
-          </div>
-
-           {/* Group Input */}
-           {showGroupInput && (
-        <div className="bg-white p-6 rounded-lg shadow-md mt-4 mb-4">
-          <input
-            type="text"
-            value={groupName}
-            onChange={(e) => setGroupName(e.target.value)}
-            placeholder="Nhập tên nhóm"
-            className="p-2 border border-gray-300 rounded-md w-1/2"
-          />
-          <button
-            onClick={saveGroup}
-            className="ml-2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
-          >
-            Lưu
-          </button>
-        </div>
-      )}
-
-      {/* Groups List */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-        {groups.map((group, index) => (
-          <div key={index} className="flex justify-between items-center mb-2 bg-blue-100 p-2 rounded">
-            <span className="font-bold">{group.name}</span>
-            <div className="flex gap-2">
-              <button onClick={() => toggleGroupVisibility(group.name)}>
-                {group.visible ? "Ẩn" : "Hiện"}
-              </button>
-              <button onClick={() => deleteGroup(group.name)}>
-                <ImBin />
-              </button>
-            </div>
-          </div>
-        ))}
+            <div >
+        <Link 
+          to="/add-by-levels"  // Use Link to navigate
+          className='flex items-center px-4 py-2 bg-green-400 border rounded-md shadow-sm mr-2'>
+          <LuPlus className='size-6 mr-1' />
+          <span>Nhóm</span>
+        </Link>
       </div>
-          
+          </div> 
+     
      
        <div className="bg-white p-6 rounded-lg shadow-md mb-6 flex">    
         {/* Left Section - Inputs */}
@@ -381,7 +324,7 @@ function AddVocab() {
           <div className="mt-4">
            <button
               onClick={() => document.getElementById('imageInput').click()}
-              className="relative flex items-center gap-2 p-7 text-4xl cursor-pointer bg-white border-2 border-dashed border-gray-300 p-2 rounded-md hover:bg-gray-100  transition"
+              className="relative flex items-center gap-2 p-7 text-4xl cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-md hover:bg-gray-100  transition"
               style={{ width: '100px', height: '100px' }}
               >
                {image ? (
@@ -405,22 +348,6 @@ function AddVocab() {
           </div>
           </div> 
           
-          {/* Group/Level Dropdown */}
-          <div className="mt-4">
-            <label className="block text-sm font-medium">Nhóm/Cấp độ</label>
-            <select
-              value={selectedGroup}
-              onChange={(e) => setSelectedGroup(e.target.value)}
-              className="p-2 border border-gray-300 rounded-md w-1/2"
-            >
-              <option value="">Chọn nhóm</option>
-              {groups.map((group, index) => (
-                <option key={index} value={group.name}>
-                  {group.name}
-                </option>
-              ))}
-            </select>
-          </div>
 
           {/* Add Button */}
           <button
@@ -556,7 +483,7 @@ function AddVocab() {
         </div>
       )}
 
-{showDeleteModal && (
+        {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
             <div className="flex justify-between items-center mb-4">
