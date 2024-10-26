@@ -2,10 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { RiUserShared2Fill } from "react-icons/ri";
 import { IoIosCloseCircle } from "react-icons/io";
-import { PiPencilDuotone } from "react-icons/pi";
-import { FaBook } from "react-icons/fa";
-import { MdLibraryBooks } from "react-icons/md";
-import { LiaSellcast } from "react-icons/lia";
 import { FaSortDown } from "react-icons/fa";
 import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/popover";
 import englishFlag from "../assets/united-kingdom.png";
@@ -19,9 +15,6 @@ import { FaMicrophone } from "react-icons/fa";
 import { AiOutlinePicture } from "react-icons/ai";
 import { FcEditImage } from "react-icons/fc";
 import { IoIosArrowDown } from "react-icons/io";
-
-
-
 
 
 const LanguageDropdown = ({ language, onSelectLanguage }) => {
@@ -150,7 +143,6 @@ function AddVocab() {
     }
   };
 
-  
   // Delete vocabulary 
   const DeleteConfirmation = (index) => {
     setSelectedItemToDelete(index);
@@ -165,31 +157,8 @@ function AddVocab() {
     setSelectedItemToDelete(null); 
   };
 
-
-
   return (
-    <div className="p-6 bg-gray-100 min-h-screen" >
-      <div className="flex gap-6 justify-center items-center bg-white  shadow-md rounded-lg ">
-        <button className="px-6 py-4 bg-blue-100 border-b-4 border-blue-500 font-bold flex items-center gap-2" >
-        <PiPencilDuotone className='size-6' />
-          <span className="material-icons"> TỪ VỰNG</span>
-        </button>
-        <button className="px-6 py-4 text-gray-600 flex items-center gap-2">
-        <FaBook className='size-6' />
-          <span className="material-icons">VÍ DỤ VÀ BÀI TẬP</span>
-        </button>
-        <button className="px-6 py-4 text-gray-600 flex items-center gap-2">
-        <MdLibraryBooks className='size-8' />
-          <span className="material-icons">CHI TIẾT KHÓA</span>
-        </button>
-        <button className="px-6 py-4 text-gray-600 flex items-center gap-2">
-        <LiaSellcast className='size-8'/>
-          <span className="material-icons">KINH DOANH</span>
-        </button>
-      </div>
-
-          
-
+    <div className="p-6 bg-gray-100 min-h-screen" >     
       {/* Content Section */}
       <div className="bg-white p-6 rounded-lg shadow-md relative mt-6 mb-6">
         <h2 className="text-xl font-bold mb-4">Tạo bộ từ vựng cho riêng bạn</h2>

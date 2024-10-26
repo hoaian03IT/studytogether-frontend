@@ -80,7 +80,7 @@ function AddLevels() {
   const [showFileModal, setShowFileModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false); 
-  const [selectedItemToDelete, setSelectedItemToDelete] = useState(null);
+  const [deleteContext, setDeleteContext] = useState(null);
   const [languageVocab, setLanguageVocab] = useState({
     id: "en",
     name: "English",
@@ -153,17 +153,22 @@ function AddLevels() {
 
   
   // Delete vocabulary 
-  const DeleteConfirmation = (index) => {
-    setSelectedItemToDelete(index);
+  const showDeleteConfirmation = (context) => {
+    setDeleteContext(context);
     setShowDeleteModal(true);
   };
 
-  // Confirm and delete the vocabulary item
   const handleConfirmDelete = () => {
-    const updatedList = vocabList.filter((_, i) => i !== selectedItemToDelete);
-    setVocabList(updatedList);
+    if (deleteContext?.type === 'vocab') {
+      const updatedList = vocabList.filter((_, i) => i !== deleteContext.index);
+      setVocabList(updatedList);
+    } else if (deleteContext?.type === 'group') {
+      const updatedGroups = groups.filter(group => group.name !== deleteContext.groupName);
+      setGroups(updatedGroups);
+      setVocabList(vocabList.filter(item => item.group !== deleteContext.groupName));
+    }
     setShowDeleteModal(false);
-    setSelectedItemToDelete(null); 
+    setDeleteContext(null);
   };
 
   // Add group
@@ -397,7 +402,7 @@ function AddLevels() {
         <button onClick={() => toggleGroupVisibility(group.name)}>
           {group.visible ? "Ẩn" : "Hiện"}
         </button>
-        <button onClick={() => deleteGroup(group.name)}>
+        <button onClick={() => showDeleteConfirmation({ type: 'group', groupName: group.name })}>
           <ImBin />
         </button>
       </div>
@@ -432,7 +437,7 @@ function AddLevels() {
               </div>
               <div className="col-span-1 flex justify-center items-center">
                 <button
-                  onClick={() => DeleteConfirmation(idx)}
+                  onClick={() => showDeleteConfirmation({ type: 'vocab', index: idx })} 
                   className="text-red-500 hover:text-red-700 transition"
                 >
                   <ImBin />
@@ -484,7 +489,7 @@ function AddLevels() {
             ></textarea>
             <div className="flex justify-end">
               <button
-                onClick={() => promptDeleteConfirmation(index)}
+                onClick={() => setShowTextModal(false)}
                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2"
               >
                 Hủy
@@ -540,6 +545,7 @@ function AddLevels() {
         </div>
       )}
 
+{/* Delete Confirmation Modal */}
 {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
@@ -549,18 +555,14 @@ function AddLevels() {
                 <IoIosCloseCircle className="size-6" />
               </button>
             </div>
-            <p className="text-gray-500 mb-4">Bạn có chắc chắn muốn xóa từ vựng này không?</p>
+            <p className="text-gray-500 mb-4">
+              Bạn có chắc chắn muốn xóa {deleteContext?.type === 'group' ? 'nhóm này' : 'từ vựng này'} không?
+            </p>
             <div className="flex justify-end gap-4">
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md"
-              >
+              <button onClick={() => setShowDeleteModal(false)} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md">
                 Hủy
               </button>
-              <button
-                  onClick={handleConfirmDelete}
-                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-              >
+              <button onClick={handleConfirmDelete} className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
                 Xóa
               </button>
             </div>

@@ -2,6 +2,7 @@ import { lazy } from "react";
 import { pathname } from "../routes";
 import PrimaryLayout from "../layouts/primary-layout";
 import SecondaryLayout from "../layouts/secondary-layout";
+import ThirdLayout from "../layouts/third-layout";
 import ProfileLayout from "../layouts/profile-layout";
 
 // import page bằng react lazy
@@ -16,6 +17,7 @@ const CreateCourse = lazy(() => import("../screen/create-course"));
 const ListCourse = lazy(() => import("../screen/list-course"));
 const AddVocab = lazy(() => import("../screen/add-vocab"));
 const AddLevels = lazy(() => import("../screen/add-by-levels"));
+const Business = lazy(() => import("../screen/course-business"));
 
 export const publicRoutes = [
     { path: pathname.home, component: HomePage, layout: PrimaryLayout },
@@ -43,6 +45,7 @@ export const publicRoutes = [
         layout: PrimaryLayout,
     },
     { path: pathname.listCourse, component: ListCourse, layout: PrimaryLayout },
-    { path: pathname.addVocab, component: AddVocab, layout: PrimaryLayout },
+    { path: pathname.addVocab, component: AddVocab, layout: ThirdLayout },
     { path: pathname.addbyLevels, component: AddLevels, layout: PrimaryLayout },
+    { path: pathname.courseBusiness, component: Business, layout: ThirdLayout },
 ];
