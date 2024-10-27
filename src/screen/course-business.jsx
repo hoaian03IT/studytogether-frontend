@@ -1,6 +1,7 @@
-import { div } from 'framer-motion/client';
+import { AiFillCrown } from "react-icons/ai";
 import React, { useState } from 'react';
 import { FaCalendarAlt } from 'react-icons/fa';
+import { IoIosArrowDown } from "react-icons/io";
 
 const CourseBusiness = () => {
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -10,6 +11,8 @@ const CourseBusiness = () => {
   const [activeTab, setActiveTab] = useState('price');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
+  const [duration, setDuration] = useState('');
+  const [durationUnit, setDurationUnit] = useState('day');
 
   return (
     <div className=" bg-gray-100 min-h-screen">
@@ -19,11 +22,11 @@ const CourseBusiness = () => {
         <div className="flex space-x-8">
           <button
             onClick={() => setActiveTab('price')}
-            className={`text-lg font-semibold ${
+            className={`text-lg font-semibold flex ${
               activeTab === 'price' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'
-            }`}
-          >
-            Thiết lập giá
+            }`} 
+          ><AiFillCrown className="text-2xl mr-2" />
+            <span>Thiết lập giá</span>
           </button>
           <button
             onClick={() => setActiveTab('advance')}
@@ -31,7 +34,7 @@ const CourseBusiness = () => {
               activeTab === 'advance' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'
             }`}
           >
-            Advance Information
+           Doanh thu
           </button>
         </div>
         <label className="relative inline-flex items-center cursor-pointer">
@@ -62,6 +65,7 @@ const CourseBusiness = () => {
               type="text"
               placeholder="Tên khóa"
               className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
+              readOnly
             />
           </div>
 
@@ -70,19 +74,32 @@ const CourseBusiness = () => {
             <div className="w-1/2">
               <label className="block font-medium text-gray-600 mb-2">Giá ($) </label>
               <input
-                type="number"
+                type="text"
                 placeholder="$ 00.00"
                 className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
               />
             </div>
             <div className="w-1/2">
               <label className="block font-medium text-gray-600 mb-2">Thời hạn</label>
-              <select className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200">
-                <option value="">Course durations</option>
-                <option value="day">Day</option>
-                <option value="month">Month</option>
-                <option value="year">Year</option>
-              </select>
+              <div className="relative flex rounded-md overflow-hidden border border-gray-300">
+                <input
+                  type="text"
+                  value={duration}
+                  onChange={(e) => setDuration(e.target.value)}
+                  placeholder="Thời hạn"
+                  className="w-1/2 p-3 focus:outline-none focus:ring focus:ring-blue-200"
+                />
+                <select
+                  value={durationUnit}
+                  onChange={(e) => setDurationUnit(e.target.value)}
+                  className="w-1/2 px-3 py-2 text-sm text-gray-600 bg-white border shadow-sm outline-none appearance-none focus:ring-offset-2 "
+                >
+                  <option value="day">Ngày</option>
+                  <option value="month">Tháng</option>
+                  <option value="year">Năm</option>
+                </select>
+                <IoIosArrowDown className="absolute top-6 right-4 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
+              </div>
             </div>
           </div>
 
@@ -103,7 +120,7 @@ const CourseBusiness = () => {
               <div className="w-1/3">
                 <label className="block font-medium text-gray-600 mb-2">Giảm giá (%)</label>
                 <input
-                  type="number"
+                  type="text"
                   placeholder="%00.00"
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
                 />
@@ -114,14 +131,14 @@ const CourseBusiness = () => {
                 <label className="block font-medium text-gray-600 mb-2">Từ ngày</label>
                 <input
                   type="text"
-                  placeholder="Start Date"
+                  placeholder="Ngày bắt đầu"
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                   onFocus={() => setShowDatePicker(true)}
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
                 />
                 <FaCalendarAlt
-                  className="absolute top-1/2 right-2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                  className="absolute top-14 right-3 transform -translate-y-1/2 text-gray-500 cursor-pointer"
                   onClick={() => setShowDatePicker(true)}
                 />
               </div>
@@ -131,14 +148,14 @@ const CourseBusiness = () => {
                 <label className="block font-medium text-gray-600 mb-2">Đến</label>
                 <input
                   type="text"
-                  placeholder="End Date"
+                  placeholder="Ngày kết thúc"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
                   onFocus={() => setShowDatePicker(true)}
                   className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
                 />
                 <FaCalendarAlt
-                  className="absolute top-1/2 right-2 transform -translate-y-1/2 text-gray-500 cursor-pointer"
+                  className="absolute top-14 right-3 transform -translate-y-1/2 text-gray-500 cursor-pointer"
                   onClick={() => setShowDatePicker(true)}
                 />
               </div>
