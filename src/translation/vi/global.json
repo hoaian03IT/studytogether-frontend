@@ -1,70 +1,70 @@
 {
-    "translation": {
-        "profile": "Hồ sơ",
-        "notification": "Thông báo",
-        "setting": "Cài đặt",
-        "support": "Hỗ trợ",
-        "sign-out": "Đăng xuất",
-        "sign-in":"Đăng nhập",
-        "sign-up":"Đăng ký",
-        "security": "Bảo mật",
-        "save": "Lưu lại",
-        "cancel": "Huỷ bỏ",
-        "header": {
-            "home": "Trang chủ",
-            "courses": "Khoá từ vựng",
-            "learning-language": "Ngôn ngữ học"
-        }, 
-        "sidebar-main": {
-            "courses": "Các khoá học",
-            "flash-card": "Flashcards",
-            "game": "Trò chơi",
-            "notification": "Thông báo",
-            "search": "Tìm kiếm khoá học"
-        },
-        "footer": {
-            "course-info": {
-                "title": "Khoá học từ vựng",
-                "en-course": "Từ vựng Tiếng Anh",
-                "vi-course": "Từ vựng Tiếng Việt"
-            },
-            "contact-info": {
-                "title": "Thông tin liên hệ",
-                "address": "257 Nguyễn Văn Linh, Đà Nẵng, Việt Nam"
-            },
-            "comments": {
-                "ph-input": "Email của bạn",
-                "ph-textarea": "Viết ý kiến của bạn ở đây...",
-                "btn-send": "Gửi"
-            }
-        },
-        "sign-in-page": {
-            "sub-title": "Để bắt đầu hành trình học tập của bạn",
-            "username-label": "Email hoặc tên đăng nhập",
-            "password-label": "Mật khẩu",
-            "save-account": "Lưu tài khoản",
-            "forgot-password": "Quên mật khẩu?",
-            "or": "Hoặc",
-            "sign-in-google": "Đăng nhập với Google",
-            "sign-in-facebook": "Đăng nhập với Facebook",
-            "not-yet-account": "Bạn chưa có tài khoản?",
-            "now": "ngay",
-            "success-message": "Chào mừng trờ lại"
-        },
-        "sign-up-page": {
-            "sub-title": "Để tham gia trải nghiệm học tập không giới hạn",
-            "email-label": "Email",
-            "password-label": "Mật khẩu",
-            "confirm-password-label": "Xác nhận mật khẩu",
-            "accept-rules-policies": "Tôi đã đọc và đồng ý với",
-            "policies": "chính sách và điều khoản",
-            "or": "hoặc",
-            "sign-up-with-google": "Đăng ký với Google",
-            "sign-up-with-facebook": "Đăng ký với Facebook",
-            "had-account": "Bạn đã có tài khoản?",
-            "now": "ngay",
-            "success-message": "Chào mừng đến với StudyTogether"
-        }
+  "translation": {
+    "profile": "Hồ sơ",
+    "notification": "Thông báo",
+    "setting": "Cài đặt",
+    "support": "Hỗ trợ",
+    "sign-out": "Đăng xuất",
+    "sign-in": "Đăng nhập",
+    "sign-up": "Đăng ký",
+    "security": "Bảo mật",
+    "save": "Lưu lại",
+    "cancel": "Huỷ bỏ",
+    "error-message": "Đã xảy ra lỗi. Vui lòng thử lại sau",
+    "header": {
+      "home": "Trang chủ",
+      "courses": "Khoá từ vựng",
+      "learning-language": "Ngôn ngữ học"
     },
-    "error-message": "Đã xảy ra lỗi. Vui lòng thử lại sau"
+    "sidebar-main": {
+      "courses": "Các khoá học",
+      "flash-card": "Flashcards",
+      "game": "Trò chơi",
+      "notification": "Thông báo",
+      "search": "Tìm kiếm khoá học"
+    },
+    "footer": {
+      "course-info": {
+        "title": "Khoá học từ vựng",
+        "en-course": "Từ vựng Tiếng Anh",
+        "vi-course": "Từ vựng Tiếng Việt"
+      },
+      "contact-info": {
+        "title": "Thông tin liên hệ",
+        "address": "257 Nguyễn Văn Linh, Đà Nẵng, Việt Nam"
+      },
+      "comments": {
+        "ph-input": "Email của bạn",
+        "ph-textarea": "Viết ý kiến của bạn ở đây...",
+        "btn-send": "Gửi"
+      }
+    },
+    "sign-in-page": {
+      "sub-title": "Để bắt đầu hành trình học tập của bạn",
+      "username-label": "Email hoặc tên đăng nhập",
+      "password-label": "Mật khẩu",
+      "save-account": "Lưu tài khoản",
+      "forgot-password": "Quên mật khẩu?",
+      "or": "Hoặc",
+      "sign-in-google": "Đăng nhập với Google",
+      "sign-in-facebook": "Đăng nhập với Facebook",
+      "not-yet-account": "Bạn chưa có tài khoản?",
+      "now": "ngay",
+      "success-message": "Chào mừng trờ lại"
+    },
+    "sign-up-page": {
+      "sub-title": "Để tham gia trải nghiệm học tập không giới hạn",
+      "email-label": "Email",
+      "password-label": "Mật khẩu",
+      "confirm-password-label": "Xác nhận mật khẩu",
+      "accept-rules-policies": "Tôi đã đọc và đồng ý với",
+      "policies": "chính sách và điều khoản",
+      "or": "hoặc",
+      "sign-up-with-google": "Đăng ký với Google",
+      "sign-up-with-facebook": "Đăng ký với Facebook",
+      "had-account": "Bạn đã có tài khoản?",
+      "now": "ngay",
+      "success-message": "Chào mừng đến với StudyTogether"
+    }
+  }
 }

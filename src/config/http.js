@@ -32,7 +32,7 @@ class Http {
 					try {
 						const data = await AuthService.refreshToken();
 						currentToken = data.token;
-						updateUserState({ ...userState, token: currentToken });
+						updateUserState({ ...userState, token: currentToken, isLogged: true });
 					} catch (error) {
 						updateUserState(null);
 						console.warn("Token refresh failed:", error);

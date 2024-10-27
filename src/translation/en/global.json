@@ -1,70 +1,70 @@
 {
-    "translation": {
-        "profile": "Profile",
-        "notification": "Notifications",
-        "setting": "Settings",
-        "support": "Support",
-        "sign-out": "Sign out",
-        "sign-in":"Sign in",
-        "sign-up":"Sign up",
-        "security": "Security",
-        "save": "Save",
-        "cancel": "Cancel",
-        "header": {
-            "home": "Home",
-            "courses": "Courses",
-            "learning-language": "Languages"
-        },
-        "sidebar-main": {
-            "courses": "Our Courses",
-            "flash-card": "Flashcards",
-            "game": "Games",
-            "notification": "Notifications",
-            "search": "Search Courses"
-        },
-        "footer": {
-            "course-info": {
-                "title": "Vocabulary courses",
-                "en-course": "English Vocabulary",
-                "vi-course": "Vietnamese Vocabulary"
-            },
-            "contact-info": {
-                "title": "Contact information",
-                "address": "257 Nguyen Van Linh, Da Nang, Vietnam"
-            },
-            "comments": {
-                "ph-input": "Your email",
-                "ph-textarea": "Write your comments here...",
-                "btn-send": "Send"
-            }
-        },
-        "sign-in-page": {
-            "sub-title": "To start your learning journey",
-            "username-label": "Email or username",
-            "password-label": "Password",
-            "save-account": "Save your account",
-            "forgot-password": "Forgot password?",
-            "or": "Or",
-            "sign-in-google": "Sign in with Google",
-            "sign-in-facebook": "Sign in with Facebook",
-            "not-yet-account": "You do not have an account yet?",
-            "now": "now",
-            "success-message": "Welcome back"
-        },
-        "sign-up-page": {
-            "sub-title": "Participate with the unlimited learning experience",
-            "email-label": "Email",
-            "password-label": "Password",
-            "confirm-password-label": "Confirm password",
-            "accept-rules-policies": "I have read and agree to ",
-            "policies": "the terms and policies",
-            "or": "or",
-            "sign-up-with-google": "Sign up with Google",
-            "sign-up-with-facebook": "Sign up with Facebook",
-            "had-account": "Have you had account?",
-            "now": "now",
-            "success-message": "Welcome to StudyTogether"
-        }
+  "translation": {
+    "profile": "Profile",
+    "notification": "Notifications",
+    "setting": "Settings",
+    "support": "Support",
+    "sign-out": "Sign out",
+    "sign-in": "Sign in",
+    "sign-up": "Sign up",
+    "security": "Security",
+    "save": "Save",
+    "cancel": "Cancel",
+    "error-message": "An error occurred. Please try again later.",
+    "header": {
+      "home": "Home",
+      "courses": "Courses",
+      "learning-language": "Languages"
     },
-    "error-message": "An error occurred. Please try again later."	
+    "sidebar-main": {
+      "courses": "Our Courses",
+      "flash-card": "Flashcards",
+      "game": "Games",
+      "notification": "Notifications",
+      "search": "Search Courses"
+    },
+    "footer": {
+      "course-info": {
+        "title": "Vocabulary courses",
+        "en-course": "English Vocabulary",
+        "vi-course": "Vietnamese Vocabulary"
+      },
+      "contact-info": {
+        "title": "Contact information",
+        "address": "257 Nguyen Van Linh, Da Nang, Vietnam"
+      },
+      "comments": {
+        "ph-input": "Your email",
+        "ph-textarea": "Write your comments here...",
+        "btn-send": "Send"
+      }
+    },
+    "sign-in-page": {
+      "sub-title": "To start your learning journey",
+      "username-label": "Email or username",
+      "password-label": "Password",
+      "save-account": "Save your account",
+      "forgot-password": "Forgot password?",
+      "or": "Or",
+      "sign-in-google": "Sign in with Google",
+      "sign-in-facebook": "Sign in with Facebook",
+      "not-yet-account": "You do not have an account yet?",
+      "now": "now",
+      "success-message": "Welcome back"
+    },
+    "sign-up-page": {
+      "sub-title": "Participate with the unlimited learning experience",
+      "email-label": "Email",
+      "password-label": "Password",
+      "confirm-password-label": "Confirm password",
+      "accept-rules-policies": "I have read and agree to ",
+      "policies": "the terms and policies",
+      "or": "or",
+      "sign-up-with-google": "Sign up with Google",
+      "sign-up-with-facebook": "Sign up with Facebook",
+      "had-account": "Have you had account?",
+      "now": "now",
+      "success-message": "Welcome to StudyTogether"
+    }
+  }
 }

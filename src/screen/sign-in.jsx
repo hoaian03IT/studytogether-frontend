@@ -81,10 +81,6 @@ const SignIn = () => {
 	};
 
 	const handleUpdateUserState = ({ status, data }) => {
-		if (user.isLogged) {
-			toast.error(translation("error-message"));
-			return;
-		}
 		if (status === 200) {
 			setUser({
 				info: {

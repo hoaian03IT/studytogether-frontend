@@ -29,7 +29,7 @@ function GlobalStateProvider({ children }) {
 			});
 
 		} else {
-			setUser({ ...userState, isLogged: true });
+			setUser({ ...userState });
 		}
 	};
 
