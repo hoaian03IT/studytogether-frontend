@@ -2,10 +2,6 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { RiUserShared2Fill } from "react-icons/ri";
 import { IoIosCloseCircle } from "react-icons/io";
-import { PiPencilDuotone } from "react-icons/pi";
-import { FaBook } from "react-icons/fa";
-import { MdLibraryBooks } from "react-icons/md";
-import { LiaSellcast } from "react-icons/lia";
 import { FaSortDown } from "react-icons/fa";
 import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/popover";
 import englishFlag from "../assets/united-kingdom.png";
@@ -18,9 +14,7 @@ import { IoVolumeHigh } from "react-icons/io5";
 import { FaMicrophone } from "react-icons/fa";
 import { AiOutlinePicture } from "react-icons/ai";
 import { FcEditImage } from "react-icons/fc";
-
-
-
+import { IoIosArrowDown } from "react-icons/io";
 
 
 const LanguageDropdown = ({ language, onSelectLanguage }) => {
@@ -95,6 +89,11 @@ function AddVocab() {
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]); 
   };
+  const handleClickOutside = (event) => {
+    if (event.target.classList.contains('modal-overlay')) {
+      setShowPermissionModal(false);
+    }
+  };
 
   const handleAdd = () => {
     if (vocabulary && definition) {
@@ -144,7 +143,6 @@ function AddVocab() {
     }
   };
 
-  
   // Delete vocabulary 
   const DeleteConfirmation = (index) => {
     setSelectedItemToDelete(index);
@@ -159,31 +157,8 @@ function AddVocab() {
     setSelectedItemToDelete(null); 
   };
 
-
-
   return (
-    <div className="p-6 bg-gray-100 min-h-screen" >
-      <div className="flex gap-6 justify-center items-center bg-white  shadow-md rounded-lg ">
-        <button className="px-6 py-4 bg-blue-100 border-b-4 border-blue-500 font-bold flex items-center gap-2" >
-        <PiPencilDuotone className='size-6' />
-          <span className="material-icons"> TỪ VỰNG</span>
-        </button>
-        <button className="px-6 py-4 text-gray-600 flex items-center gap-2">
-        <FaBook className='size-6' />
-          <span className="material-icons">VÍ DỤ VÀ BÀI TẬP</span>
-        </button>
-        <button className="px-6 py-4 text-gray-600 flex items-center gap-2">
-        <MdLibraryBooks className='size-8' />
-          <span className="material-icons">CHI TIẾT KHÓA</span>
-        </button>
-        <button className="px-6 py-4 text-gray-600 flex items-center gap-2">
-        <LiaSellcast className='size-8'/>
-          <span className="material-icons">KINH DOANH</span>
-        </button>
-      </div>
-
-          
-
+    <div className="p-6 bg-gray-100 min-h-screen" >     
       {/* Content Section */}
       <div className="bg-white p-6 rounded-lg shadow-md relative mt-6 mb-6">
         <h2 className="text-xl font-bold mb-4">Tạo bộ từ vựng cho riêng bạn</h2>
@@ -198,8 +173,8 @@ function AddVocab() {
 
       {/* Permission Modal */}
       {showPermissionModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className= "relative bg-white p-6 rounded-lg shadow-lg w-1/3">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center modal-overlay z-50" onClick={handleClickOutside}>
+          <div className= "relative bg-white p-6 rounded-lg shadow-lg w-1/3 z-60">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-bold">QUYỀN TRUY CẬP VÀ CHỈNH SỬA  </h2>
               <button onClick={() => setShowPermissionModal(false)}>
@@ -208,19 +183,22 @@ function AddVocab() {
             </div>
 
             <div className="grid grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">Quyền truy cập</label>
-                <select className="block w-full p-2 border rounded">
-                  <option>Chỉ mình tôi</option>
-                  <option>Mọi người</option>
+              <div className='relative' >
+              <label className="block text-sm font-medium mb-2">Quyền truy cập</label>
+                <select className="w-full px-3 py-2 mb-20 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2">
+                 <option>Chỉ mình tôi</option>
+                 <option>Mọi người</option>
                 </select>
+                <IoIosArrowDown className="absolute top-12 right-5 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
               </div>
-              <div>
+
+              <div className='relative'>
                 <label className="block text-sm font-medium mb-2">Quyền chỉnh sửa</label>
-                <select className="block w-full p-2 border rounded mb-16">
-                  <option>Chỉ mình tôi</option>
-                  <option>Mọi người</option>
+                 <select className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"> 
+                 <option>Chỉ mình tôi</option>
+                 <option>Mọi người</option>
                 </select>
+                <IoIosArrowDown className="absolute top-12 right-4  transform -translate-y-1/2 text-gray-400 pointer-events-none" />
               </div>
               </div>
             <button
@@ -243,8 +221,8 @@ function AddVocab() {
             <span > Thêm từ tệp</span></button>
             <div >
         <Link 
-          to="/add-by-levels"  // Use Link to navigate
-          className='flex items-center px-4 py-2 bg-green-400 border rounded-md shadow-sm mr-2'>
+          to="/add-by-levels" 
+          className='flex items-center px-4 py-2 bg-green-300 border rounded-md shadow-sm mr-2'>
           <LuPlus className='size-6 mr-1' />
           <span>Nhóm</span>
         </Link>
@@ -271,7 +249,7 @@ function AddVocab() {
                   value={vocabulary}
                   onChange={(e) => setVocabulary(e.target.value)}
                   placeholder="Nhập từ vựng"
-                  className="p-2 border border-gray-300 rounded-md w-[60%]"
+                  className="p-2 border border-gray-300 rounded-md w-[75%]"
                 />
               </div>
             </div>
@@ -289,7 +267,7 @@ function AddVocab() {
                   value={definition}
                   onChange={(e) => setDefinition(e.target.value)}
                   placeholder="Nhập định nghĩa"
-                  className="p-2 border border-gray-300 rounded-md w-[60%]"
+                  className="p-2 border border-gray-300 rounded-md w-[75%]"
                 />
               </div>
           </div>
@@ -360,23 +338,22 @@ function AddVocab() {
 
      
         <div className="w-2/3 pl-6 border rounded-lg overflow-hidden ml-6">
-          <div className="grid grid-cols-5 bg-blue-100 p-2">
-            <span className="font-bold text-blue-400">Từ vựng</span>
-            <span className="font-bold text-blue-400">Định nghĩa</span>
-            <span className="font-bold text-blue-400">Audio</span>
-            <span className="font-bold text-blue-400">Hình ảnh</span>
-            <span className="font-bold text-blue-400">Action</span>
+        <div className="grid grid-cols-7 bg-blue-100 p-2 gap-x-1">
+            <span className="font-bold text-blue-400 col-span-2 ">Từ vựng</span>
+            <span className="font-bold text-blue-400 col-span-2 ml-4">Định nghĩa</span>
+            <span className="font-bold text-blue-400 justify-self-end">Audio</span>
+            <span className="font-bold text-blue-400 justify-self-end">Hình ảnh</span>
+            <span className="font-bold text-blue-400 justify-self-end">Action</span>
           </div>
           {vocabList.length === 0 ? (
             <p className="text-gray-500">Chưa có từ vựng nào được thêm.</p>
           ) : (
             <ul className="space-y-2">
               {vocabList.map((item, index) => (
-                <li key={index} className="grid grid-cols-5 bg-gray-100 p-3 rounded-md items-center gap-x-2">
-                  <p className="font-bold">{item.vocabulary}</p>
-                  <p>{item.definition}</p>
-
-                  <div className="col-span-1 flex ">
+                <li key={index} className="grid grid-cols-7 bg-gray-100 p-3 rounded-md items-center gap-x-1">
+                  <p className="font-bold col-span-2">{item.vocabulary}</p>
+                  <p className='col-span-2 ml-4'>{item.definition}</p>
+                    <div className='col-span-1 flex justify-center'>
                   {item.audio && (
                     <button
                       onClick={() => toggleAudio(item.audio)}
@@ -385,8 +362,8 @@ function AddVocab() {
                       <IoVolumeHigh size={24} />
                     </button>
                   )}
-                </div>
-                <div className="col-span-1 flex ">
+                  </div>
+                <div className="col-span-1 flex justify-center ">
                   {item.image ? (
                     <FcEditImage size={24} />
                   ) : (
@@ -395,7 +372,7 @@ function AddVocab() {
                 </div>
 
           
-          <div className="flex-row justify-end items-end col-span-1">
+          <div className="col-span-1 flex justify-center">
             <button
                onClick={() => DeleteConfirmation(index)}
               className="text-red-500 hover:text-red-700 transition"

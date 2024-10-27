@@ -12,4 +12,5 @@ export const pathname = {
   listCourse: "/list-course",
   addVocab: "/add-vocab",
   addbyLevels: "/add-by-levels",
+  courseBusiness: "/course-business",
 };
