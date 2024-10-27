@@ -18,6 +18,7 @@ const ListCourse = lazy(() => import("../screen/list-course"));
 const AddVocab = lazy(() => import("../screen/add-vocab"));
 const AddLevels = lazy(() => import("../screen/add-by-levels"));
 const Business = lazy(() => import("../screen/course-business"));
+const Purchase = lazy(() => import("../screen/course-purchase"));
 
 export const publicRoutes = [
     { path: pathname.home, component: HomePage, layout: PrimaryLayout },
@@ -48,4 +49,5 @@ export const publicRoutes = [
     { path: pathname.addVocab, component: AddVocab, layout: ThirdLayout },
     { path: pathname.addbyLevels, component: AddLevels, layout: PrimaryLayout },
     { path: pathname.courseBusiness, component: Business, layout: ThirdLayout },
+    { path: pathname.payment, component: Purchase, layout: PrimaryLayout },
 ];

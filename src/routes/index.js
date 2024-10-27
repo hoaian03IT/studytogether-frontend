@@ -13,4 +13,5 @@ export const pathname = {
   addVocab: "/add-vocab",
   addbyLevels: "/add-by-levels",
   courseBusiness: "/course-business",
+  payment:"/course-purchase",
 };
