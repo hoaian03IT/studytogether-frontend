@@ -29,7 +29,7 @@ export default {
 						},
 						focus: "#5cc6ee",
 						secondary: {
-							DEFAULT: "#ffa43a",
+							DEFAULT: "#FF6636",
 							foreground: "#000000",
 						},
 						third: {

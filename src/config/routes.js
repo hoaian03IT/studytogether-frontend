@@ -1,6 +1,6 @@
 import { lazy } from "react";
 import { pathname } from "../routes";
-import PrimaryLayout from "../layouts/primary-layout";
+import PrimaryLayout from "../layouts/my-primary-layout";
 import SecondaryLayout from "../layouts/secondary-layout";
 import ThirdLayout from "../layouts/third-layout";
 import ProfileLayout from "../layouts/profile-layout";

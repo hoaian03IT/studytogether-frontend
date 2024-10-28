@@ -1,6 +1,6 @@
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { Button, Tab, Tabs, User } from "@nextui-org/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { USDollar } from "../utils/currency.js";
 import { IoCartOutline, IoStopwatchOutline } from "react-icons/io5";
 import { TbVocabulary } from "react-icons/tb";
@@ -9,9 +9,16 @@ import { HiLanguage } from "react-icons/hi2";
 import { FiUsers } from "react-icons/fi";
 import { LuPencilLine } from "react-icons/lu";
 import { CourseInformationDescription } from "../components/course-information-description.jsx";
+import { CourseInformationContent } from "../components/course-information-content.jsx";
+import clsx from "clsx";
+import { CourseInformationFeedback } from "../components/course-information-feedback.jsx";
 
 function CourseInformation() {
 	const [selectedTab, setSelectedTab] = useState("description");
+
+	useEffect(() => {
+		console.log(selectedTab);
+	}, [selectedTab]);
 
 	return <div className="m-6 grid grid-cols-1 gap-4">
 		<div className="flex items-center bg-white p-2 rounded-md">
@@ -22,7 +29,7 @@ function CourseInformation() {
 				LEARNING HISTORICAL WORDS AND SENTENCES
 			</h2>
 		</div>
-		<div className="grid grid-cols-12 gap-4">
+		<div className="grid grid-cols-12 gap-6">
 			<div
 				style={{
 					backgroundImage: `url("https://t3.ftcdn.net/jpg/03/12/73/62/360_F_312736298_hZ50Vp4UBmWteln2WXxmT5WCuD8z6tRe.jpg")`,
@@ -68,8 +75,8 @@ function CourseInformation() {
 				</div>
 			</div>
 		</div>
-		<div className="grid grid-cols-12 gap-4">
-			<div className="col-span-8">
+		<div className="grid grid-cols-12 gap-6">
+			<div className="col-span-8 p-6">
 				<div>
 					<h2 className="font-bold">LEARNING HISTORICAL WORDS AND SENTENCES</h2>
 					<div className="flex items-center justify-between py-4 border-b-1 border-b-gray-300">
@@ -91,26 +98,35 @@ function CourseInformation() {
 						</div>
 					</div>
 				</div>
-				<div className="bg-white rounded-md pt-2">
+				<div className="bg-white rounded-md pt-2 mt-10">
 					<Tabs variant="underlined" color="danger" selectedKey={selectedTab}
-						  onSelectionChange={setSelectedTab}>
+						  onSelectionChange={setSelectedTab} size="lg">
 						<Tab key="description" title="Description" />
 						<Tab key="content" title="Course content" />
 						<Tab key="comment" title="Comments" />
 					</Tabs>
 				</div>
-				<div className="mt-10">
-					<CourseInformationDescription shortDescription="About Course"
-												  detailedDescription="Vue (pronounced /vjuː/, like view) is a progressive framework for building user interfaces.
+				<div className="mt-6 px-4">
+					<div className={clsx(selectedTab === "description" ? "block" : "hidden")}>
+						<CourseInformationDescription
+							shortDescription="About Course"
+							detailedDescription="Vue (pronounced /vjuː/, like view) is a progressive framework for building user interfaces.
 												  Unlike other monolithic frameworks, Vue is designed from the ground up to be incrementally adoptable.
 												  The core library is focused on the view layer only, and is easy to pick up and integrate with other libraries or existing projects.
 												  On the other hand, Vue is also perfectly capable of powering sophisticated Single-Page Applications
 												  when used in combination with modern tooling and supporting libraries." />
+					</div>
+					<div className={clsx(selectedTab === "content" ? "block" : "hidden")}>
+						<CourseInformationContent />
+					</div>
+					<div className={clsx(selectedTab === "comment" ? "block" : "hidden")}>
+						<CourseInformationFeedback />
+					</div>
 				</div>
 			</div>
 			<div className="col-span-4">
 				<div className="flex min-h-80 w-full rounded-md overflow-hidden">
-					<div className="basis-[45%] bg-third p-5 flex flex-col justify-between">
+					<div className="basis-[45%] bg-third p-6 flex flex-col justify-between">
 						<p className="text-sm text-third-foreground">Webinar, <br /> August 16, 2020</p>
 						<div>
 							<p className="text-4xl text-third-foreground font-bold">Vocabulary for IT student</p>
