@@ -14,4 +14,5 @@ export const pathname = {
 	addbyLevels: "/add-by-levels",
 	courseBusiness: "/course-business",
 	courseInformation: "/course-information",
+	payment:"/course-purchase"
 };
