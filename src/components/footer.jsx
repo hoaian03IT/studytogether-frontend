@@ -19,7 +19,7 @@ export const Footer = () => {
 	};
 
 	return (
-		<footer className="bg-my-primary py-4 px-6">
+		<footer className="bg-primary py-4 px-6">
 			<div className="container flex justify-between items-start max-w-screen-xl py-4">
 				<div>
 					<img loading="eager" src={logo} alt="StudyTogether" className="w-60" />

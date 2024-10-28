@@ -23,14 +23,14 @@ export default {
 			themes: {
 				light: {
 					colors: {
-						"my-primary": {
+						primary: {
 							DEFAULT: "#5cc6ee",
 							foreground: "#000000",
 						},
 						focus: "#5cc6ee",
 						secondary: {
 							DEFAULT: "#FF6636",
-							foreground: "#000000",
+							foreground: "#ffffff",
 						},
 						third: {
 							DEFAULT: "#3DCBB1",

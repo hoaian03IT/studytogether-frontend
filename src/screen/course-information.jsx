@@ -138,6 +138,8 @@ function CourseInformation() {
 					</div>
 					<div className="basis-[55%]">
 						<img
+							loading="lazy"
+							draggable={false}
 							className="w-full h-full object-center object-cover"
 							src="https://peerreviewededucationblog.com/wp-content/uploads/2024/02/ai-autism.jpg"
 							alt="" />

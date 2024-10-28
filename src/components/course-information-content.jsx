@@ -2,18 +2,16 @@ import { Accordion, AccordionItem, Checkbox, Divider, Progress } from "@nextui-o
 import { useState } from "react";
 import { BsBookmark, BsCheck2All, BsCollection, BsStopwatch } from "react-icons/bs";
 
-BsBookmark;
-
 function CourseInformationContent() {
 	const [completed, setCompleted] = useState(15);
 	return <div>
 		<div className="flex items-center justify-between">
-			<h2 className="text-3xl">Course content</h2>
+			<h2 className="text-xl">Course content</h2>
 			<span className="text-success">{completed}% Completed</span>
 		</div>
 		<Progress className="mt-4" color="success" aria-label="completed" value={15} radius="none" size="md" />
-		<div className="bg-white">
-			<div className="flex items-center text-sm px-2">
+		<div className="bg-white mt-10">
+			<div className="flex items-center text-sm p-2">
 				<p className="flex-1 font-normal text-secondary text-xl">Course collections</p>
 				<span className="flex items-center ml-4 text-gray-500"><BsCollection
 					className="mr-1 size-6 text-purple-500" /> 21 collections</span>
@@ -22,6 +20,7 @@ function CourseInformationContent() {
 				<span className="flex items-center ml-4 text-gray-500"><BsCheck2All
 					className="mr-1 size-6 text-green-500" /> {completed}% finished (1/4)</span>
 			</div>
+			<Divider />
 			<Accordion>
 				<AccordionItem key="1" aria-label="Accordion 1" title={<div className="flex items-center text-base">
 					<span
@@ -54,6 +53,7 @@ function CourseInformationContent() {
 				</AccordionItem>
 			</Accordion>
 		</div>
+		w
 	</div>;
 }
 
