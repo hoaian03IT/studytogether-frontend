@@ -18,34 +18,36 @@ const ListCourse = lazy(() => import("../screen/list-course"));
 const AddVocab = lazy(() => import("../screen/add-vocab"));
 const AddLevels = lazy(() => import("../screen/add-by-levels"));
 const Business = lazy(() => import("../screen/course-business"));
+const CourseInformation = lazy(() => import("../screen/course-information.jsx"));
 
 export const publicRoutes = [
-    { path: pathname.home, component: HomePage, layout: PrimaryLayout },
-    { path: pathname.signIn, component: SignInPage, layout: SecondaryLayout },
-    {
-        path: pathname.forgotPassword,
-        component: ForgotPasswordPage,
-        layout: null,
-    },
-    {
-        path: pathname.changePassword,
-        component: ChangePasswordPage,
-        layout: null,
-    },
-    {
-        path: pathname.changePasswordSuccessfully,
-        component: ForgotSuccessfullyPage,
-        layout: null,
-    },
-    { path: pathname.signUp, component: SignUpPage, layout: SecondaryLayout },
-    { path: pathname.profile, component: ProfilePage, layout: ProfileLayout },
-    {
-        path: pathname.createCourse,
-        component: CreateCourse,
-        layout: PrimaryLayout,
-    },
-    { path: pathname.listCourse, component: ListCourse, layout: PrimaryLayout },
-    { path: pathname.addVocab, component: AddVocab, layout: ThirdLayout },
-    { path: pathname.addbyLevels, component: AddLevels, layout: PrimaryLayout },
-    { path: pathname.courseBusiness, component: Business, layout: ThirdLayout },
+	{ path: pathname.home, component: HomePage, layout: PrimaryLayout },
+	{ path: pathname.signIn, component: SignInPage, layout: SecondaryLayout },
+	{
+		path: pathname.forgotPassword,
+		component: ForgotPasswordPage,
+		layout: null,
+	},
+	{
+		path: pathname.changePassword,
+		component: ChangePasswordPage,
+		layout: null,
+	},
+	{
+		path: pathname.changePasswordSuccessfully,
+		component: ForgotSuccessfullyPage,
+		layout: null,
+	},
+	{ path: pathname.signUp, component: SignUpPage, layout: SecondaryLayout },
+	{ path: pathname.profile, component: ProfilePage, layout: ProfileLayout },
+	{
+		path: pathname.createCourse,
+		component: CreateCourse,
+		layout: PrimaryLayout,
+	},
+	{ path: pathname.listCourse, component: ListCourse, layout: PrimaryLayout },
+	{ path: pathname.addVocab, component: AddVocab, layout: ThirdLayout },
+	{ path: pathname.addbyLevels, component: AddLevels, layout: PrimaryLayout },
+	{ path: pathname.courseBusiness, component: Business, layout: ThirdLayout },
+	{ path: pathname.courseInformation, component: CourseInformation, layout: PrimaryLayout },
 ];
