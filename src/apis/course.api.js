@@ -29,6 +29,11 @@ class CourseServiceClass {
 		const res = await http.get(`/course/overview?course-id=${courseId}`);
 		return res.data;
 	}
+
+	async fetchCourseContent(courseId) {
+		const res = await http.get(`/course/content?course-id=${courseId}`);
+		return res.data;
+	}
 }
 
 const CourseService = new CourseServiceClass();

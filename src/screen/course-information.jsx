@@ -170,7 +170,7 @@ function CourseInformation() {
 							detailedDescription={courseInfo?.["detailed description"]} />
 					</div>
 					<div className={clsx(selectedTab === "content" ? "block" : "hidden")}>
-						<CourseInformationContent />
+						<CourseInformationContent courseId={params?.courseId} />
 					</div>
 					<div className={clsx(selectedTab === "comment" ? "block" : "hidden")}>
 						<CourseInformationFeedback />
