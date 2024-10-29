@@ -105,6 +105,7 @@ function AddLevels() {
   const handleAdd = () => {
     if (vocabulary && definition) {
       const newVocab = {
+        id: Date.now(), // Unique ID for each vocab item
         vocabulary,
         definition,
         audio,
@@ -157,15 +158,14 @@ function AddLevels() {
     setDeleteContext(context);
     setShowDeleteModal(true);
   };
-
   const handleConfirmDelete = () => {
     if (deleteContext?.type === 'vocab') {
-      const updatedList = vocabList.filter((_, i) => i !== deleteContext.index);
-      setVocabList(updatedList);
+      // Filter out the vocabulary item with matching ID
+      setVocabList(vocabList.filter((item) => item.id !== deleteContext.id));
     } else if (deleteContext?.type === 'group') {
-      const updatedGroups = groups.filter(group => group.name !== deleteContext.groupName);
-      setGroups(updatedGroups);
-      setVocabList(vocabList.filter(item => item.group !== deleteContext.groupName));
+      // Delete group and associated vocabulary items
+      setGroups(groups.filter((group) => group.name !== deleteContext.groupName));
+      setVocabList(vocabList.filter((item) => item.group !== deleteContext.groupName));
     }
     setShowDeleteModal(false);
     setDeleteContext(null);
@@ -396,8 +396,8 @@ function AddLevels() {
             <div className="bg-gray-50 p-2 mt-2 rounded-md">
               <h3 className="text-blue-400 font-bold">Từ vựng đơn</h3>
               <ul className="space-y-2 mt-2">
-                {vocabList.filter(item => item.group === "Không").map((item, idx) => (
-                  <li key={idx} className="grid grid-cols-7 bg-gray-100 p-3 rounded-md items-center gap-x-2">
+                {vocabList.filter(item => item.group === "Không").map((item) => (
+                  <li key={item.id} className="grid grid-cols-7 bg-gray-100 p-3 rounded-md items-center gap-x-2">
                     <p className="font-bold col-span-2">{item.vocabulary}</p>
                     <p className="col-span-2 ml-4">{item.definition}</p>
                     <div className="col-span-1 flex justify-center items-center">
@@ -407,7 +407,12 @@ function AddLevels() {
                       {item.image && <FcEditImage size={24} />}
                     </div>
                     <div className="col-span-1 flex justify-center items-center">
-                      <ImBin className="text-red-500 hover:text-red-700 transition" />
+                      <button
+                        onClick={() => showDeleteConfirmation({ type: 'vocab', id: item.id })} 
+                        className="text-red-500 hover:text-red-700 transition"
+                      >
+                        <ImBin />
+                      </button>
                     </div>
                   </li>
                 ))}
@@ -424,7 +429,7 @@ function AddLevels() {
                   <button onClick={() => toggleGroupVisibility(group.name)}>
                     {group.visible ? "Ẩn" : "Hiện"}
                   </button>
-                  <button>
+                  <button onClick={() => showDeleteConfirmation({ type: 'group', groupName: group.name })}>
                     <ImBin />
                   </button>
                 </div>
@@ -432,8 +437,8 @@ function AddLevels() {
 
               {group.visible && (
                 <ul className="space-y-2 mt-2">
-                  {vocabList.filter(item => item.group === group.name).map((item, idx) => (
-                    <li key={idx} className="grid grid-cols-7 bg-gray-100 p-3 rounded-md items-center gap-x-2">
+                  {vocabList.filter(item => item.group === group.name).map((item) => (
+                    <li key={item.id} className="grid grid-cols-7 bg-gray-100 p-3 rounded-md items-center gap-x-2">
                       <p className="font-bold col-span-2">{item.vocabulary}</p>
                       <p className="col-span-2 ml-4">{item.definition}</p>
                       <div className="col-span-1 flex justify-center items-center">
@@ -443,7 +448,12 @@ function AddLevels() {
                         {item.image && <FcEditImage size={24} />}
                       </div>
                       <div className="col-span-1 flex justify-center items-center">
-                        <ImBin className="text-red-500 hover:text-red-700 transition" />
+                        <button
+                          onClick={() => showDeleteConfirmation({ type: 'vocab', id: item.id })} 
+                          className="text-red-500 hover:text-red-700 transition"
+                        >
+                          <ImBin />
+                        </button>
                       </div>
                     </li>
                   ))}
@@ -451,7 +461,6 @@ function AddLevels() {
               )}
             </div>
           ))}
-
 {showGroupInput && (
     <div className="flex items-center mt-4 bg-gray-100 p-3 rounded-md">
       <input
