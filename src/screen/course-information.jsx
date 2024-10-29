@@ -10,10 +10,9 @@ import { FiUsers } from "react-icons/fi";
 import { LuPencilLine } from "react-icons/lu";
 import { CourseInformationDescription } from "../components/course-information-description.jsx";
 import { CourseInformationContent } from "../components/course-information-content.jsx";
-import clsx from "clsx";
-import { CourseInformationFeedback } from "../components/course-information-feedback.jsx";
 import { Link as LinkDom, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { CourseInformationComment } from "../components/course-information-comment.jsx";
 import { CourseService } from "../apis/course.api.js";
 
 function CourseInformation() {
@@ -24,7 +23,11 @@ function CourseInformation() {
 	const courseInfoQuery = useQuery({
 		queryKey: ["course-info", params?.courseId],
 		queryFn: async ({ queryKey }) => {
-			return await CourseService.fetchCourseInformation(queryKey[1]);
+			try {
+				return await CourseService.fetchCourseInformation(queryKey[1]);
+			} catch (error) {
+				console.error(error);
+			}
 		},
 	});
 
@@ -164,17 +167,12 @@ function CourseInformation() {
 					</Tabs>
 				</div>
 				<div className="mt-6 px-4">
-					<div className={clsx(selectedTab === "description" ? "block" : "hidden")}>
-						<CourseInformationDescription
-							shortDescription={courseInfo?.["short description"]}
-							detailedDescription={courseInfo?.["detailed description"]} />
-					</div>
-					<div className={clsx(selectedTab === "content" ? "block" : "hidden")}>
-						<CourseInformationContent courseId={params?.courseId} />
-					</div>
-					<div className={clsx(selectedTab === "comment" ? "block" : "hidden")}>
-						<CourseInformationFeedback />
-					</div>
+					{selectedTab === "description" && <CourseInformationDescription
+						shortDescription={courseInfo?.["short description"]}
+						detailedDescription={courseInfo?.["detailed description"]} />}
+					{selectedTab === "content" && <CourseInformationContent courseId={params?.courseId} />}
+					{selectedTab === "comment" && <CourseInformationComment courseId={params?.courseId}
+																			authorUsername={courseInfo["username"]} />}
 				</div>
 			</div>
 			<div className="col-span-4">
