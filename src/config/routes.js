@@ -48,7 +48,7 @@ export const publicRoutes = [
 	},
 	{ path: pathname.listCourse, component: ListCourse, layout: PrimaryLayout },
 	{ path: pathname.addVocab, component: AddVocab, layout: ThirdLayout },
-	{ path: pathname.addbyLevels, component: AddLevels, layout: PrimaryLayout },
+	{ path: pathname.addByLevels, component: AddLevels, layout: PrimaryLayout },
 	{ path: pathname.courseBusiness, component: Business, layout: ThirdLayout },
 	{ path: pathname.courseInformation, component: CourseInformation, layout: PrimaryLayout },
 	{ path: pathname.payment, component: Purchase, layout: PrimaryLayout },

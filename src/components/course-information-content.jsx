@@ -53,7 +53,6 @@ function CourseInformationContent() {
 				</AccordionItem>
 			</Accordion>
 		</div>
-		w
 	</div>;
 }
 

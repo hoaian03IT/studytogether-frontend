@@ -1,6 +1,6 @@
 import { FaArrowLeftLong } from "react-icons/fa6";
-import { Button, Tab, Tabs, User } from "@nextui-org/react";
-import { useEffect, useState } from "react";
+import { Button, Link, Tab, Tabs, Tooltip, User } from "@nextui-org/react";
+import { Fragment, useState } from "react";
 import { USDollar } from "../utils/currency.js";
 import { IoCartOutline, IoStopwatchOutline } from "react-icons/io5";
 import { TbVocabulary } from "react-icons/tb";
@@ -12,65 +12,107 @@ import { CourseInformationDescription } from "../components/course-information-d
 import { CourseInformationContent } from "../components/course-information-content.jsx";
 import clsx from "clsx";
 import { CourseInformationFeedback } from "../components/course-information-feedback.jsx";
+import { Link as LinkDom, useNavigate, useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { CourseService } from "../apis/course.api.js";
 
 function CourseInformation() {
+	const params = useParams();
+
 	const [selectedTab, setSelectedTab] = useState("description");
 
-	useEffect(() => {
-		console.log(selectedTab);
-	}, [selectedTab]);
+	const courseInfoQuery = useQuery({
+		queryKey: ["course-info", params?.courseId],
+		queryFn: async ({ queryKey }) => {
+			return await CourseService.fetchCourseInformation(queryKey[1]);
+		},
+	});
+
+	const { data: courseInfo } = courseInfoQuery;
+
+	const navigate = useNavigate();
 
 	return <div className="m-6 grid grid-cols-1 gap-4">
 		<div className="flex items-center bg-white p-2 rounded-md">
-			<button className="flex items-center justify-center bg-my-primary rounded-full size-12">
+			<button className="flex items-center justify-center bg-primary rounded-full size-12"
+					onClick={() => navigate(-1)}>
 				<FaArrowLeftLong className="size-5" />
 			</button>
 			<h2 className="ms-4 uppercase font-bold">
-				LEARNING HISTORICAL WORDS AND SENTENCES
+				{courseInfo?.["name"]}
 			</h2>
 		</div>
 		<div className="grid grid-cols-12 gap-6">
 			<div
 				style={{
-					backgroundImage: `url("https://t3.ftcdn.net/jpg/03/12/73/62/360_F_312736298_hZ50Vp4UBmWteln2WXxmT5WCuD8z6tRe.jpg")`,
+					backgroundImage: `url(${courseInfo?.["image"]})`,
 				}}
-				className="bg-cover bg-center h-full rounded-md overflow-hidden col-span-8">
+				className="bg-cover bg-center h-full min-h-96 rounded-md overflow-hidden col-span-8">
 				<div
 					className="h-full flex items-center justify-center flex-col space-y-4 bg-gradient-to-b from-transparent to-black">
-					<p className="text-white text-xl font-bold">Purchase to continue this vocabulary course</p>
-					<p className="text-gray-200 text-sm font-normal w-1/2 text-center">
-						You need to buy package webinar to see full lessons this course thank you
-					</p>
-					<Button className="bg-third text-third-foreground shadow-2xl" radius="sm">
-						Buy now
-					</Button>
+					{!!courseInfo?.["price"] ? <Fragment>
+						<p className="text-white text-xl font-bold">Purchase to continue this vocabulary course</p>
+						<p className="text-gray-200 text-sm font-normal w-1/2 text-center">
+							You need to buy to see full lessons of this course, thank you!
+						</p>
+						<Button className="bg-third text-third-foreground shadow-2xl" radius="sm">
+							Buy now
+						</Button>
+					</Fragment> : <Fragment>
+						<p className="text-white text-xl font-bold">This vocabulary course is free for you</p>
+						<p className="text-gray-200 text-sm font-normal w-1/2 text-center">
+							There are a lot of words waiting for you to learn
+						</p>
+						<Button className="bg-third text-third-foreground shadow-2xl" radius="sm">
+							Join now
+						</Button>
+					</Fragment>
+					}
 				</div>
 			</div>
-			<div className="bg-white px-6 py-8 col-span-4 rounded-md">
-				<div className="flex items-center">
-					<span className="text-2xl font-bold">{USDollar.format(22.40)}</span>
-					<span className="ms-2 text-sm text-gray-500 line-through">{USDollar.format(30.13)}</span>
-				</div>
+			<div className="bg-white px-6 py-8 col-span-4 rounded-md flex flex-col justify-between">
+				{!!courseInfo?.["price"] ? <Fragment>
+						<div className="flex items-center">
+							<span
+								className="text-2xl font-bold">{USDollar.format(courseInfo?.["price"] * (1 - courseInfo?.["discount"] / 100))}</span>
+							<span
+								className="ms-2 text-sm text-gray-500 line-through">{USDollar.format(courseInfo?.["price"])}</span>
+						</div>
+						<div>
+							<p className="p-1 inline-block text-sm uppercase bg-purple-600 text-white rounded-sm">{courseInfo?.["discount"]}%
+								OFF</p>
+						</div>
+						<div className="mt-8 flex flex-col justify-center space-y-2">
+							<Button className="bg-third text-third-foreground font-bold text-base" size="lg" radius="sm">Buy
+								now</Button>
+							<Button variant="bordered" className="font-bold text-base" size="lg" radius="sm"><IoCartOutline
+								className="size-10" /> Add to
+								list</Button>
+						</div>
+					</Fragment> :
+					<Fragment>
+						<div>
+							<span
+								className="p-1 inline-block text-sm uppercase bg-purple-600 text-white font-bold rounded-sm">Free</span>
+							<span className="ml-1">for you</span>
+						</div>
+						<div className="mt-8 flex flex-col justify-center space-y-2">
+							<Button className="bg-third text-third-foreground font-bold text-base" size="lg"
+									radius="sm">Participate with us</Button>
+						</div>
+					</Fragment>}
 				<div>
-					<p className="p-1 inline-block text-sm uppercase bg-purple-600 text-white rounded-sm">20%
-						OFF</p>
-				</div>
-				<div className="mt-8 flex flex-col justify-center space-y-2">
-					<Button className="bg-third text-third-foreground font-bold text-base" size="lg" radius="sm">Buy
-						now</Button>
-					<Button variant="bordered" className="font-bold text-base" size="lg" radius="sm"><IoCartOutline
-						className="size-10" /> Add to
-						list</Button>
-				</div>
-				<div>
-					<p className="flex items-center text-gray-600 mt-4"><TbVocabulary className="size-6 mr-4" /> 22
-						collections</p>
+					<p className="flex items-center text-gray-600 mt-4"><TbVocabulary
+						className="size-6 mr-4" />{courseInfo?.["n_levels"]}&nbsp;collections</p>
 					<p className="flex items-center text-gray-600 mt-4"><HiOutlineCollection
-						className="size-6 mr-4" /> 152 words</p>
+						className="size-6 mr-4" />{courseInfo?.["n_words"]}&nbsp;words</p>
 					<p className="flex items-center text-gray-600 mt-4"><IoStopwatchOutline
-						className="size-6 mr-4" /> 15m per day</p>
+						className="size-6 mr-4" />15m per day</p>
 					<p className="flex items-center text-gray-600 mt-4"><HiLanguage
-						className="size-6 mr-4" /> English
+						className="size-6 mr-4" />
+						<strong className="font-semibold text-primary">{courseInfo?.["target language"]}</strong>
+						&nbsp;for&nbsp;
+						<strong className="font-semibold text-third">{courseInfo?.["source language"]}</strong>
 					</p>
 				</div>
 			</div>
@@ -78,23 +120,38 @@ function CourseInformation() {
 		<div className="grid grid-cols-12 gap-6">
 			<div className="col-span-8 p-6">
 				<div>
-					<h2 className="font-bold">LEARNING HISTORICAL WORDS AND SENTENCES</h2>
+					<h2 className="font-bold uppercase">{courseInfo?.["name"]}</h2>
 					<div className="flex items-center justify-between py-4 border-b-1 border-b-gray-300">
-						<User name="Nguoitaokhoa" />
+						<User
+							name={courseInfo?.["first name"] && courseInfo?.["last name"] ? `${courseInfo?.["first name"]} ${courseInfo?.["last name"]}` : courseInfo?.["username"]}
+							description={(
+								<Link as={LinkDom} href={`/profile/${courseInfo?.["username"]}`}
+									  to={`/profile/${courseInfo?.["username"]}`}
+									  size="sm" isExternal>
+									@{courseInfo?.["username"]}
+								</Link>
+							)}
+							avatarProps={{
+								src: courseInfo?.["avatar image"],
+							}} />
 						<div className="flex space-x-4">
-							<div className="flex items-center">
-								<div className="bg-third rounded-full size-6 flex items-center justify-center">
-									<FiUsers className="text-third-foreground" />
+							<Tooltip content="Participants" placement="bottom" radius="sm">
+								<div className="flex items-center cursor-default">
+									<div className="bg-third rounded-full size-6 flex items-center justify-center">
+										<FiUsers className="text-third-foreground" />
+									</div>
+									<span className="ms-1 text-sm">{courseInfo?.["n_enrollments"]}</span>
 								</div>
-								<span className="ms-1 text-sm">2.4k</span>
-							</div>
-							<div className="flex items-center">
-								<div
-									className="bg-third rounded-full size-6 flex items-center justify-center">
-									<LuPencilLine className="text-third-foreground" />
+							</Tooltip>
+							<Tooltip content="Feedbacks" placement="bottom" radius="sm">
+								<div className="flex items-center cursor-default">
+									<div
+										className="bg-third rounded-full size-6 flex items-center justify-center">
+										<LuPencilLine className="text-third-foreground" />
+									</div>
+									<span className="ms-1 text-sm">{courseInfo?.["n_feedbacks"]}</span>
 								</div>
-								<span className="ms-1 text-sm">17</span>
-							</div>
+							</Tooltip>
 						</div>
 					</div>
 				</div>
@@ -109,12 +166,8 @@ function CourseInformation() {
 				<div className="mt-6 px-4">
 					<div className={clsx(selectedTab === "description" ? "block" : "hidden")}>
 						<CourseInformationDescription
-							shortDescription="About Course"
-							detailedDescription="Vue (pronounced /vjuː/, like view) is a progressive framework for building user interfaces.
-												  Unlike other monolithic frameworks, Vue is designed from the ground up to be incrementally adoptable.
-												  The core library is focused on the view layer only, and is easy to pick up and integrate with other libraries or existing projects.
-												  On the other hand, Vue is also perfectly capable of powering sophisticated Single-Page Applications
-												  when used in combination with modern tooling and supporting libraries." />
+							shortDescription={courseInfo?.["short description"]}
+							detailedDescription={courseInfo?.["detailed description"]} />
 					</div>
 					<div className={clsx(selectedTab === "content" ? "block" : "hidden")}>
 						<CourseInformationContent />

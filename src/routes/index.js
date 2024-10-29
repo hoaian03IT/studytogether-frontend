@@ -11,8 +11,8 @@ export const pathname = {
 	createCourse: "/create-course",
 	listCourse: "/list-course",
 	addVocab: "/add-vocab",
-	addbyLevels: "/add-by-levels",
+	addByLevels: "/add-by-levels",
 	courseBusiness: "/course-business",
-	courseInformation: "/course-information",
-	payment:"/course-purchase"
+	courseInformation: "/course-information/:courseId",
+	payment: "/course-purchase",
 };

@@ -1,4 +1,4 @@
-import { createHttpAuth } from "../config/http";
+import { createHttpAuth, http } from "../config/http";
 
 class CourseServiceClass {
 	async createCourse(userState, updateUserState, payload) {
@@ -22,6 +22,11 @@ class CourseServiceClass {
 			detailedDescription,
 			image,
 		});
+		return res.data;
+	}
+
+	async fetchCourseInformation(courseId) {
+		const res = await http.get(`/course/overview?course-id=${courseId}`);
 		return res.data;
 	}
 }
