@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import { RiUserShared2Fill } from "react-icons/ri";
 import { IoIosCloseCircle } from "react-icons/io";
-import { PiPencilDuotone } from "react-icons/pi";
-import { FaBook } from "react-icons/fa";
-import { MdLibraryBooks } from "react-icons/md";
-import { LiaSellcast } from "react-icons/lia";
 import { FaSortDown } from "react-icons/fa";
 import { Popover, PopoverTrigger, PopoverContent } from "@nextui-org/popover";
 import englishFlag from "../assets/united-kingdom.png";
@@ -16,6 +12,8 @@ import { ImBin } from "react-icons/im";
 import { IoVolumeHigh } from "react-icons/io5";
 import { FaMicrophone } from "react-icons/fa";
 import { AiOutlinePicture } from "react-icons/ai";
+import { FcEditImage } from "react-icons/fc";
+import { IoIosArrowDown } from "react-icons/io";
 
 
 
@@ -66,7 +64,7 @@ const LanguageDropdown = ({ language, onSelectLanguage }) => {
   );
 };
 
-function VocabularyApp() {
+function AddLevels() {
   const [showPermissionModal, setShowPermissionModal] = useState(false);
   const [vocabulary, setVocabulary] = useState('');
   const [definition, setDefinition] = useState('');
@@ -76,12 +74,13 @@ function VocabularyApp() {
   const [image, setImage] = useState(null); ` `
   const [groupName, setGroupName] = useState('');
   const [groups, setGroups] = useState([]);
-  const [selectedGroup, setSelectedGroup] = useState('');
+  const [selectedGroup, setSelectedGroup] = useState('Không');
+  const [showGroupInput, setShowGroupInput] = useState(false);
   const [showTextModal, setShowTextModal] = useState(false);
   const [showFileModal, setShowFileModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false); 
-  const [selectedItemToDelete, setSelectedItemToDelete] = useState(null);
+  const [deleteContext, setDeleteContext] = useState(null);
   const [languageVocab, setLanguageVocab] = useState({
     id: "en",
     name: "English",
@@ -97,9 +96,16 @@ function VocabularyApp() {
     setSelectedFile(event.target.files[0]); 
   };
 
+  const handleClickOutside = (event) => {
+    if (event.target.classList.contains('modal-overlay')) {
+      setShowPermissionModal(false);
+    }
+  };
+
   const handleAdd = () => {
     if (vocabulary && definition) {
       const newVocab = {
+        id: Date.now(), // Unique ID for each vocab item
         vocabulary,
         definition,
         audio,
@@ -148,47 +154,48 @@ function VocabularyApp() {
 
   
   // Delete vocabulary 
-  const DeleteConfirmation = (index) => {
-    setSelectedItemToDelete(index);
+  const showDeleteConfirmation = (context) => {
+    setDeleteContext(context);
     setShowDeleteModal(true);
   };
-
-  // Confirm and delete the vocabulary item
   const handleConfirmDelete = () => {
-    const updatedList = vocabList.filter((_, i) => i !== selectedItemToDelete);
-    setVocabList(updatedList);
+    if (deleteContext?.type === 'vocab') {
+      // Filter out the vocabulary item with matching ID
+      setVocabList(vocabList.filter((item) => item.id !== deleteContext.id));
+    } else if (deleteContext?.type === 'group') {
+      // Delete group and associated vocabulary items
+      setGroups(groups.filter((group) => group.name !== deleteContext.groupName));
+      setVocabList(vocabList.filter((item) => item.group !== deleteContext.groupName));
+    }
     setShowDeleteModal(false);
-    setSelectedItemToDelete(null); 
+    setDeleteContext(null);
   };
 
   // Add group
-  const handleAddGroup = () => {
+  const saveGroup = () => {
     if (groupName) {
-      setGroups([...groups, groupName]);
+      setGroups([...groups, { name: groupName, visible: true }]);
+      setSelectedGroup(groupName);
       setGroupName('');
+      setShowGroupInput(false); // Hide the input after saving
     }
   };
 
+  const deleteGroup = (groupName) => {
+    setGroups(groups.filter(group => group.name !== groupName));
+    setVocabList(vocabList.filter(item => item.group !== groupName));
+  };
+  const toggleGroupVisibility = (groupName) => {
+    setGroups(groups.map(group => 
+      group.name === groupName ? { ...group, visible: !group.visible } : group
+    ));
+  };
+
+
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen" >
-      <div className="flex gap-6 justify-center items-center bg-white  shadow-md rounded-lg ">
-        <button className="px-6 py-4 bg-blue-100 border-b-4 border-blue-500 font-bold flex items-center gap-2" >
-        <PiPencilDuotone className='size-6' />
-          <span className="material-icons"> TỪ VỰNG</span>
-        </button>
-        <button className="px-6 py-4 text-gray-600 flex items-center gap-2">
-        <FaBook className='size-6' />
-          <span className="material-icons">VÍ DỤ VÀ BÀI TẬP</span>
-        </button>
-        <button className="px-6 py-4 text-gray-600 flex items-center gap-2">
-        <MdLibraryBooks className='size-8' />
-          <span className="material-icons">CHI TIẾT KHÓA</span>
-        </button>
-        <button className="px-6 py-4 text-gray-600 flex items-center gap-2">
-        <LiaSellcast className='size-8'/>
-          <span className="material-icons">KINH DOANH</span>
-        </button>
-      </div>
+    
 
       {/* Content Section */}
       <div className="bg-white p-6 rounded-lg shadow-md relative mt-6 mb-6">
@@ -203,9 +210,9 @@ function VocabularyApp() {
       </div>
 
       {/* Permission Modal */}
-      {showPermissionModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className= "relative bg-white p-6 rounded-lg shadow-lg w-1/3">
+      {showPermissionModal &&  (
+         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center modal-overlay z-50" onClick={handleClickOutside}>
+          <div className= "relative bg-white p-6 rounded-lg shadow-lg w-1/3 z-60">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-bold">QUYỀN TRUY CẬP VÀ CHỈNH SỬA  </h2>
               <button onClick={() => setShowPermissionModal(false)}>
@@ -214,19 +221,22 @@ function VocabularyApp() {
             </div>
 
             <div className="grid grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">Quyền truy cập</label>
-                <select className="block w-full p-2 border rounded">
-                  <option>Chỉ mình tôi</option>
-                  <option>Mọi người</option>
+              <div className='relative' >
+              <label className="block text-sm font-medium mb-2">Quyền truy cập</label>
+                <select className="w-full px-3 py-2 mb-20 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2">
+                 <option>Chỉ mình tôi</option>
+                 <option>Mọi người</option>
                 </select>
+                <IoIosArrowDown className="absolute top-12 right-5 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
               </div>
-              <div>
+
+              <div className='relative'>
                 <label className="block text-sm font-medium mb-2">Quyền chỉnh sửa</label>
-                <select className="block w-full p-2 border rounded mb-16">
-                  <option>Chỉ mình tôi</option>
-                  <option>Mọi người</option>
+                 <select className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"> 
+                 <option>Chỉ mình tôi</option>
+                 <option>Mọi người</option>
                 </select>
+                <IoIosArrowDown className="absolute top-12 right-4  transform -translate-y-1/2 text-gray-400 pointer-events-none" />
               </div>
               </div>
             <button
@@ -247,11 +257,11 @@ function VocabularyApp() {
             <button onClick={() => setShowFileModal(true)}
              className='flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2'><CgAttachment  className='size-6 mr-1' />
             <span > Thêm từ tệp</span></button>
-            <button onClick={handleAddGroup} className='flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2'><LuPlus className='size-6 mr-1' />
+            <button onClick={setShowGroupInput} className='flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2'><LuPlus className='size-6 mr-1' />
             <span > Thêm nhóm/cấp độ</span></button>
           </div>
-          
 
+           
        <div className="bg-white p-6 rounded-lg shadow-md mb-6 flex">    
         {/* Left Section - Inputs */}
         <div className="w-1/3  bg-gray-50 rounded-lg shadow p-6 pr-0 border-r  ">
@@ -271,7 +281,7 @@ function VocabularyApp() {
                   value={vocabulary}
                   onChange={(e) => setVocabulary(e.target.value)}
                   placeholder="Nhập từ vựng"
-                  className="p-2 border border-gray-300 rounded-md w-[60%]"
+                  className="p-2 border border-gray-300 rounded-md w-[75%]"
                 />
               </div>
             </div>
@@ -289,7 +299,7 @@ function VocabularyApp() {
                   value={definition}
                   onChange={(e) => setDefinition(e.target.value)}
                   placeholder="Nhập định nghĩa"
-                  className="p-2 border border-gray-300 rounded-md w-[60%]"
+                  className="p-2 border border-gray-300 rounded-md w-[75%]"
                 />
               </div>
           </div>
@@ -312,13 +322,19 @@ function VocabularyApp() {
             id="audioInput"
             className="hidden"
             />
+
+            {audio && (
+            <p className="mt-2 text-sm text-gray-600">
+            {audio.name}
+            </p>
+                 )}
           </div>
 
           {/*add image */}
           <div className="mt-4">
            <button
               onClick={() => document.getElementById('imageInput').click()}
-              className="relative flex items-center gap-2 p-7 text-4xl cursor-pointer bg-white border-2 border-dashed border-gray-300 p-2 rounded-md hover:bg-gray-100  transition"
+              className="relative flex items-center gap-2 p-7 text-4xl cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-md hover:bg-gray-100  transition"
               style={{ width: '100px', height: '100px' }}
               >
                {image ? (
@@ -343,29 +359,18 @@ function VocabularyApp() {
           </div> 
           
           {/* Group/Level Dropdown */}
-          <div className="mt-4">
+          <div className="relative mt-4">
             <label className="block text-sm font-medium">Nhóm/Cấp độ</label>
             <select
               value={selectedGroup}
               onChange={(e) => setSelectedGroup(e.target.value)}
-              className="p-2 border border-gray-300 rounded-md w-1/2"
+              className="w-[75%] px-3 py-2 mb-20 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2"
             >
-              <option value="">Chọn nhóm</option>
+              <option value="Không">Không</option>
               {groups.map((group, index) => (
-                <option key={index} value={group}>
-                  {group}
-                </option>
+                <option key={index} value={group.name}>{group.name}</option>
               ))}
             </select>
-            <div className="w-1/2 flex mt-2">
-              <input
-                type="text"
-                value={groupName}
-                onChange={(e) => setGroupName(e.target.value)}
-                placeholder="Nhập tên nhóm"
-                className=" p-2 pr-0 mt-2 border border-gray-300 rounded-md flex-grow"
-              />
-            </div>
           </div>
 
           {/* Add Button */}
@@ -378,47 +383,100 @@ function VocabularyApp() {
         </div>
 
      
-    
         <div className="w-2/3 pl-6 border rounded-lg overflow-hidden ml-6">
-          <div className="grid grid-cols-5 bg-blue-100 p-2">
-            <span className="font-bold text-blue-400">Từ vựng</span>
-            <span className="font-bold text-blue-400">Định nghĩa</span>
-            <span className="font-bold text-blue-400">Audio</span>
-            <span className="font-bold text-blue-400">Hình ảnh</span>
-            <span className="font-bold text-blue-400">Action</span>
+          <div className="grid grid-cols-7 bg-blue-100 p-2 gap-x-1">
+            <span className="font-bold text-blue-400 col-span-2 ">Từ vựng</span>
+            <span className="font-bold text-blue-400 col-span-2 ml-4">Định nghĩa</span>
+            <span className="font-bold text-blue-400 justify-self-end">Audio</span>
+            <span className="font-bold text-blue-400 justify-self-end">Hình ảnh</span>
+            <span className="font-bold text-blue-400 justify-self-end">Action</span>
           </div>
-          {vocabList.length === 0 ? (
-            <p className="text-gray-500">Chưa có từ vựng nào được thêm.</p>
-          ) : (
-            <ul className="space-y-2">
-              {vocabList.map((item, index) => (
-                <li key={index} className="grid grid-cols-5 bg-gray-100 p-3 rounded-md items-center gap-x-2">
-                  <p className="font-bold">{item.vocabulary}</p>
-                  <p>{item.definition}</p>
+          {/* Display Standalone Vocabulary */}
+          {vocabList.filter(item => item.group === "Không").length > 0 && (
+            <div className="bg-gray-50 p-2 mt-2 rounded-md">
+              <h3 className="text-blue-400 font-bold">Từ vựng đơn</h3>
+              <ul className="space-y-2 mt-2">
+                {vocabList.filter(item => item.group === "Không").map((item) => (
+                  <li key={item.id} className="grid grid-cols-7 bg-gray-100 p-3 rounded-md items-center gap-x-2">
+                    <p className="font-bold col-span-2">{item.vocabulary}</p>
+                    <p className="col-span-2 ml-4">{item.definition}</p>
+                    <div className="col-span-1 flex justify-center items-center">
+                      {item.audio && <IoVolumeHigh size={24} className="text-blue-500 hover:text-blue-700 transition" />}
+                    </div>
+                    <div className="col-span-1 flex justify-center items-center">
+                      {item.image && <FcEditImage size={24} />}
+                    </div>
+                    <div className="col-span-1 flex justify-center items-center">
+                      <button
+                        onClick={() => showDeleteConfirmation({ type: 'vocab', id: item.id })} 
+                        className="text-red-500 hover:text-red-700 transition"
+                      >
+                        <ImBin />
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
-                  <div className="col-span-1 flex justify-center">
-                  {item.audio && (
-                    <button
-                      onClick={() => toggleAudio(item.audio)}
-                      className="text-blue-500 hover:text-blue-700 transition"
-                    >
-                      <IoVolumeHigh size={24} />
-                    </button>
-                  )}
+          {/* Display Grouped Vocabulary */}
+          {groups.map((group, index) => (
+            <div key={index} className="bg-blue-100 p-2 mt-2 rounded-md">
+              <div className="flex justify-between items-center">
+                <span className="font-bold text-blue-400">{group.name}</span>
+                <div className="flex gap-2">
+                  <button onClick={() => toggleGroupVisibility(group.name)}>
+                    {group.visible ? "Ẩn" : "Hiện"}
+                  </button>
+                  <button onClick={() => showDeleteConfirmation({ type: 'group', groupName: group.name })}>
+                    <ImBin />
+                  </button>
                 </div>
+              </div>
 
-          
-          <div className="flex-row justify-end items-end col-span-1">
-            <button
-               onClick={() => DeleteConfirmation(index)}
-              className="text-red-500 hover:text-red-700 transition"
-            >
-              <ImBin />
-            </button>
-          </div>
-        </li>
-      ))}
-    </ul>
+              {group.visible && (
+                <ul className="space-y-2 mt-2">
+                  {vocabList.filter(item => item.group === group.name).map((item) => (
+                    <li key={item.id} className="grid grid-cols-7 bg-gray-100 p-3 rounded-md items-center gap-x-2">
+                      <p className="font-bold col-span-2">{item.vocabulary}</p>
+                      <p className="col-span-2 ml-4">{item.definition}</p>
+                      <div className="col-span-1 flex justify-center items-center">
+                        {item.audio && <IoVolumeHigh size={24} className="text-blue-500 hover:text-blue-700 transition" />}
+                      </div>
+                      <div className="col-span-1 flex justify-center items-center">
+                        {item.image && <FcEditImage size={24} />}
+                      </div>
+                      <div className="col-span-1 flex justify-center items-center">
+                        <button
+                          onClick={() => showDeleteConfirmation({ type: 'vocab', id: item.id })} 
+                          className="text-red-500 hover:text-red-700 transition"
+                        >
+                          <ImBin />
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+{showGroupInput && (
+    <div className="flex items-center mt-4 bg-gray-100 p-3 rounded-md">
+      <input
+        type="text"
+        value={groupName}
+        onChange={(e) => setGroupName(e.target.value)}
+        placeholder="Nhập tên nhóm"
+        className="p-2 border border-gray-300 rounded-md w-full"
+      />
+      <button
+        onClick={saveGroup}
+        className="justify-items-end ml-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
+      >
+        Lưu
+      </button>
+    </div>
   )}
 </div>
 
@@ -440,7 +498,7 @@ function VocabularyApp() {
             ></textarea>
             <div className="flex justify-end">
               <button
-                onClick={() => promptDeleteConfirmation(index)}
+                onClick={() => setShowTextModal(false)}
                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2"
               >
                 Hủy
@@ -496,6 +554,7 @@ function VocabularyApp() {
         </div>
       )}
 
+{/* Delete Confirmation Modal */}
 {showDeleteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
@@ -505,18 +564,14 @@ function VocabularyApp() {
                 <IoIosCloseCircle className="size-6" />
               </button>
             </div>
-            <p className="text-gray-500 mb-4">Bạn có chắc chắn muốn xóa từ vựng này không?</p>
+            <p className="text-gray-500 mb-4">
+              Bạn có chắc chắn muốn xóa {deleteContext?.type === 'group' ? 'nhóm này' : 'từ vựng này'} không?
+            </p>
             <div className="flex justify-end gap-4">
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md"
-              >
+              <button onClick={() => setShowDeleteModal(false)} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md">
                 Hủy
               </button>
-              <button
-                  onClick={handleConfirmDelete}
-                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-              >
+              <button onClick={handleConfirmDelete} className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
                 Xóa
               </button>
             </div>
@@ -527,5 +582,4 @@ function VocabularyApp() {
   );
 }
 
-export default VocabularyApp;
-
+export default AddLevels;
