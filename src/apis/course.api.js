@@ -39,6 +39,29 @@ class CourseServiceClass {
 		const res = await http.get(`/course/comment?course-id=${courseId}`);
 		return res.data;
 	}
+
+	async fetchCourseLanguages(courseId) {
+		const res = await http.get(`/course/languages?course-id=${courseId}`);
+		return res.data;
+	}
+
+	async addNewLevelCourse(courseId, levelName, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.post(`/level/new`, { courseId, levelName });
+		return res.data;
+	}
+
+	async removeLevelCourse(courseId, levelId, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.delete(`/level/delete?course-id=${courseId}&level-id=${levelId}`);
+		return res.data;
+	}
+
+	async updateLevelNameCourse(courseId, levelId, levelName, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.post("/level/edit", { courseId, levelId, levelName });
+		return res.data;
+	}
 }
 
 const CourseService = new CourseServiceClass();

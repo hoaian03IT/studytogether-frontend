@@ -98,15 +98,16 @@ const CreateCourse = () => {
 			toast.warn("File must be an image");
 			return;
 		}
-		let maxSize = 25; // MB
+		let maxSize = 200; // KB
 		if (file.size / 1024 > maxSize) {
-			toast.warn("File is too large, maximum 25MB");
+			toast.warn(`File is too large, maximum ${maxSize}KB`);
 			return;
 		}
 
 		const reader = new FileReader();
 		reader.onload = () => {
 			setFormValue(prev => ({ ...prev, image: reader.result }));
+			console.log(reader.result);
 		};
 		reader.onerror = (error) => {
 			console.error(error);

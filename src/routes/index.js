@@ -10,7 +10,7 @@ export const pathname = {
 	vocabularySet: "/vocabulary-set",
 	createCourse: "/create-course",
 	listCourse: "/list-course",
-	addVocab: "/add-vocab",
+	addVocab: "/add-vocab/:courseId",
 	editCourse: "/edit-course",
 	listExamples: "/list-examples",
 	addByLevels: "/add-by-levels",
