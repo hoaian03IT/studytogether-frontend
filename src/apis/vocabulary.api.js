@@ -6,6 +6,44 @@ class VocabularyServiceClass {
 		const res = await httpAuth.get(`/vocabulary/all/${courseId}`);
 		return res.data;
 	}
+
+	async addNewVocabulary(payload, userState, updateUserState) {
+		const { courseId, levelId, word, definition, image, pronunciation, type } = payload;
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.post("/vocabulary/new", {
+			courseId,
+			levelId,
+			word,
+			definition,
+			image,
+			pronunciation,
+			type,
+		});
+		return res.data;
+	}
+
+	async removeVocabulary(payload, userState, updateUserState) {
+		const { courseId, levelId, wordId } = payload;
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.delete(`/vocabulary/delete?course-id=${courseId}&level-id=${levelId}&word-id=${wordId}`);
+		return res.data;
+	}
+
+	async updateVocabulary(payload, userState, updateUserState) {
+		const { courseId, levelId, wordId, word, definition, image, pronunciation, type } = payload;
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.post(`/vocabulary/edit`, {
+			courseId,
+			levelId,
+			wordId,
+			word,
+			definition,
+			image,
+			pronunciation,
+			type,
+		});
+		return res.data;
+	}
 }
 
 const VocabularyService = new VocabularyServiceClass();
