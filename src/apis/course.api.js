@@ -47,7 +47,7 @@ class CourseServiceClass {
 
 	async addNewLevelCourse(courseId, levelName, userState, updateUserState) {
 		const httpAuth = createHttpAuth(userState, updateUserState);
-		const res = await httpAuth.post(`/level/new`, { courseId, levelName });
+		const res = await httpAuth.post(`/level/new`, { courseId: Number(courseId), levelName: Number(levelName) });
 		return res.data;
 	}
 
@@ -59,7 +59,11 @@ class CourseServiceClass {
 
 	async updateLevelNameCourse(courseId, levelId, levelName, userState, updateUserState) {
 		const httpAuth = createHttpAuth(userState, updateUserState);
-		const res = await httpAuth.post("/level/edit", { courseId, levelId, levelName });
+		const res = await httpAuth.post("/level/edit", {
+			courseId: Number(courseId),
+			levelId: Number(levelId),
+			levelName,
+		});
 		return res.data;
 	}
 }

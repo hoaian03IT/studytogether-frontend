@@ -11,8 +11,8 @@ class VocabularyServiceClass {
 		const { courseId, levelId, word, definition, image, pronunciation, type } = payload;
 		const httpAuth = createHttpAuth(userState, updateUserState);
 		const res = await httpAuth.post("/vocabulary/new", {
-			courseId,
-			levelId,
+			courseId: Number(courseId),
+			levelId: Number(levelId),
 			word,
 			definition,
 			image,
@@ -25,7 +25,7 @@ class VocabularyServiceClass {
 	async removeVocabulary(payload, userState, updateUserState) {
 		const { courseId, levelId, wordId } = payload;
 		const httpAuth = createHttpAuth(userState, updateUserState);
-		const res = await httpAuth.delete(`/vocabulary/delete?course-id=${courseId}&level-id=${levelId}&word-id=${wordId}`);
+		const res = await httpAuth.delete(`/vocabulary/delete?course-id=${Number(courseId)}&level-id=${Number(levelId)}&word-id=${Number(wordId)}`);
 		return res.data;
 	}
 
@@ -33,9 +33,9 @@ class VocabularyServiceClass {
 		const { courseId, levelId, wordId, word, definition, image, pronunciation, type } = payload;
 		const httpAuth = createHttpAuth(userState, updateUserState);
 		const res = await httpAuth.post(`/vocabulary/edit`, {
-			courseId,
-			levelId,
-			wordId,
+			courseId: Number(courseId),
+			levelId: Number(levelId),
+			wordId: Number(wordId),
 			word,
 			definition,
 			image,

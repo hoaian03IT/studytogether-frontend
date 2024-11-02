@@ -63,7 +63,7 @@ function AddLevels() {
 	const [renameLevel, setRenameLevel] = useState({});
 	const [wordEditing, setWordEditing] = useState({
 		isEditing: false,
-		levelId: null,
+		oldLevelId: null,
 		wordId: null,
 	});
 
@@ -127,7 +127,7 @@ function AddLevels() {
 		},
 		onSuccess: ({ newLevel }) => {
 			const newVocabularyList = vocabularyQuery.data.concat({
-				levelId: newLevel["level id"],
+				levelId: newLevel["level id"].toString(),
 				levelName: newLevel["level name"],
 				words: [],
 			});
@@ -238,21 +238,62 @@ function AddLevels() {
 		onSuccess: (data) => {
 			const updatedWord = data?.updatedWord;
 			let newVocabularyList = vocabularyQuery.data;
-			for (let i = 0; i < newVocabularyList?.length; i++) {
-				if (newVocabularyList[i].levelId === updatedWord["level id"]) {
-					for (let j = 0; j < newVocabularyList[i].words.length; j++) {
-						if (newVocabularyList[i].words[j].wordId === updatedWord["word id"]) {
-							newVocabularyList[i].words[j].word = updatedWord["word"];
-							newVocabularyList[i].words[j].definition = updatedWord["definition"];
-							newVocabularyList[i].words[j].image = updatedWord["image"];
-							newVocabularyList[i].words[j].pronunciation = updatedWord["pronunciation"];
-							newVocabularyList[i].words[j].type = updatedWord["type"];
-							break;
-						}
+			if (!newVocabularyList || !updatedWord)
+				return;
+			// Trường hợp cập nhật từ trong cùng level
+			if (updatedWord["level id"].toString() === wordEditing.oldLevelId) {
+				const levelIndex = newVocabularyList.findIndex(
+					level => level.levelId === updatedWord["level id"],
+				);
+
+				if (levelIndex !== -1) {
+					const wordIndex = newVocabularyList[levelIndex].words.findIndex(
+						word => word.wordId === updatedWord["word id"],
+					);
+
+					if (wordIndex !== -1) {
+						// Cập nhật thông tin từ
+						newVocabularyList[levelIndex].words[wordIndex] = {
+							wordId: updatedWord["word id"],
+							word: updatedWord["word"],
+							definition: updatedWord["definition"],
+							image: updatedWord["image"],
+							pronunciation: updatedWord["pronunciation"],
+							type: updatedWord["type"],
+						};
 					}
-					break;
 				}
 			}
+			// Trường hợp chuyển từ sang level khác
+			else {
+				// Xóa từ khỏi level cũ
+				const oldLevelIndex = newVocabularyList.findIndex(
+					level => level.levelId.toString() === wordEditing.oldLevelId,
+				);
+
+				if (oldLevelIndex !== -1) {
+					newVocabularyList[oldLevelIndex].words = newVocabularyList[oldLevelIndex].words
+						.filter(word => word.wordId !== updatedWord["word id"]);
+				}
+
+				// Thêm từ vào level mới
+				const newLevelIndex = newVocabularyList.findIndex(
+					level => level.levelId === updatedWord["level id"],
+				);
+
+				if (newLevelIndex !== -1) {
+					newVocabularyList[newLevelIndex].words.push({
+						wordId: updatedWord["word id"],
+						word: updatedWord["word"],
+						definition: updatedWord["definition"],
+						image: updatedWord["image"],
+						pronunciation: updatedWord["pronunciation"],
+						type: updatedWord["type"],
+					});
+				}
+			}
+
+			// Cập nhật cache và clear form
 			queryClient.setQueryData(["vocabulary-course-manage", params?.courseId], newVocabularyList);
 			clearFormWord();
 		},
@@ -282,7 +323,7 @@ function AddLevels() {
 		if (vocabulary && definition) {
 			addWordMutation.mutate({
 				courseId: params?.courseId,
-				levelId: selectedGroup?.currentKey,
+				levelId: selectedGroup,
 				word: vocabulary,
 				definition: definition,
 				image: image?.value,
@@ -372,8 +413,8 @@ function AddLevels() {
 	};
 
 	const handleEditWord = ({ levelId, wordId, word, definition, type, image, pronunciation }) => {
-		setWordEditing({ levelId, wordId, isEditing: true });
-		setSelectedGroup(levelId);
+		setWordEditing({ oldLevelId: levelId.toString(), wordId, isEditing: true });
+		setSelectedGroup(levelId.toString());
 		setVocabulary(word);
 		setDefinition(definition);
 		setTypeWord(type);
@@ -385,7 +426,7 @@ function AddLevels() {
 		e.preventDefault();
 		updateWordMutation.mutate({
 			courseId: params?.courseId,
-			levelId: wordEditing.levelId,
+			levelId: selectedGroup,
 			wordId: wordEditing.wordId,
 			word: vocabulary,
 			definition: definition,
@@ -404,12 +445,16 @@ function AddLevels() {
 	};
 
 	const clearFormWord = () => {
-		setWordEditing({ levelId: null, wordId: null, isEditing: false });
+		setWordEditing({ oldLevelId: null, wordId: null, isEditing: false });
 		setImage(null);
 		setAudio(null);
 		setVocabulary("");
 		setDefinition("");
 		setTypeWord("");
+	};
+
+	const handleChangeGroup = (e) => {
+		setSelectedGroup(e.target.value);
 	};
 
 	return (
@@ -623,18 +668,17 @@ function AddLevels() {
 					<div className="relative mt-4">
 						<label className="block text-sm font-medium">Nhóm/Cấp độ</label>
 						<Select
-							value={wordEditing.levelId || selectedGroup.currentKey}
 							isRequired
 							aria-label="level course" variant="bordered"
-							onSelectionChange={setSelectedGroup}
-							defaultSelectedKeys={[2]}
+							onChange={handleChangeGroup}
 							radius="sm"
 							className="bg-white rounded-small"
-							items={vocabularyQuery?.data || []}
+							selectedKeys={[selectedGroup]}
+							items={vocabularyQuery?.data}
 						>
-							{(item) => <SelectItem
-								key={item?.levelId}>{item?.levelName}
-							</SelectItem>}
+							{vocabularyQuery?.data?.map(item => <SelectItem value={item?.levelId.toString()}
+																			key={item?.levelId.toString()}>{item?.levelName}
+							</SelectItem>)}
 						</Select>
 					</div>
 
@@ -674,7 +718,7 @@ function AddLevels() {
 						<span className="font-bold text-blue-400 justify-self-end">Hình ảnh</span>
 						<span className="font-bold text-blue-400 justify-self-end">Action</span>
 					</div>
-					<Accordion className="bg-blue-100">
+					<Accordion className="bg-blue-100" selectionMode="multiple">
 						{vocabularyQuery.data?.map(item => {
 							return <AccordionItem key={item?.levelId} title={item?.levelName}
 												  disableIndicatorAnimation={true}
