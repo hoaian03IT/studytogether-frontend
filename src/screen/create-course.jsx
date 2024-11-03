@@ -13,6 +13,7 @@ import { pathname } from "../routes/index.js";
 import { LanguageService } from "../apis/language.api.js";
 import { CourseLevelService } from "../apis/courseLevel.api.js";
 import defaultUploadImage from "../assets/default-placeholder-upload.png";
+import { queryKeys } from "../react-query/query-keys.js";
 
 const MAX_CHAR_COURSE_NAME = 100;
 const MAX_CHAR_TAG = 30;
@@ -39,7 +40,7 @@ const CreateCourse = () => {
 	const navigate = useNavigate();
 
 	const languageQuery = useQuery({
-		queryKey: ["languages"],
+		queryKey: [queryKeys.languages],
 		queryFn: async () => {
 			try {
 				const data = await LanguageService.fetchAllLanguages();
@@ -51,7 +52,7 @@ const CreateCourse = () => {
 	});
 
 	const levelCourseQuery = useQuery({
-		queryKey: ["levelCourse", formValue.targetLanguageId],
+		queryKey: [queryKeys.levelCourse, formValue.targetLanguageId],
 		queryFn: async ({ queryKey }) => {
 			try {
 				const data = await CourseLevelService.fetchCourseLevelByLanguage(queryKey[1]);

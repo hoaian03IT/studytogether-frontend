@@ -14,6 +14,7 @@ import { Link as LinkDom, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { CourseInformationComment } from "../components/course-information-comment.jsx";
 import { CourseService } from "../apis/course.api.js";
+import { queryKeys } from "../react-query/query-keys.js";
 
 function CourseInformation() {
 	const params = useParams();
@@ -21,7 +22,7 @@ function CourseInformation() {
 	const [selectedTab, setSelectedTab] = useState("description");
 
 	const courseInfoQuery = useQuery({
-		queryKey: ["course-info", params?.courseId],
+		queryKey: [queryKeys.courseInfo, params?.courseId],
 		queryFn: async ({ queryKey }) => {
 			try {
 				return await CourseService.fetchCourseInformation(queryKey[1]);

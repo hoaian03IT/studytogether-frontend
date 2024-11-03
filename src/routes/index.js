@@ -12,7 +12,7 @@ export const pathname = {
 	listCourse: "/list-course",
 	addVocab: "/add-vocab/:courseId",
 	editCourse: "/edit-course",
-	listExamples: "/list-examples",
+	listExamples: "/list-examples/:courseId",
 	addByLevels: "/add-by-levels",
 	courseBusiness: "/course-business",
 	courseInformation: "/course-information/:courseId",

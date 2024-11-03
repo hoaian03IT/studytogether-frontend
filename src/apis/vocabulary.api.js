@@ -2,9 +2,45 @@ import { createHttpAuth } from "../config/http.js";
 
 class VocabularyServiceClass {
 	async fetchVocabulary(courseId, userState, updateUserState) {
-		const httpAuth = await createHttpAuth(userState, updateUserState);
-		const res = await httpAuth.get(`/vocabulary/all/${courseId}`);
-		return res.data;
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		let vocabularyList = [];
+		try {
+			const res = await httpAuth.get(`/vocabulary/all/${courseId}`);
+			const { data } = res;
+			if (data?.vocabularyList?.length === 0)
+				return vocabularyList;
+			let records = data?.vocabularyList;
+			let count = 0, currentLevelId = records[0]?.["level id"];
+			vocabularyList.push({
+				levelId: records[0]?.["level id"],
+				levelName: records[0]?.["level name"],
+				words: [],
+			});
+			for (let record of records) {
+				if (currentLevelId !== record?.["level id"]) {
+					currentLevelId = record?.["level id"];
+					vocabularyList.push({
+						levelId: record?.["level id"],
+						levelName: record?.["level name"],
+						words: [],
+					});
+					count++;
+				}
+				if (record?.["word id"]) {
+					vocabularyList[count].words.push({
+						wordId: record?.["word id"],
+						word: record?.["word"],
+						definition: record?.["definition"],
+						image: record?.["image"],
+						pronunciation: record?.["pronunciation"],
+						type: record?.["type"],
+					});
+				}
+			}
+		} catch (error) {
+			console.error(error);
+		}
+		return vocabularyList;
 	}
 
 	async addNewVocabulary(payload, userState, updateUserState) {

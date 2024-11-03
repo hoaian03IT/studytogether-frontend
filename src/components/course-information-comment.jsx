@@ -2,10 +2,11 @@ import { Feedback } from "./feedback.jsx";
 import { useQuery } from "@tanstack/react-query";
 import { CourseService } from "../apis/course.api.js";
 import { CircularProgress } from "@nextui-org/react";
+import { queryKeys } from "../react-query/query-keys.js";
 
 function CourseInformationComment({ courseId, authorUsername }) {
 	const courseCommentQuery = useQuery({
-		queryKey: ["course-comment", courseId],
+		queryKey: [queryKeys.courseComment, courseId],
 		queryFn: async ({ queryKey }) => {
 			try {
 				let data = await CourseService.fetchCourseComment(queryKey[1]);

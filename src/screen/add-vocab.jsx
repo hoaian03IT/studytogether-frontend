@@ -33,6 +33,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { base64Converter } from "../utils/base64-convert.js";
 import { MdEdit } from "react-icons/md";
+import { queryKeys } from "../react-query/query-keys.js";
 
 
 function AddLevels() {
@@ -67,51 +68,12 @@ function AddLevels() {
 		wordId: null,
 	});
 
-
 	const vocabularyQuery = useQuery({
-		queryKey: ["vocabulary-course-manage", params?.courseId],
-		queryFn: async ({ queryKey }) => {
-			let vocabularyList = [];
-			try {
-				const data = await VocabularyService.fetchVocabulary(queryKey[1], user, updateUserState);
-				if (data?.vocabularyList?.length === 0)
-					return vocabularyList;
-				let records = data?.vocabularyList;
-				let count = 0, currentLevelId = records[0]?.["level id"];
-				vocabularyList.push({
-					levelId: records[0]?.["level id"],
-					levelName: records[0]?.["level name"],
-					words: [],
-				});
-				for (let record of records) {
-					if (currentLevelId !== record?.["level id"]) {
-						currentLevelId = record?.["level id"];
-						vocabularyList.push({
-							levelId: record?.["level id"],
-							levelName: record?.["level name"],
-							words: [],
-						});
-						count++;
-					}
-					if (record?.["word id"]) {
-						vocabularyList[count].words.push({
-							wordId: record?.["word id"],
-							word: record?.["word"],
-							definition: record?.["definition"],
-							image: record?.["image"],
-							pronunciation: record?.["pronunciation"],
-							type: record?.["type"],
-						});
-					}
-				}
-			} catch (error) {
-				console.error(error);
-			}
-			return vocabularyList;
-		},
+		queryKey: [queryKeys.courseVocabulary, params?.courseId],
+		queryFn: async ({ queryKey }) => await VocabularyService.fetchVocabulary(queryKey[1], user, updateUserState),
 	});
 	const courseLanguagesQuery = useQuery({
-		queryKey: ["course-languages", params?.courseId],
+		queryKey: [queryKeys.courseLanguages, params?.courseId],
 		queryFn: async ({ queryKey }) => {
 			try {
 				return await CourseService.fetchCourseLanguages(queryKey[1]);
@@ -122,8 +84,8 @@ function AddLevels() {
 		},
 	});
 	const addLevelMutation = useMutation({
-		mutationFn: async () => {
-			return await CourseService.addNewLevelCourse(params?.courseId, groupName, user, updateUserState);
+		mutationFn: async ({ courseId, groupName }) => {
+			return await CourseService.addNewLevelCourse(courseId, groupName, user, updateUserState);
 		},
 		onSuccess: ({ newLevel }) => {
 			const newVocabularyList = vocabularyQuery.data.concat({
@@ -131,7 +93,7 @@ function AddLevels() {
 				levelName: newLevel["level name"],
 				words: [],
 			});
-			queryClient.setQueryData(["vocabulary-course-manage", params?.courseId], newVocabularyList);
+			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], newVocabularyList);
 			setGroupName("");
 			setShowGroupInput(false); // Hide the input after saving
 		},
@@ -146,7 +108,7 @@ function AddLevels() {
 		},
 		onSuccess: (levelId) => {
 			const newLevels = vocabularyQuery.data.filter(item => item.levelId !== levelId);
-			queryClient.setQueryData(["vocabulary-course-manage", params?.courseId], newLevels);
+			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], newLevels);
 		}, onError: (error) => {
 			console.error(error);
 		},
@@ -163,7 +125,7 @@ function AddLevels() {
 					break;
 				}
 			}
-			queryClient.setQueryData(["vocabulary-course-manage", params?.courseId], newVocabularyList);
+			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], newVocabularyList);
 		},
 		onError: (error) => {
 			console.error(error);
@@ -189,7 +151,7 @@ function AddLevels() {
 					break;
 				}
 			}
-			queryClient.setQueryData(["vocabulary-course-manage", params?.courseId], newVocabularyList);
+			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], newVocabularyList);
 		},
 		onError: (error) => {
 			console.error(error);
@@ -216,7 +178,7 @@ function AddLevels() {
 					break;
 				}
 			}
-			queryClient.setQueryData(["vocabulary-course-manage", params?.courseId], newVocabularyList);
+			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], newVocabularyList);
 		},
 		onError: (error) => {
 			console.error(error);
@@ -294,7 +256,7 @@ function AddLevels() {
 			}
 
 			// Cập nhật cache và clear form
-			queryClient.setQueryData(["vocabulary-course-manage", params?.courseId], newVocabularyList);
+			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], newVocabularyList);
 			clearFormWord();
 		},
 		onError: (error) => {
@@ -440,7 +402,8 @@ function AddLevels() {
 	const saveGroup = async (e) => {
 		e.preventDefault();
 		if (groupName) {
-			addLevelMutation.mutate();
+			console.log(groupName);
+			addLevelMutation.mutate({ courseId: params?.courseId, groupName });
 		}
 	};
 

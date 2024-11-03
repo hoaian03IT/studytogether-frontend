@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useRecoilState } from "recoil";
 import { userState } from "../../recoil/atoms/user.atom.js";
 import { UserService } from "../../apis/user.api.js";
+import { queryKeys } from "../../react-query/query-keys.js";
 
 const GlobalStateContext = createContext({
 	updateUserState: () => {
@@ -35,7 +36,7 @@ function GlobalStateProvider({ children }) {
 
 
 	useQuery({
-		queryKey: ["userState"],
+		queryKey: [queryKeys.userState],
 		queryFn: async () => {
 			try {
 				if (!user.isLogged) {

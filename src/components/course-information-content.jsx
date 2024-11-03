@@ -3,12 +3,13 @@ import { useState } from "react";
 import { BsBookmark, BsCollection, BsStopwatch } from "react-icons/bs";
 import { useQuery } from "@tanstack/react-query";
 import { CourseService } from "../apis/course.api.js";
+import { queryKeys } from "../react-query/query-keys.js";
 
 function CourseInformationContent({ courseId }) {
 	const [completed, setCompleted] = useState(15);
 
 	const courseContentQuery = useQuery({
-		queryKey: ["course-content", courseId],
+		queryKey: [queryKeys.courseContent, courseId],
 		queryFn: async ({ queryKey }) => {
 			try {
 				return await CourseService.fetchCourseContent(queryKey[1]);

@@ -47,7 +47,7 @@ class CourseServiceClass {
 
 	async addNewLevelCourse(courseId, levelName, userState, updateUserState) {
 		const httpAuth = createHttpAuth(userState, updateUserState);
-		const res = await httpAuth.post(`/level/new`, { courseId: Number(courseId), levelName: Number(levelName) });
+		const res = await httpAuth.post(`/level/new`, { courseId: Number(courseId), levelName: levelName });
 		return res.data;
 	}
 

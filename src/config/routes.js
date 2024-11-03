@@ -58,6 +58,6 @@ export const publicRoutes = [
 	{
 		path: pathname.listExamples,
 		component: ListExamples,
-		layout: PrimaryLayout,
+		layout: ThirdLayout,
 	},
 ];
