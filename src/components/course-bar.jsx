@@ -10,7 +10,7 @@ const menuItems = [
 	{ path: pathname.addVocab, label: "TỪ VỰNG", icon: <PiPencilDuotone className="size-8" /> },
 	{ path: pathname.listExamples, label: "VÍ DỤ", icon: <MdAssignmentLate className="size-8" /> },
 	{ path: "/exercise-page", label: "BÀI TẬP", icon: <FaBook className="size-6" /> },
-	{ path: "/course-details", label: "CHI TIẾT KHÓA", icon: <MdLibraryBooks className="size-8" /> },
+	{ path: pathname.editCourse, label: "CHI TIẾT KHÓA", icon: <MdLibraryBooks className="size-8" /> },
 	{ path: "/course-business", label: "KINH DOANH", icon: <LiaSellcast className="size-8" /> },
 ];
 

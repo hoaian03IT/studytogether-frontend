@@ -54,7 +54,7 @@ export const publicRoutes = [
 	{ path: pathname.courseBusiness, component: Business, layout: ThirdLayout },
 	{ path: pathname.courseInformation, component: CourseInformation, layout: PrimaryLayout },
 	{ path: pathname.payment, component: Purchase, layout: PrimaryLayout },
-	{ path: pathname.editCourse, component: EditCourse, layout: PrimaryLayout },
+	{ path: pathname.editCourse, component: EditCourse, layout: ThirdLayout },
 	{
 		path: pathname.listExamples,
 		component: ListExamples,
