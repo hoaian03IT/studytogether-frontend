@@ -1,8 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
-import { useRecoilValue } from "recoil";
-import { userState } from "../recoil/atoms/user.atom.js";
 import { CourseService } from "../apis/course.api.js";
 import { Button, Input, Select } from "@nextui-org/react";
 import { Textarea } from "@nextui-org/input";
@@ -14,66 +11,81 @@ import { LanguageService } from "../apis/language.api.js";
 import { CourseLevelService } from "../apis/courseLevel.api.js";
 import defaultUploadImage from "../assets/default-placeholder-upload.png";
 import { queryKeys } from "../react-query/query-keys.js";
+import { base64Converter } from "../utils/base64-convert.js";
+import { useRecoilValue } from "recoil";
+import { userState } from "../recoil/atoms/user.atom.js";
+import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
 
 const MAX_CHAR_COURSE_NAME = 100;
 const MAX_CHAR_TAG = 30;
 const MAX_SHORT_DESCRIPTION = 255;
 
 const EditCourseInfor = () => {
-  const params = useParams(); 
-  const courseInfoQuery = useQuery({
-	queryKey: [queryKeys.courseInfo, params?.courseId],
-	queryFn: async ({ queryKey }) => {
-		try {
-			return await CourseService.fetchCourseInformation(queryKey[1]);
-		} catch (error) {
-			console.error(error);
-		}
-	},
-});
+	const params = useParams();
+	const courseInfoQuery = useQuery({
+		queryKey: [queryKeys.courseInfo, params?.courseId],
+		queryFn: async ({ queryKey }) => {
+			try {
+				return await CourseService.fetchCourseInformation(queryKey[1]);
+			} catch (error) {
+				console.error(error);
+			}
+		},
+	});
+	let user = useRecoilValue(userState);
+	let { updateUserState } = useContext(GlobalStateContext);
+
+	const [formValue, setFormValue] = useState({
+		targetLanguageId: "",
+		sourceLanguageId: "",
+		courseLevelId: "",
+		courseName: "",
+		tag: "",
+		shortDescription: "",
+		detailedDescription: "",
+		image: "",
+	});
+
+	const navigate = useNavigate();
+	const inputFileRef = useRef();
 
 
-  const [formValue, setFormValue] = useState({
-    targetLanguageId: "",
-    sourceLanguageId: "",
-    courseLevelId: "",
-    courseName: "",
-    tag: "",
-    shortDescription: "",
-    detailedDescription: "",
-    image: "",
-  });
-
-  const navigate = useNavigate();
-  const inputFileRef = useRef();
-  
-  
 	useEffect(() => {
 		setFormValue({
-	targetLanguageId: courseInfoQuery.data?.['target languague id']?.toString(),
-    sourceLanguageId: courseInfoQuery.data?.['source languague id']?.toString(),
-    courseLevelId: courseInfoQuery.data?.['source level id']?.toString(),
-    courseName: courseInfoQuery.data?.['name'],
-    tag: courseInfoQuery.data?.['tag'],
-    shortDescription: courseInfoQuery.data?.['short description'],
-    detailedDescription: courseInfoQuery.data?.['detailed description'],
-    image: "",
-		})
-	},[courseInfoQuery.data])
-  
-  const updateCourseMutation = useMutation({
-	mutationFn: async () => {
-	  return await CourseService.updateCourseInformation(params?.courseId, formValue, user, updateUserState);
-	},
-	onSuccess: (data) => {
-	  toast.success("Cập nhật khóa học thành công!");
-	  navigate("/courses");
-	},
-	onError: (error) => {
-	  toast.error("Cập nhật khóa học thất bại!");
-	  console.error(error);
-	},
-  });
+			targetLanguageId: courseInfoQuery.data?.["target language id"]?.toString(), // Select Component của NextUI chỉ chấp nhận string
+			sourceLanguageId: courseInfoQuery.data?.["source language id"]?.toString(),// Select Component của NextUI chỉ chấp nhận string
+			courseLevelId: courseInfoQuery.data?.["course level id"]?.toString(),// Select Component của NextUI chỉ chấp nhận string
+			courseName: courseInfoQuery.data?.["name"],
+			tag: courseInfoQuery.data?.["tag"],
+			shortDescription: courseInfoQuery.data?.["short description"],
+			detailedDescription: courseInfoQuery.data?.["detailed description"],
+			image: courseInfoQuery.data?.["image"],
+		});
+	}, [courseInfoQuery.data]);
+	
+
+	const updateCourseMutation = useMutation({
+		mutationFn: async () => {
+			return await CourseService.updateCourseInformation({
+				courseId: params?.courseId,
+				courseName: formValue.courseName,
+				sourceLanguageId: formValue.sourceLanguageId,
+				courseLevelId: formValue.courseLevelId,
+				tag: formValue.tag,
+				shortDescription: formValue.shortDescription,
+				detailedDescription: formValue.detailedDescription,
+				image: formValue.image === courseInfoQuery.data?.["image"] ? null : formValue.image,
+			}, user, updateUserState);
+		},
+		onSuccess: (data) => {
+			toast.success("Cập nhật khóa học thành công!");
+			navigate("/courses");
+		},
+		onError: (error) => {
+			toast.error("Cập nhật khóa học thất bại!");
+			console.error(error);
+		},
+	});
 
 	const languageQuery = useQuery({
 		queryKey: [queryKeys.languages],
@@ -100,40 +112,32 @@ const EditCourseInfor = () => {
 	});
 
 
-
-	const onChangeImage = (e) => {
+	const onChangeImage = async (e) => {
 		const file = e.target.files[0];
 		if (file.type.split("/")[0] !== "image") {
 			toast.warn("File must be an image");
 			return;
 		}
-		let maxSize = 200; // KB
-		if (file.size / 1024 > maxSize) {
-			toast.warn(`File is too large, maximum ${maxSize}KB`);
-			return;
+		let maxSize = 2; // MB
+		if (file.size / (1024 * 1024) <= maxSize) {
+			let { base64 } = await base64Converter(file);
+			setFormValue(prev => ({ ...prev, image: base64 }));
+		} else {
+			toast.warn("Image must be smaller than 2MB");
 		}
-
-		const reader = new FileReader();
-		reader.onload = () => {
-			setFormValue(prev => ({ ...prev, image: reader.result }));
-			console.log(reader.result);
-		};
-		reader.onerror = (error) => {
-			console.error(error);
-		};
-		reader.readAsDataURL(file);
 	};
 
+
 	const handleOpenFileSelect = () => {
-		console.log(inputFileRef.current.click());
+		inputFileRef.current.click();
 	};
 
 	const handleInputChange = (e) => {
 		const { name, value } = e.target;
 
 		setFormValue({
-			...formValue.toString,
-			[name]: value,
+			...formValue,
+			[name]: value?.toString(),
 		});
 	};
 
@@ -144,7 +148,7 @@ const EditCourseInfor = () => {
 			return;
 		}
 
-		courseMutation.mutate();
+		updateCourseMutation.mutate();
 	};
 
 	const handleCancel = () => {
@@ -167,7 +171,7 @@ const EditCourseInfor = () => {
 					<div className="col-span-4 grid grid-cols-2 gap-y-5">
 						<div className="col-span-2 grid grid-cols-2 gap-4">
 							<Select
-							selectedKeys={[formValue.sourceLanguageId]}
+								selectedKeys={[formValue.sourceLanguageId]}
 								size="lg"
 								label={<Label>Ngôn ngữ gốc</Label>}
 								placeholder="English"
@@ -189,7 +193,7 @@ const EditCourseInfor = () => {
 								))}
 							</Select>
 							<Select
-							selectedKeys={[formValue.sourceLanguageId]}
+								selectedKeys={[formValue.targetLanguageId]}
 								size="lg"
 								label={<Label>Ngôn ngữ học</Label>}
 								placeholder="Tiếng Việt"
@@ -212,7 +216,7 @@ const EditCourseInfor = () => {
 							</Select>
 						</div>
 						<Select
-						selectedKeys={[formValue.courseLevelId]}
+							selectedKeys={[formValue.courseLevelId]}
 							size="lg"
 							label={<Label>Cấp độ</Label>}
 							className="col-span-4"
@@ -277,7 +281,7 @@ const EditCourseInfor = () => {
 						<div className="-translate-y-1">
 							<Label>Hình ảnh</Label>
 						</div>
-						<div className="flex flex-col h-full">
+						<div className="flex flex-col justify-center h-full">
 							<img
 								onClick={handleOpenFileSelect}
 								loading="eager"
@@ -286,7 +290,20 @@ const EditCourseInfor = () => {
 								alt=""
 							/>
 							<Input ref={inputFileRef} type="file" radius="sm" onChange={onChangeImage} multiple={false}
-								   accept="image/*" />
+								   accept="image/*" className="hidden" />
+							<div className="flex items-center justify-center gap-4">
+								<button type="button" className="text-sm underline select-none active:opacity-80"
+										onClick={() => setFormValue(prev => ({ ...prev, image: null }))}>
+									Remove
+								</button>
+								<button type="button" className="text-sm underline select-none active:opacity-80"
+										onClick={() => setFormValue(prev => ({
+											...prev,
+											image: courseInfoQuery.data?.["image"],
+										}))}>
+									Reset
+								</button>
+							</div>
 						</div>
 					</div>
 

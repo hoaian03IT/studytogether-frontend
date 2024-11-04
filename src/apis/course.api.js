@@ -12,7 +12,6 @@ class CourseServiceClass {
 			image,
 		} = payload;
 
-		
 
 		const httpAuth = createHttpAuth(userState, updateUserState);
 		const res = await httpAuth.post(`/course/create`, {
@@ -27,16 +26,32 @@ class CourseServiceClass {
 		return res.data;
 	}
 
-	async updateCourseInformation(courseId, payload, user, updateUserState) {
+	async updateCourseInformation(payload, user, updateUserState) {
+		const {
+			courseId,
+			courseName,
+			sourceLanguageId,
+			courseLevelId,
+			tag,
+			shortDescription,
+			detailedDescription,
+			image,
+		} = payload;
 		const httpAuth = createHttpAuth(user, updateUserState);
-		const response = await httpAuth.put(`/course/update`, {
-		  courseId,
-		  ...payload,
+		const response = await httpAuth.post(`/course/update`, {
+			courseId,
+			courseName,
+			sourceLanguageId,
+			courseLevelId,
+			tag,
+			shortDescription,
+			detailedDescription,
+			image,
 		});
 		return response.data;
-	  }
-	  
-	  
+	}
+
+
 	async fetchCourseInformation(courseId) {
 		const res = await http.get(`/course/overview?course-id=${courseId}`);
 		return res.data;
