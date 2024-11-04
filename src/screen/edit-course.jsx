@@ -20,7 +20,18 @@ const MAX_CHAR_TAG = 30;
 const MAX_SHORT_DESCRIPTION = 255;
 
 const EditCourseInfor = () => {
-  const { courseId } = useParams(); 
+  const params = useParams(); 
+  const courseInfoQuery = useQuery({
+	queryKey: [queryKeys.courseInfo, params?.courseId],
+	queryFn: async ({ queryKey }) => {
+		try {
+			return await CourseService.fetchCourseInformation(queryKey[1]);
+		} catch (error) {
+			console.error(error);
+		}
+	},
+});
+
 
   const [formValue, setFormValue] = useState({
     targetLanguageId: "",
@@ -36,32 +47,23 @@ const EditCourseInfor = () => {
   const navigate = useNavigate();
   const inputFileRef = useRef();
   
-  useEffect(() => {
-    const fetchCourseData = async () => {
-      try {
-        const data = await CourseService.fetchCourseInformation(courseId);
-        setFormValue({
-          targetLanguageId: data.targetLanguageId,
-          sourceLanguageId: data.sourceLanguageId,
-          courseLevelId: data.courseLevelId,
-          courseName: data.courseName,
-          tag: data.tag,
-          shortDescription: data.shortDescription,
-          detailedDescription: data.detailedDescription,
-          image: data.image || defaultUploadImage,
-        });
-      } catch (error) {
-        toast.error("Không thể tải thông tin khóa học!");
-        console.error(error);
-      }
-    };
-    fetchCourseData();
-  }, [courseId]);
-
+  
+	useEffect(() => {
+		setFormValue({
+	targetLanguageId: courseInfoQuery.data?.['target languague id']?.toString(),
+    sourceLanguageId: courseInfoQuery.data?.['source languague id']?.toString(),
+    courseLevelId: courseInfoQuery.data?.['source level id']?.toString(),
+    courseName: courseInfoQuery.data?.['name'],
+    tag: courseInfoQuery.data?.['tag'],
+    shortDescription: courseInfoQuery.data?.['short description'],
+    detailedDescription: courseInfoQuery.data?.['detailed description'],
+    image: "",
+		})
+	},[courseInfoQuery.data])
   
   const updateCourseMutation = useMutation({
 	mutationFn: async () => {
-	  return await CourseService.updateCourseInformation(courseId, formValue, user, updateUserState);
+	  return await CourseService.updateCourseInformation(params?.courseId, formValue, user, updateUserState);
 	},
 	onSuccess: (data) => {
 	  toast.success("Cập nhật khóa học thành công!");
@@ -130,7 +132,7 @@ const EditCourseInfor = () => {
 		const { name, value } = e.target;
 
 		setFormValue({
-			...formValue,
+			...formValue.toString,
 			[name]: value,
 		});
 	};
@@ -165,6 +167,7 @@ const EditCourseInfor = () => {
 					<div className="col-span-4 grid grid-cols-2 gap-y-5">
 						<div className="col-span-2 grid grid-cols-2 gap-4">
 							<Select
+							selectedKeys={[formValue.sourceLanguageId]}
 								size="lg"
 								label={<Label>Ngôn ngữ gốc</Label>}
 								placeholder="English"
@@ -186,6 +189,7 @@ const EditCourseInfor = () => {
 								))}
 							</Select>
 							<Select
+							selectedKeys={[formValue.sourceLanguageId]}
 								size="lg"
 								label={<Label>Ngôn ngữ học</Label>}
 								placeholder="Tiếng Việt"
@@ -208,6 +212,7 @@ const EditCourseInfor = () => {
 							</Select>
 						</div>
 						<Select
+						selectedKeys={[formValue.courseLevelId]}
 							size="lg"
 							label={<Label>Cấp độ</Label>}
 							className="col-span-4"
@@ -237,7 +242,7 @@ const EditCourseInfor = () => {
 							placeholder="VD: Tiếng anh lớp 6"
 							value={formValue.courseName}
 							onChange={e => {
-								if (e.target.value.length <= MAX_CHAR_COURSE_NAME) {
+								if (e.target.value?.length <= MAX_CHAR_COURSE_NAME) {
 									setFormValue(prev => ({ ...prev, courseName: e.target.value }));
 								}
 							}}
@@ -245,7 +250,7 @@ const EditCourseInfor = () => {
 							required
 							isRequired
 							endContent={<span
-								className="text-sm text-gray-400">{formValue.courseName.length}/{MAX_CHAR_COURSE_NAME}</span>}
+								className="text-sm text-gray-400">{formValue.courseName?.length}/{MAX_CHAR_COURSE_NAME}</span>}
 						/>
 						<Input
 							size="lg"
@@ -258,14 +263,14 @@ const EditCourseInfor = () => {
 							className="col-span-4"
 							value={formValue.tag}
 							onChange={e => {
-								if (e.target.value.length <= MAX_CHAR_TAG) {
+								if (e.target.value?.length <= MAX_CHAR_TAG) {
 									setFormValue(prev => ({ ...prev, tag: e.target.value }));
 								}
 							}}
 							required
 							isRequired
 							endContent={<span
-								className="text-sm text-gray-400">{formValue.tag.length}/{MAX_CHAR_TAG}</span>}
+								className="text-sm text-gray-400">{formValue.tag?.length}/{MAX_CHAR_TAG}</span>}
 						/>
 					</div>
 					<div className="col-span-2 row-span-2 flex flex-col w-full h-full">
@@ -296,14 +301,14 @@ const EditCourseInfor = () => {
 						className="col-span-4"
 						value={formValue.shortDescription}
 						onChange={e => {
-							if (e.target.value.length <= MAX_SHORT_DESCRIPTION) {
+							if (e.target.value?.length <= MAX_SHORT_DESCRIPTION) {
 								setFormValue(prev => ({ ...prev, shortDescription: e.target.value }));
 							}
 						}}
 						rows={3}
 						disableAutosize
 						endContent={<span
-							className="text-sm text-gray-400">{formValue.shortDescription.length}/{MAX_SHORT_DESCRIPTION}</span>}
+							className="text-sm text-gray-400">{formValue.shortDescription?.length}/{MAX_SHORT_DESCRIPTION}</span>}
 					/>
 					<Textarea
 						size="lg"
