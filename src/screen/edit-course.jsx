@@ -21,8 +21,7 @@ const MAX_SHORT_DESCRIPTION = 255;
 
 const EditCourseInfor = () => {
   const { courseId } = useParams(); 
-  const navigate = useNavigate();
-  const inputFileRef = useRef();
+
   const [formValue, setFormValue] = useState({
     targetLanguageId: "",
     sourceLanguageId: "",
@@ -34,6 +33,8 @@ const EditCourseInfor = () => {
     image: "",
   });
 
+  const navigate = useNavigate();
+  const inputFileRef = useRef();
   
   useEffect(() => {
     const fetchCourseData = async () => {
@@ -59,17 +60,17 @@ const EditCourseInfor = () => {
 
   
   const updateCourseMutation = useMutation({
-    mutationFn: async () => {
-      return await CourseService.updateCourseInformation(courseId, formValue);
-    },
-    onSuccess: () => {
-      toast.success("Cập nhật khóa học thành công!");
-      navigate("/courses");
-    },
-    onError: (error) => {
-      toast.error("Cập nhật khóa học thất bại!");
-      console.error(error);
-    },
+	mutationFn: async () => {
+	  return await CourseService.updateCourseInformation(courseId, formValue, user, updateUserState);
+	},
+	onSuccess: (data) => {
+	  toast.success("Cập nhật khóa học thành công!");
+	  navigate("/courses");
+	},
+	onError: (error) => {
+	  toast.error("Cập nhật khóa học thất bại!");
+	  console.error(error);
+	},
   });
 
 	const languageQuery = useQuery({
@@ -159,9 +160,6 @@ const EditCourseInfor = () => {
 
 	return (
 		<div className="bg-white px-6 rounded w-full flex flex-col items-center">
-			<h1 className="w-full text-gray-700 p-6 mt-4 bg-gradient-to-r from-blue-300 to-red-100 rounded-lg text-center text-3xl">
-				TẠO KHÓA HỌC CHO RIÊNG BẠN
-			</h1>
 			<div className="max-w-screen-lg w-full">
 				<form onSubmit={handleSubmit} className="my-6 w-full grid gap-x-4 gap-y-5 grid-cols-6">
 					<div className="col-span-4 grid grid-cols-2 gap-y-5">

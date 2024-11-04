@@ -27,14 +27,15 @@ class CourseServiceClass {
 		return res.data;
 	}
 
-	async updateCourseInformation(courseId, payload, userState, updateUserState) {
-		const httpAuth = createHttpAuth(userState, updateUserState);
+	async updateCourseInformation(courseId, payload, user, updateUserState) {
+		const httpAuth = createHttpAuth(user, updateUserState);
 		const response = await httpAuth.put(`/course/update`, {
 		  courseId,
 		  ...payload,
 		});
 		return response.data;
 	  }
+	  
 	  
 	async fetchCourseInformation(courseId) {
 		const res = await http.get(`/course/overview?course-id=${courseId}`);
