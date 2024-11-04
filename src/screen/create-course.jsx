@@ -171,7 +171,7 @@ const CreateCourse = () => {
 								name="sourceLanguageId"
 								value={formValue.sourceLanguageId}
 								onChange={handleInputChange}>
-								{languageQuery.data?.languages.map((language) => (
+								{languageQuery.data?.languages?.map((language) => (
 									<SelectItem
 										startContent={<img className="size-5 rounded-full" src={language["image"]}
 														   alt="" />}
