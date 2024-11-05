@@ -22,6 +22,7 @@ const EditCourse = lazy(() => import("../screen/edit-course"));
 const ListExamples = lazy(() => import("../screen/list-examples"));
 const Purchase = lazy(() => import("../screen/course-purchase"));
 const Business = lazy(() => import("../screen/course-business"));
+const MulChoices = lazy(() => import("../screen/exercise-mc"));
 const CourseInformation = lazy(() => import("../screen/course-information.jsx"));
 
 export const publicRoutes = [
@@ -55,6 +56,7 @@ export const publicRoutes = [
 	{ path: pathname.courseInformation, component: CourseInformation, layout: PrimaryLayout },
 	{ path: pathname.payment, component: Purchase, layout: PrimaryLayout },
 	{ path: pathname.editCourse, component: EditCourse, layout: ThirdLayout },
+	{ path: pathname.mulChoices, component: MulChoices, layout: PrimaryLayout },
 	{
 		path: pathname.listExamples,
 		component: ListExamples,
