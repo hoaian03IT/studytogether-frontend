@@ -17,4 +17,5 @@ export const pathname = {
 	courseBusiness: "/course-business",
 	courseInformation: "/course-information/:courseId",
 	payment: "/course-purchase",
+	flashCard:"flash-card",
 };

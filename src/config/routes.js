@@ -23,6 +23,7 @@ const ListExamples = lazy(() => import("../screen/list-examples"));
 const Purchase = lazy(() => import("../screen/course-purchase"));
 const Business = lazy(() => import("../screen/course-business"));
 const CourseInformation = lazy(() => import("../screen/course-information.jsx"));
+const FlashCard = lazy(() => import("../screen/flash-card.jsx"));
 
 export const publicRoutes = [
 	{ path: pathname.home, component: HomePage, layout: PrimaryLayout },
@@ -59,5 +60,10 @@ export const publicRoutes = [
 		path: pathname.listExamples,
 		component: ListExamples,
 		layout: ThirdLayout,
+	},
+	{
+		path: pathname.flashCard,
+		component: FlashCard,
+		layout: PrimaryLayout,
 	},
 ];

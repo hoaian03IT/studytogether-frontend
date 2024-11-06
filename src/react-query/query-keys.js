@@ -8,6 +8,7 @@ const queryKeys = {
 	levelCourse: "level-course",
 	exampleByWord: "example-by-word",
 	courseLanguages: "course-languages",
+	flashCard: "flash-card",
 };
 
 export { queryKeys };
