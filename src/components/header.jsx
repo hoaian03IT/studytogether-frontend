@@ -22,6 +22,7 @@ export const Header = ({ fluid = false }) => {
 		setShowLanguageOption(false);
 	};
 
+	
 	return (
 		<div className="sticky top-0 z-50">
 			<Navbar maxWidth={fluid ? "full" : "xl"} className="bg-primary h-[3.5rem]">

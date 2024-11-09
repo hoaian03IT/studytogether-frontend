@@ -1,4 +1,4 @@
-import { http } from "../config/http";
+import { createHttpAuth, http } from "../config/http";
 
 class AuthServiceClass {
 	async createUserAccount({ email, password, role }) {
@@ -30,6 +30,12 @@ class AuthServiceClass {
 
 	async forgotPassword(email) {
 		const res = await http.post("/auth/forgot-password", { email: email });
+		return res.data;
+	}
+
+	async logout(userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.post("/auth/logout", {}, { withCredentials: true });
 		return res.data;
 	}
 }
