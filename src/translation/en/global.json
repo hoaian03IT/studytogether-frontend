@@ -11,6 +11,11 @@
     "save": "Save",
     "cancel": "Cancel",
     "error-message": "An error occurred. Please try again later.",
+    "INVALID_PASSWORD": "Invalid password",
+    "USER_NOT_FOUND": "User not existed",
+    "INCORRECT_PASSWORD": "Incorrect password",
+    "INTERNAL_SERVER_ERROR": "Internal server error. Please try again later",
+    "CHANGE_PASSWORD_SUCCESS": "Your password was changed",
     "header": {
       "home": "Home",
       "courses": "Courses",

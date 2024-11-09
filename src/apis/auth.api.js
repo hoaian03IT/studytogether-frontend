@@ -38,6 +38,15 @@ class AuthServiceClass {
 		const res = await httpAuth.post("/auth/logout", {}, { withCredentials: true });
 		return res.data;
 	}
+
+	async changePassword({ currentPassword, newPassword }, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.post("/auth/change-password", {
+			currentPassword,
+			newPassword,
+		}, { withCredentials: true });
+		return res.data;
+	}
 }
 
 const AuthService = new AuthServiceClass();
