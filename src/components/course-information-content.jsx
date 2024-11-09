@@ -1,13 +1,10 @@
 import { Accordion, AccordionItem, Checkbox, CircularProgress, Divider } from "@nextui-org/react";
-import { useState } from "react";
 import { BsBookmark, BsCollection, BsStopwatch } from "react-icons/bs";
 import { useQuery } from "@tanstack/react-query";
 import { CourseService } from "../apis/course.api.js";
 import { queryKeys } from "../react-query/query-keys.js";
 
 function CourseInformationContent({ courseId }) {
-	const [completed, setCompleted] = useState(15);
-
 	const courseContentQuery = useQuery({
 		queryKey: [queryKeys.courseContent, courseId],
 		queryFn: async ({ queryKey }) => {
@@ -29,7 +26,7 @@ function CourseInformationContent({ courseId }) {
 				<div className="flex items-center text-sm p-2">
 					<p className="flex-1 font-normal text-secondary text-xl">Course collections</p>
 					<span className="flex items-center ml-4 text-gray-500"><BsCollection
-						className="mr-1 size-6 text-purple-500" /> {courseContentQuery.data?.levels.length} collections</span>
+						className="mr-1 size-6 text-purple-500" /> {courseContentQuery.data?.levels.length || 0} collections</span>
 					<span className="flex items-center ml-4 text-gray-500"><BsStopwatch
 						className="mr-1 size-6 text-yellow-500" /> 300m</span>
 				</div>
@@ -43,7 +40,7 @@ function CourseInformationContent({ courseId }) {
 								title={<div className="flex items-center text-base">
 									<span className="text-base">{level["levelName"]}</span>
 									<div className="flex-1 flex items-center justify-end text-secondary">
-										<BsBookmark className="size-4 text-secondary" /> {level.words.length} words
+										<BsBookmark className="size-4 text-secondary" /> {level.words.length || 0} words
 									</div>
 								</div>
 								}>

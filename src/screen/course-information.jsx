@@ -1,7 +1,7 @@
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { Button, Link, Tab, Tabs, Tooltip, User } from "@nextui-org/react";
 import { Fragment, useState } from "react";
-import { USDollar } from "../utils/currency.js";
+import { USDollar, VNDong } from "../utils/currency.js";
 import { IoCartOutline, IoStopwatchOutline } from "react-icons/io5";
 import { TbVocabulary } from "react-icons/tb";
 import { HiOutlineCollection } from "react-icons/hi";
@@ -11,13 +11,15 @@ import { LuPencilLine } from "react-icons/lu";
 import { CourseInformationDescription } from "../components/course-information-description.jsx";
 import { CourseInformationContent } from "../components/course-information-content.jsx";
 import { Link as LinkDom, useNavigate, useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CourseInformationComment } from "../components/course-information-comment.jsx";
 import { CourseService } from "../apis/course.api.js";
 import { queryKeys } from "../react-query/query-keys.js";
 
 function CourseInformation() {
 	const params = useParams();
+
+	const clientQuery = useQueryClient();
 
 	const [selectedTab, setSelectedTab] = useState("description");
 
@@ -30,9 +32,18 @@ function CourseInformation() {
 				console.error(error);
 			}
 		},
+		initialData: clientQuery.getQueryData([queryKeys.courseInfo, params?.courseId]),
+		enabled: !clientQuery.getQueryData([queryKeys.courseInfo, params?.courseId]),
 	});
 
-	const { data: courseInfo } = courseInfoQuery;
+	const coursePriceQuery = useQuery({
+		queryKey: [queryKeys.coursePrice, params?.courseId],
+		queryFn: async () => await CourseService.fetchCoursePrices(params?.courseId),
+		initialData: clientQuery.getQueryData([queryKeys.coursePrice, params?.courseId]),
+		enabled: !clientQuery.getQueryData([queryKeys.coursePrice, params?.courseId]),
+	});
+
+	const handledPrice = coursePriceQuery.data?.["price"] * (1 - coursePriceQuery.data?.["discount"]);
 
 	const navigate = useNavigate();
 
@@ -43,24 +54,26 @@ function CourseInformation() {
 				<FaArrowLeftLong className="size-5" />
 			</button>
 			<h2 className="ms-4 uppercase font-bold">
-				{courseInfo?.["name"]}
+				{courseInfoQuery.data?.["name"]}
 			</h2>
 		</div>
 		<div className="grid grid-cols-12 gap-6">
 			<div
 				style={{
-					backgroundImage: `url(${courseInfo?.["image"]})`,
+					backgroundImage: `url(${courseInfoQuery.data?.["image"]})`,
 				}}
 				className="bg-cover bg-center h-full min-h-96 rounded-md overflow-hidden col-span-8">
 				<div
 					className="h-full flex items-center justify-center flex-col space-y-4 bg-gradient-to-b from-transparent to-black">
-					{!!courseInfo?.["price"] ? <Fragment>
+					{!!coursePriceQuery.data?.["price"] ? <Fragment>
 						<p className="text-white text-xl font-bold">Purchase to continue this vocabulary course</p>
 						<p className="text-gray-200 text-sm font-normal w-1/2 text-center">
 							You need to buy to see full lessons of this course, thank you!
 						</p>
 						<Button className="bg-third text-third-foreground shadow-2xl" radius="sm">
-							Buy now
+							Buy
+							now
+							- {coursePriceQuery.data?.["currency"] === "USD" ? USDollar.format(handledPrice) : VNDong.format(handledPrice)}
 						</Button>
 					</Fragment> : <Fragment>
 						<p className="text-white text-xl font-bold">This vocabulary course is free for you</p>
@@ -75,17 +88,17 @@ function CourseInformation() {
 				</div>
 			</div>
 			<div className="bg-white px-6 py-8 col-span-4 rounded-md flex flex-col justify-between">
-				{!!courseInfo?.["price"] ? <Fragment>
+				{!!coursePriceQuery.data?.["price"] ? <Fragment>
 						<div className="flex items-center">
 							<span
-								className="text-2xl font-bold">{USDollar.format(courseInfo?.["price"] * (1 - courseInfo?.["discount"] / 100))}</span>
-							<span
-								className="ms-2 text-sm text-gray-500 line-through">{USDollar.format(courseInfo?.["price"])}</span>
+								className="text-2xl font-bold">{coursePriceQuery.data?.["currency"] === "USD" ? USDollar.format(handledPrice) : VNDong.format(handledPrice)}</span>
+							{coursePriceQuery.data?.["discount"] > 0 && <span
+								className="ms-2 text-sm text-gray-500 line-through">{coursePriceQuery.data?.["currency"] === "USD" ? USDollar.format(coursePriceQuery.data?.["price"]) : VNDong.format(coursePriceQuery.data?.["price"])}</span>}
 						</div>
-						<div>
-							<p className="p-1 inline-block text-sm uppercase bg-purple-600 text-white rounded-sm">{courseInfo?.["discount"]}%
+						{coursePriceQuery.data?.["discount"] > 0 && <div>
+							<p className="p-1 inline-block text-sm uppercase bg-purple-600 text-white rounded-sm">{coursePriceQuery.data?.["discount"] * 100}%
 								OFF</p>
-						</div>
+						</div>}
 						<div className="mt-8 flex flex-col justify-center space-y-2">
 							<Button className="bg-third text-third-foreground font-bold text-base" size="lg" radius="sm">Buy
 								now</Button>
@@ -107,16 +120,18 @@ function CourseInformation() {
 					</Fragment>}
 				<div>
 					<p className="flex items-center text-gray-600 mt-4"><TbVocabulary
-						className="size-6 mr-4" />{courseInfo?.["n_levels"]}&nbsp;collections</p>
+						className="size-6 mr-4" />{courseInfoQuery.data?.["n_levels"]}&nbsp;collections</p>
 					<p className="flex items-center text-gray-600 mt-4"><HiOutlineCollection
-						className="size-6 mr-4" />{courseInfo?.["n_words"]}&nbsp;words</p>
+						className="size-6 mr-4" />{courseInfoQuery.data?.["n_words"]}&nbsp;words</p>
 					<p className="flex items-center text-gray-600 mt-4"><IoStopwatchOutline
 						className="size-6 mr-4" />15m per day</p>
 					<p className="flex items-center text-gray-600 mt-4"><HiLanguage
 						className="size-6 mr-4" />
-						<strong className="font-semibold text-primary">{courseInfo?.["target language"]}</strong>
+						<strong
+							className="font-semibold text-primary">{courseInfoQuery.data?.["target language"]}</strong>
 						&nbsp;for&nbsp;
-						<strong className="font-semibold text-third">{courseInfo?.["source language"]}</strong>
+						<strong
+							className="font-semibold text-third">{courseInfoQuery.data?.["source language"]}</strong>
 					</p>
 				</div>
 			</div>
@@ -124,19 +139,19 @@ function CourseInformation() {
 		<div className="grid grid-cols-12 gap-6">
 			<div className="col-span-8 p-6">
 				<div>
-					<h2 className="font-bold uppercase">{courseInfo?.["name"]}</h2>
+					<h2 className="font-bold uppercase">{courseInfoQuery.data?.["name"]}</h2>
 					<div className="flex items-center justify-between py-4 border-b-1 border-b-gray-300">
 						<User
-							name={courseInfo?.["first name"] && courseInfo?.["last name"] ? `${courseInfo?.["first name"]} ${courseInfo?.["last name"]}` : courseInfo?.["username"]}
+							name={courseInfoQuery.data?.["first name"] && courseInfoQuery.data?.["last name"] ? `${courseInfoQuery.data?.["first name"]} ${courseInfoQuery.data?.["last name"]}` : courseInfoQuery.data?.["username"]}
 							description={(
-								<Link as={LinkDom} href={`/profile/${courseInfo?.["username"]}`}
-									  to={`/profile/${courseInfo?.["username"]}`}
+								<Link as={LinkDom} href={`/profile/${courseInfoQuery.data?.["username"]}`}
+									  to={`/profile/${courseInfoQuery.data?.["username"]}`}
 									  size="sm" isExternal>
-									@{courseInfo?.["username"]}
+									@{courseInfoQuery.data?.["username"]}
 								</Link>
 							)}
 							avatarProps={{
-								src: courseInfo?.["avatar image"],
+								src: courseInfoQuery.data?.["avatar image"],
 							}} />
 						<div className="flex space-x-4">
 							<Tooltip content="Participants" placement="bottom" radius="sm">
@@ -144,7 +159,7 @@ function CourseInformation() {
 									<div className="bg-third rounded-full size-6 flex items-center justify-center">
 										<FiUsers className="text-third-foreground" />
 									</div>
-									<span className="ms-1 text-sm">{courseInfo?.["n_enrollments"]}</span>
+									<span className="ms-1 text-sm">{courseInfoQuery.data?.["n_enrollments"]}</span>
 								</div>
 							</Tooltip>
 							<Tooltip content="Feedbacks" placement="bottom" radius="sm">
@@ -153,7 +168,7 @@ function CourseInformation() {
 										className="bg-third rounded-full size-6 flex items-center justify-center">
 										<LuPencilLine className="text-third-foreground" />
 									</div>
-									<span className="ms-1 text-sm">{courseInfo?.["n_feedbacks"]}</span>
+									<span className="ms-1 text-sm">{courseInfoQuery.data?.["n_feedbacks"]}</span>
 								</div>
 							</Tooltip>
 						</div>
@@ -169,11 +184,11 @@ function CourseInformation() {
 				</div>
 				<div className="mt-6 px-4">
 					{selectedTab === "description" && <CourseInformationDescription
-						shortDescription={courseInfo?.["short description"]}
-						detailedDescription={courseInfo?.["detailed description"]} />}
+						shortDescription={courseInfoQuery.data?.["short description"]}
+						detailedDescription={courseInfoQuery.data?.["detailed description"]} />}
 					{selectedTab === "content" && <CourseInformationContent courseId={params?.courseId} />}
 					{selectedTab === "comment" && <CourseInformationComment courseId={params?.courseId}
-																			authorUsername={courseInfo["username"]} />}
+																			authorUsername={courseInfoQuery.data["username"]} />}
 				</div>
 			</div>
 			<div className="col-span-4">

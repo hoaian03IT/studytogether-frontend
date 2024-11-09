@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
@@ -15,22 +14,22 @@ import { GlobalStateProvider } from "./components/providers/GlobalStateProvider.
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
-	<StrictMode>
-		<BrowserRouter>
-			<NextUIProvider>
-				<QueryClientProvider client={queryClient}>
-					<GoogleOAuthProvider clientId={import.meta.env.VITE_GG_CLIENT_ID}>
-						<RecoilRoot>
-							<TranslationProvider>
-								<ReactQueryDevtools initialIsOpen={false} />
-								<GlobalStateProvider>
-									<App />
-								</GlobalStateProvider>
-							</TranslationProvider>
-						</RecoilRoot>
-					</GoogleOAuthProvider>
-				</QueryClientProvider>
-			</NextUIProvider>
-		</BrowserRouter>
-	</StrictMode>,
+	// <StrictMode>
+	<BrowserRouter>
+		<NextUIProvider>
+			<QueryClientProvider client={queryClient}>
+				<GoogleOAuthProvider clientId={import.meta.env.VITE_GG_CLIENT_ID}>
+					<RecoilRoot>
+						<TranslationProvider>
+							<ReactQueryDevtools initialIsOpen={false} />
+							<GlobalStateProvider>
+								<App />
+							</GlobalStateProvider>
+						</TranslationProvider>
+					</RecoilRoot>
+				</GoogleOAuthProvider>
+			</QueryClientProvider>
+		</NextUIProvider>
+	</BrowserRouter>,
+	// </StrictMode>,
 );

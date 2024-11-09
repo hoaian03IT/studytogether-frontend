@@ -1,4 +1,5 @@
 import { createHttpAuth, http } from "../config/http";
+import { toast } from "react-toastify";
 
 class CourseServiceClass {
 	async createCourse(userState, updateUserState, payload) {
@@ -92,6 +93,16 @@ class CourseServiceClass {
 			levelName,
 		});
 		return res.data;
+	}
+
+	async fetchCoursePrices(courseId) {
+		try {
+			const res = await http.get(`/course/prices?course-id=${courseId}`);
+			return res.data;
+		} catch (error) {
+			toast.error("Oops! Something went wrong!");
+			return {};
+		}
 	}
 }
 

@@ -16,7 +16,7 @@ export const pathname = {
 	addByLevels: "/add-by-levels",
 	courseBusiness: "/course-business",
 	courseInformation: "/course-information/:courseId",
-	payment: "/course-purchase",
+	payment: "/course-purchase/:courseId",
 	flashCard: "flash-card",
 	mulChoices: "/exercise-mc",
 };

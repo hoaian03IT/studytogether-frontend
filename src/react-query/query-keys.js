@@ -9,6 +9,7 @@ const queryKeys = {
 	exampleByWord: "example-by-word",
 	courseLanguages: "course-languages",
 	flashCard: "flash-card",
+	coursePrice: "course-price",
 };
 
 export { queryKeys };

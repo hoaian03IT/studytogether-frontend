@@ -18,7 +18,7 @@ function CourseInformationComment({ courseId, authorUsername }) {
 		},
 	});
 	return <div>
-		<h2 className="text-xl font-bold">Comments(1)</h2>
+		<h2 className="text-xl font-bold">Comments({courseCommentQuery.data?.reduce((prev, curr) => prev + curr?.["replies"]?.length + 1, 0) || 0})</h2>
 		{courseCommentQuery.isLoading ?
 			<div className="flex justify-center"><CircularProgress label="Loading..." /></div> :
 			<div className="mt-8">
@@ -32,7 +32,7 @@ function CourseInformationComment({ courseId, authorUsername }) {
 						role={item["username"] === authorUsername ? "author" : item["role"]}
 						rate={item["rate"]}
 					>
-						{!item?.replies ? null : item?.replies.map(reply => <Feedback
+						{!item?.["replies"] ? null : item?.["replies"].map(reply => <Feedback
 							name={reply["firstName"] && reply["lastName"] ? `${reply["firstName"]} ${reply["lastName"]}` : `@${reply["username"]}`}
 							key={reply["commentId"]}
 							avatar={reply["avatarImage"]}
