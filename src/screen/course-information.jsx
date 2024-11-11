@@ -1,8 +1,8 @@
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { Button, Link, Tab, Tabs, Tooltip, User } from "@nextui-org/react";
-import { Fragment, useState } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { USDollar, VNDong } from "../utils/currency.js";
-import { IoCartOutline, IoStopwatchOutline } from "react-icons/io5";
+import { IoStopwatchOutline } from "react-icons/io5";
 import { TbVocabulary } from "react-icons/tb";
 import { HiOutlineCollection } from "react-icons/hi";
 import { HiLanguage } from "react-icons/hi2";
@@ -15,13 +15,37 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CourseInformationComment } from "../components/course-information-comment.jsx";
 import { CourseService } from "../apis/course.api.js";
 import { queryKeys } from "../react-query/query-keys.js";
+import { EnrollmentService } from "../apis/enrollment.api.js";
+import { useRecoilValue } from "recoil";
+import { userState } from "../recoil/atoms/user.atom.js";
+import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
+import { pathname } from "../routes/index.js";
 
 function CourseInformation() {
 	const params = useParams();
+	const user = useRecoilValue(userState);
+	const { updateUserState } = useContext(GlobalStateContext);
 
 	const clientQuery = useQueryClient();
 
 	const [selectedTab, setSelectedTab] = useState("description");
+	const [enrolled, setEnrolled] = useState(false);
+
+	useEffect(() => {
+		user.isLogged &&
+		EnrollmentService.fetchEnrollmentInfo(params?.courseId, user, updateUserState)
+			.then(res => {
+				if (res.data?.["enrollment id"]) {
+					setEnrolled(true);
+				}
+			}).catch(() => {
+			setEnrolled(false);
+		});
+	}, [params?.courseId, updateUserState, user, user.isLogged]);
+
+	useEffect(() => {
+		console.log(enrolled);
+	}, [enrolled]);
 
 	const courseInfoQuery = useQuery({
 		queryKey: [queryKeys.courseInfo, params?.courseId],
@@ -70,18 +94,22 @@ function CourseInformation() {
 						<p className="text-gray-200 text-sm font-normal w-1/2 text-center">
 							You need to buy to see full lessons of this course, thank you!
 						</p>
-						<Button className="bg-third text-third-foreground shadow-2xl" radius="sm">
-							Buy
-							now
-							- {coursePriceQuery.data?.["currency"] === "USD" ? USDollar.format(handledPrice) : VNDong.format(handledPrice)}
-						</Button>
+						{enrolled ? <Button className="bg-third text-third-foreground shadow-2xl" radius="sm"
+							>
+								Learn now
+							</Button> :
+							<Button className="bg-third text-third-foreground shadow-2xl" radius="sm"
+									onClick={() => navigate(pathname.payment.split(":")[0] + params?.courseId)}>
+								Buy now -
+								${coursePriceQuery.data?.["currency"] === "USD" ? USDollar.format(handledPrice) : VNDong.format(handledPrice)}
+							</Button>}
 					</Fragment> : <Fragment>
 						<p className="text-white text-xl font-bold">This vocabulary course is free for you</p>
 						<p className="text-gray-200 text-sm font-normal w-1/2 text-center">
 							There are a lot of words waiting for you to learn
 						</p>
 						<Button className="bg-third text-third-foreground shadow-2xl" radius="sm">
-							Join now
+							{enrolled ? "Join now" : "Learn now"}
 						</Button>
 					</Fragment>
 					}
@@ -89,22 +117,33 @@ function CourseInformation() {
 			</div>
 			<div className="bg-white px-6 py-8 col-span-4 rounded-md flex flex-col justify-between">
 				{!!coursePriceQuery.data?.["price"] ? <Fragment>
-						<div className="flex items-center">
+						{!enrolled &&
+							<Fragment>
+								<div className="flex items-center">
 							<span
 								className="text-2xl font-bold">{coursePriceQuery.data?.["currency"] === "USD" ? USDollar.format(handledPrice) : VNDong.format(handledPrice)}</span>
-							{coursePriceQuery.data?.["discount"] > 0 && <span
-								className="ms-2 text-sm text-gray-500 line-through">{coursePriceQuery.data?.["currency"] === "USD" ? USDollar.format(coursePriceQuery.data?.["price"]) : VNDong.format(coursePriceQuery.data?.["price"])}</span>}
-						</div>
-						{coursePriceQuery.data?.["discount"] > 0 && <div>
-							<p className="p-1 inline-block text-sm uppercase bg-purple-600 text-white rounded-sm">{coursePriceQuery.data?.["discount"] * 100}%
-								OFF</p>
-						</div>}
+									{coursePriceQuery.data?.["discount"] > 0 && <span
+										className="ms-2 text-sm text-gray-500 line-through">{coursePriceQuery.data?.["currency"] === "USD" ? USDollar.format(coursePriceQuery.data?.["price"]) : VNDong.format(coursePriceQuery.data?.["price"])}</span>}
+								</div>
+								{coursePriceQuery.data?.["discount"] > 0 && <div>
+									<p className="p-1 inline-block text-sm uppercase bg-purple-600 text-white rounded-sm">{coursePriceQuery.data?.["discount"] * 100}%
+										OFF</p>
+								</div>}
+							</Fragment>
+
+						}
+
 						<div className="mt-8 flex flex-col justify-center space-y-2">
-							<Button className="bg-third text-third-foreground font-bold text-base" size="lg" radius="sm">Buy
-								now</Button>
-							<Button variant="bordered" className="font-bold text-base" size="lg" radius="sm"><IoCartOutline
-								className="size-10" /> Add to
-								list</Button>
+							{!enrolled ? <Fragment>
+								<Button className="bg-third text-third-foreground font-bold text-base"
+										onClick={() => navigate(pathname.payment.split(":")[0] + params?.courseId)}
+										size="lg"
+										radius="sm">Buy
+									now</Button>
+								<Button variant="bordered" className="font-bold text-base" size="lg"
+										radius="sm">Add to whitelist</Button>
+							</Fragment> : <Button className="bg-third text-third-foreground font-bold text-base" size="lg"
+												  radius="sm">Learn now</Button>}
 						</div>
 					</Fragment> :
 					<Fragment>

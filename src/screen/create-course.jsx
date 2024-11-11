@@ -14,6 +14,7 @@ import { LanguageService } from "../apis/language.api.js";
 import { CourseLevelService } from "../apis/courseLevel.api.js";
 import defaultUploadImage from "../assets/default-placeholder-upload.png";
 import { queryKeys } from "../react-query/query-keys.js";
+import { base64Converter } from "../utils/base64-convert.js";
 
 const MAX_CHAR_COURSE_NAME = 100;
 const MAX_CHAR_TAG = 30;
@@ -93,27 +94,19 @@ const CreateCourse = () => {
 		},
 	});
 
-	const onChangeImage = (e) => {
+	const onChangeImage = async (e) => {
 		const file = e.target.files[0];
 		if (file.type.split("/")[0] !== "image") {
 			toast.warn("File must be an image");
 			return;
 		}
-		let maxSize = 200; // KB
-		if (file.size / 1024 > maxSize) {
-			toast.warn(`File is too large, maximum ${maxSize}KB`);
-			return;
+		let maxSize = 2; // MB
+		if (file.size / (1024 * 1024) <= maxSize) {
+			let { base64 } = await base64Converter(file);
+			setFormValue(prev => ({ ...prev, image: base64 }));
+		} else {
+			toast.warn("Image must be smaller than 2MB");
 		}
-
-		const reader = new FileReader();
-		reader.onload = () => {
-			setFormValue(prev => ({ ...prev, image: reader.result }));
-			console.log(reader.result);
-		};
-		reader.onerror = (error) => {
-			console.error(error);
-		};
-		reader.readAsDataURL(file);
 	};
 
 	const handleOpenFileSelect = () => {

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { Button } from "@nextui-org/react";
 import { useNavigate, useParams } from "react-router-dom";
-import { UserService } from "../apis/user.api.js";
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom.js";
 import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
@@ -14,13 +13,22 @@ import { CourseService } from "../apis/course.api.js";
 import { USDollar, VNDong } from "../utils/currency.js";
 import vnpayLogo from "../assets/vnp-logo.png";
 import vnpayLogoHorizontal from "../assets/vnpay-horizontal-logo.png";
+import { PaymentService } from "../apis/payment.api.js";
+import { TranslationContext } from "../components/providers/TranslationProvider.jsx";
+import { EnrollmentService } from "../apis/enrollment.api.js";
 
+const initialPaypalOptions = {
+	clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID,
+	currency: "USD",
+	intent: "capture",
+};
 
 function Payment() {
 	const params = useParams();
 
 	const user = useRecoilValue(userState);
 	const { updateUserState } = useContext(GlobalStateContext);
+	const { translation } = useContext(TranslationContext);
 
 	const clientQuery = useQueryClient();
 
@@ -33,7 +41,7 @@ function Payment() {
 	};
 	// check mua khoa hoc hay chua
 	useEffect(() => {
-		UserService.fetchEnrollmentInfo(params?.courseId, user, updateUserState)
+		EnrollmentService.fetchEnrollmentInfo(params?.courseId, user, updateUserState)
 			.then(res => {
 				if (res?.["enrollment id"]) {
 					navigate(pathname.courseInformation.split(":")[0] + params?.courseId);
@@ -66,6 +74,51 @@ function Payment() {
 		initialData: clientQuery.getQueryData([queryKeys.coursePrice, params?.courseId]),
 		enabled: !clientQuery.getQueryData([queryKeys.coursePrice, params?.courseId]),
 	});
+
+	const onPaypalCreateOrder = async () => {
+		try {
+			const data = await PaymentService.createOrderPaypal({
+				courseId: params?.courseId,
+				intent: initialPaypalOptions.intent,
+				currentCode: initialPaypalOptions.currency,
+			}, user, updateUserState);
+			return data?.id;
+		} catch (error) {
+			toast.warn(translation(error.response.data?.["errorCode"]));
+		}
+	};
+
+	const fetchUrlVnPay = async () => {
+		const data = await PaymentService.createUrlVnPay({
+			paymentContent: `Thanh toán khóa học ${courseInfoQuery.data?.["name"]}`,
+			courseId: params?.courseId,
+		}, user, updateUserState);
+		let heightWindow = 600, widthWindow = 800;
+		let windowPosition = [(screen.width - widthWindow) / 2, (screen.height - heightWindow) / 2];
+		const newWindow = window.open(data?.["vnpUrl"], "_blank", `width=${widthWindow},height=${heightWindow},left=${windowPosition[0]},top=${windowPosition[1]}},toolbar=no,menubar=no,scrollbars=yes,resizable=yes`);
+		const intervalId = setInterval(async function() {
+			const res = await EnrollmentService.fetchEnrollmentInfo(params?.courseId, user, updateUserState);
+			if (res.data?.["enrollment id"]) {
+				clearInterval(intervalId);
+				navigate(pathname.courseInformation.split(":")[0] + params?.courseId);
+			}
+
+		}, 4000);
+	};
+
+	const onPaypalApproveOrder = async (data, actions) => {
+		try {
+			const dataRes = await PaymentService.completeOrderPaypal({
+				orderId: data.orderID,
+				courseId: params?.courseId,
+				intent: initialPaypalOptions.intent,
+			}, user, updateUserState);
+			toast.success(translation(dataRes?.["messageCode"]));
+			navigate(pathname.courseInformation.split(":")[0] + params?.courseId);
+		} catch (error) {
+			toast.warn(translation(error.response.data?.["errorCode"]));
+		}
+	};
 
 	return (
 		<div className="flex flex-col lg:flex-row gap-8 p-8 bg-gray-100">
@@ -155,19 +208,17 @@ function Payment() {
 					{selectedPaymentMethod === "paypal" && (
 						<div className="px-4 border-t border-gray-300">
 							<p className="text-gray-600">Thanh toán bằng PayPal</p>
-							<PayPalScriptProvider deferLoading={false} options={{
-								clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID,
-								currency: "USD",
-								intent: "capture",
-							}}>
-								<PayPalButtons style={{ layout: "vertical" }} />
+							<PayPalScriptProvider deferLoading={false} options={initialPaypalOptions}>
+								<PayPalButtons style={{ layout: "vertical" }}
+											   createOrder={onPaypalCreateOrder}
+											   onApprove={onPaypalApproveOrder} />
 							</PayPalScriptProvider>
 						</div>
 					)}
 					{selectedPaymentMethod === "vnpay" && (
 						<div className="p-4 border-t border-gray-300">
 							<p className="text-gray-600">Thanh toán bằng VNPay</p>
-							<Button size="lg" className="w-full mt-8 rounded-sm">
+							<Button size="lg" className="w-full mt-8 rounded-sm" onClick={fetchUrlVnPay}>
 								Thanh toán ngay với
 								<img className="h-[80%]" src={vnpayLogoHorizontal} alt="vnpay" />
 							</Button>

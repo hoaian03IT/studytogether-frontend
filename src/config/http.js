@@ -7,7 +7,7 @@ class Http {
 		this.instance = axios.create({
 			baseURL: import.meta.env.VITE_SERVER_URL,
 			timeout: 10000,
-			headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "application/json; charset=utf-8" },
 		});
 
 	}
@@ -16,7 +16,7 @@ class Http {
 		let axiosInstance = axios.create({
 			baseURL: import.meta.env.VITE_SERVER_URL,
 			timeout: 10000,
-			headers: { "Content-Type": "application/json" },
+			headers: { "Content-Type": "application/json; charset=utf-8" },
 		});
 		axiosInstance.interceptors.request.use(
 			async function(req) {

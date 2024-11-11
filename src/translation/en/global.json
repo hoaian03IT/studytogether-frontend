@@ -16,6 +16,8 @@
     "INCORRECT_PASSWORD": "Incorrect password",
     "INTERNAL_SERVER_ERROR": "Internal server error. Please try again later",
     "CHANGE_PASSWORD_SUCCESS": "Your password was changed",
+    "PAYMENT_SUCCESS": "Payment successfully",
+    "COURSE_ENROLLED": "You have enrolled this course before",
     "header": {
       "home": "Home",
       "courses": "Courses",
