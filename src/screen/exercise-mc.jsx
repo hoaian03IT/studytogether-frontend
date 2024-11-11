@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { Button, Progress, Modal } from '@nextui-org/react';
 
 const MultipleChoiceExercise = () => {
-  // Hardcoded question data for the demo
+
   const questions = [
     {
       question: 'Nature day is in...',
-      answers: ['Winter', 'Summer', 'Fall', 'Spring'],
+      answers: 'A.Winter\\nB.Summer\\nC.Fall\\nD.Spring',
       correctAnswer: 'Spring',
     },
     {
       question: 'Duy is...',
-      answers: ['Funny', 'Handsome', 'Generous', 'Gentle'],
+      answers: 'A.Funny\\nB.Handsome\\nC.Generous\\nD.Gentle',
       correctAnswer: 'Handsome',
     },
   ];
@@ -19,7 +19,7 @@ const MultipleChoiceExercise = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [progress, setProgress] = useState(40); // Initial progress value
+  const [progress, setProgress] = useState(0); 
   const [showExitModal, setShowExitModal] = useState(false);
 
   const questionData = questions[currentQuestionIndex];
@@ -39,11 +39,11 @@ const MultipleChoiceExercise = () => {
   const handleContinue = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setProgress(progress + 10); // Increase progress by 10%
+      setProgress(progress + 10); 
     } else {
-      alert('You have completed the demo!');
+      alert('ĐÃ HOÀN THÀNH!');
     }
-    // Reset states for the next question
+    
     setIsSubmitted(false);
     setSelectedAnswer(null);
   };
@@ -51,11 +51,11 @@ const MultipleChoiceExercise = () => {
   const handleSkip = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setProgress(progress + 10); // Increase progress by 10% even when skipping
+      setProgress(progress + 10); 
     } else {
       alert('You have completed the demo!');
     }
-    // Reset states for the next question
+    
     setIsSubmitted(false);
     setSelectedAnswer(null);
   };
@@ -65,7 +65,7 @@ const MultipleChoiceExercise = () => {
   };
 
   const handleConfirmExit = () => {
-    // Logic to navigate back to the main screen
+    
     alert('Returning to the main screen...');
     setShowExitModal(false);
   };
@@ -73,6 +73,8 @@ const MultipleChoiceExercise = () => {
   const handleCancelExit = () => {
     setShowExitModal(false);
   };
+
+  const isCorrect = selectedAnswer === questionData.correctAnswer;
 
   return (
     <div className="flex flex-col items-center p-8 bg-white">
@@ -92,11 +94,10 @@ const MultipleChoiceExercise = () => {
       <h2 className="text-xl font-bold mb-6">{questionData.question}</h2>
 
       <div className="space-y-4 w-full flex flex-col items-center">
-        {questionData.answers.map((answer, index) => {
-          // Determine styles for selected, correct, and incorrect answers
-          const isCorrectAnswer = answer === questionData.correctAnswer;
-          const isSelected = answer === selectedAnswer;
-          const isWrongAnswer = isSubmitted && isSelected && !isCorrectAnswer;
+        {questionData.answers.split('\\n').map((answer, index) => {
+          const optionText = answer.slice(2);
+          const isSelected = optionText === selectedAnswer;
+          const isWrongAnswer = isSubmitted && isSelected && !isCorrect;
 
           return (
             <button
@@ -106,11 +107,11 @@ const MultipleChoiceExercise = () => {
               } ${
                 isWrongAnswer
                   ? 'bg-red-100'
-                  : isSubmitted && isCorrectAnswer
+                  : isSubmitted && optionText === questionData.correctAnswer
                   ? 'bg-green-100'
                   : 'bg-white'
               }`}
-              onClick={() => handleAnswerClick(answer)}
+              onClick={() => handleAnswerClick(optionText)}
               disabled={isSubmitted}
             >
               <span
@@ -120,28 +121,48 @@ const MultipleChoiceExercise = () => {
                     : 'border-gray-500 text-gray-500'
                 }`}
               >
-                {String.fromCharCode(65 + index)}
+                {answer.charAt(0)}
               </span>
-              <span className="ml-4">{answer}</span>
+              <span className="ml-4">{optionText}</span>
             </button>
           );
         })}
       </div>
 
-      <div className="flex justify-center items-center mt-16 space-x-40 w-full ">
-        <Button flat auto className="bg-gray-200 text-gray-600 mr-80 " onClick={handleSkip}>
-          Skip
-        </Button>
-        <Button
-          auto
-          className={`${
-            selectedAnswer ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-600'
-          }`}
-          onClick={isSubmitted ? handleContinue : handleSubmit}
-          disabled={!selectedAnswer && !isSubmitted}
-        >
-          {isSubmitted ? 'Continue' : 'Check'}
-        </Button>
+      {/* Footer Section with Background */}
+      <div
+        className={`flex flex-col items-center justify-center w-full mt-8 p-8 rounded-lg ${
+          isSubmitted
+            ? isCorrect
+              ? 'bg-green-100 text-green-800'
+              : 'bg-red-100 text-red-800'
+            : 'bg-blue-100 text-blue-800'
+        }`}
+      >
+        <div className="flex items-center space-x-80">
+          {!isSubmitted && (
+            <Button flat auto className="bg-gray-200 text-gray-600" onClick={handleSkip}>
+              Skip
+            </Button>
+          )}
+          <Button
+            auto
+            className={`${
+              selectedAnswer ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-600'
+            }`}
+            onClick={isSubmitted ? handleContinue : handleSubmit}
+            disabled={!selectedAnswer && !isSubmitted}
+          >
+            {isSubmitted ? 'Continue' : 'Check'}
+          </Button>
+        </div>
+
+        {/* Feedback Message */}
+        {isSubmitted && (
+          <div className="mt-4 text-lg font-semibold">
+            {isCorrect ? 'Great job!' : "Don't give up. Try again!"}
+          </div>
+        )}
       </div>
 
       {/* Exit Confirmation Modal */}
@@ -161,22 +182,9 @@ const MultipleChoiceExercise = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
-      {isSubmitted && (
-        <div
-          className={`mt-8 text-lg font-semibold ${
-            selectedAnswer === questionData.correctAnswer
-              ? 'text-green-500'
-              : 'text-red-500'
-          }`}
-        >
-          {selectedAnswer === questionData.correctAnswer
-            ? 'Great job!'
-            : "Don't give up. Try again!"}
-        </div>
-      )}
     </div>
   );
 };
 
 export default MultipleChoiceExercise;
+

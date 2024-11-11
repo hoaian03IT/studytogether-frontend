@@ -133,7 +133,7 @@ const ListCourse = () => {
         <Button type="button" className="">
           Tạo khóa
         </Button>
-        <div className="flex items-center bg-white  border-1 ">
+        <div className="flex items-center bg-white  border-1 rounded-[80%]">
           <Input
             type="text"
             radius="sm"
