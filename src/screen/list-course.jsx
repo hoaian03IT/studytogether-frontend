@@ -7,6 +7,8 @@ import { Image } from "@nextui-org/image";
 import { FaBookBookmark } from "react-icons/fa6";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { FaTrophy } from "react-icons/fa6";
+import SearchnFilter from '../components/search-filter'; 
+
 
 const listAmage = [
   {
@@ -129,6 +131,7 @@ const ListCourse = () => {
       <h1 className="text-gray-700 mb p-6 b bg-gradient-to-r from-blue-300 to-red-100 rounded-lg flex text-center">
         LỰA CHỌN BỘ TỪ VỰNG CHO RIÊNG BẠN
       </h1>
+      <div>
       <div className="flex py-3 gap-2 justify-end ">
         <Button type="button" className="">
           Tạo khóa
@@ -145,6 +148,9 @@ const ListCourse = () => {
           />
         </div>
       </div>
+      <SearchnFilter />
+      </div>
+      
       <div className="py-4 grid xl:grid-cols-3 gap-4 lg:grid-cols-2 sm:grid-cols-1">
         {listAmage.map((item, index) => (
           <div key={index} className="bg-white rounded-md p-2">
