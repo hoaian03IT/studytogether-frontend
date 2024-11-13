@@ -52,7 +52,7 @@ export const publicRoutes = [
 		layout: PrimaryLayout,
 	},
 	{ path: pathname.listCourse, component: ListCourse, layout: PrimaryLayout },
-	{ path: pathname.addVocab, component: AddVocab, layout: ThirdLayout },
+	{ path: pathname.courseVocabulary, component: AddVocab, layout: ThirdLayout },
 	{ path: pathname.courseBusiness, component: Business, layout: ThirdLayout },
 	{ path: pathname.courseInformation, component: CourseInformation, layout: PrimaryLayout },
 	{ path: pathname.payment, component: Purchase, layout: PrimaryLayout },

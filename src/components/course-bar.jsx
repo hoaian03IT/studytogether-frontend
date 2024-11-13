@@ -7,11 +7,11 @@ import { LiaSellcast } from "react-icons/lia";
 import { pathname } from "../routes/index.js";
 
 const menuItems = [
-	{ path: pathname.addVocab, label: "TỪ VỰNG", icon: <PiPencilDuotone className="size-8" /> },
+	{ path: pathname.courseVocabulary, label: "TỪ VỰNG", icon: <PiPencilDuotone className="size-8" /> },
 	{ path: pathname.listExamples, label: "VÍ DỤ", icon: <MdAssignmentLate className="size-8" /> },
 	{ path: "/exercise-page", label: "BÀI TẬP", icon: <FaBook className="size-6" /> },
 	{ path: pathname.editCourse, label: "CHI TIẾT KHÓA", icon: <MdLibraryBooks className="size-8" /> },
-	{ path: "/course-business", label: "KINH DOANH", icon: <LiaSellcast className="size-8" /> },
+	{ path: pathname.courseBusiness, label: "KINH DOANH", icon: <LiaSellcast className="size-8" /> },
 ];
 
 const CourseBar = () => {

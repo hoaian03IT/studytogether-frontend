@@ -104,6 +104,27 @@ class CourseServiceClass {
 			return {};
 		}
 	}
+
+	async updateCoursePrice(payload, userState, updateState) {
+		const {
+			courseId,
+			newPrice,
+			newDiscount,
+			discountFrom = null,
+			discountTo = null,
+			currency,
+		} = payload;
+		const httpAuth = createHttpAuth(userState, updateState);
+		const res = await httpAuth.post("/course/price-update", {
+			courseId,
+			newPrice,
+			newDiscount,
+			discountFrom,
+			discountTo,
+			currency,
+		});
+		return res.data;
+	}
 }
 
 const CourseService = new CourseServiceClass();

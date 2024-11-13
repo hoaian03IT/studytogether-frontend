@@ -101,7 +101,7 @@ function CourseInformation() {
 							<Button className="bg-third text-third-foreground shadow-2xl" radius="sm"
 									onClick={() => navigate(pathname.payment.split(":")[0] + params?.courseId)}>
 								Buy now -
-								${coursePriceQuery.data?.["currency"] === "USD" ? USDollar.format(handledPrice) : VNDong.format(handledPrice)}
+								{coursePriceQuery.data?.["currency"] === "USD" ? USDollar.format(handledPrice) : VNDong.format(handledPrice)}
 							</Button>}
 					</Fragment> : <Fragment>
 						<p className="text-white text-xl font-bold">This vocabulary course is free for you</p>

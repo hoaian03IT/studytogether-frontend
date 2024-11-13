@@ -1,225 +1,327 @@
 import { AiFillCrown } from "react-icons/ai";
-import React, { useState } from 'react';
-import { FaCalendarAlt } from 'react-icons/fa';
-import { IoIosArrowDown } from "react-icons/io";
+import React, { useContext, useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "../react-query/query-keys.js";
+import { useParams } from "react-router-dom";
+import { CourseService } from "../apis/course.api.js";
+import { Button, DatePicker, Input } from "@nextui-org/react";
+import { userState } from "../recoil/atoms/user.atom.js";
+import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
+import { useRecoilValue } from "recoil";
+import { TranslationContext } from "../components/providers/TranslationProvider.jsx";
+import { toast } from "react-toastify";
+import { parseAbsoluteToLocal } from "@internationalized/date";
 
 const CourseBusiness = () => {
-  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
-  const [isDiscountEnabled, setIsDiscountEnabled] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [activeTab, setActiveTab] = useState('price');
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedDate, setSelectedDate] = useState('');
-  const [duration, setDuration] = useState('');
-  const [durationUnit, setDurationUnit] = useState('day');
+	const params = useParams();
+	const clientQuery = useQueryClient();
+	const user = useRecoilValue(userState);
+	const { updateUserState } = useContext(GlobalStateContext);
+	const { translation } = useContext(TranslationContext);
 
-  return (
-    <div className=" bg-gray-100 min-h-screen">
-    <div className="p-6 bg-white rounded-lg max-w-4xl mx-auto mt-10 shadow-lg">
-      {/* Tabs and Switch */}
-      <div className="flex justify-between items-center border-b border-gray-300 mb-6 pb-4">
-        <div className="flex space-x-8">
-          <button
-            onClick={() => setActiveTab('price')}
-            className={`text-lg font-semibold flex ${
-              activeTab === 'price' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'
-            }`} 
-          ><AiFillCrown className="text-2xl mr-2" />
-            <span>Thiết lập giá</span>
-          </button>
-          <button
-            onClick={() => setActiveTab('advance')}
-            className={`text-lg font-semibold ${
-              activeTab === 'advance' ? 'text-orange-500 border-b-2 border-orange-500' : 'text-gray-500'
-            }`}
-          >
-           Doanh thu
-          </button>
-        </div>
-        <label className="relative inline-flex items-center cursor-pointer">
-          <input
-            type="checkbox"
-            className="sr-only"
-            checked={isSettingsVisible}
-            onChange={() => setIsSettingsVisible(!isSettingsVisible)}
-          />
-          <div className="w-12 h-6 bg-gray-300 rounded-full peer-focus:ring-2 peer-focus:ring-green-500 transition-all relative">
-            <div
-              className={`absolute top-0.5 left-1 h-5 w-5 rounded-full transition-all duration-200 ${
-                isSettingsVisible ? 'bg-green-500 transform translate-x-6' : 'bg-white'
-              }`}
-            ></div>
-          </div>
-        </label>
-      </div>
+	const coursePriceQuery = useQuery({
+		queryKey: [queryKeys.coursePrice, params?.courseId],
+		queryFn: async () => await CourseService.fetchCoursePrices(params?.courseId),
+		initialData: clientQuery.getQueryData([queryKeys.coursePrice, params?.courseId]),
+		enabled: !clientQuery.getQueryData([queryKeys.coursePrice, params?.courseId]),
+	});
 
-      {isSettingsVisible && (
-        <div className="bg-white p-8 rounded-md shadow-md">
-          <h2 className="text-2xl font-semibold mb-6">Cài đặt giá khóa học</h2>
+	const [price, setPrice] = useState(0);
+	const [discount, setDiscount] = useState(0);
+	const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+	const [isDiscountEnabled, setIsDiscountEnabled] = useState(false);
+	const [startDate, setStartDate] = useState(null);
+	const [endDate, setEndDate] = useState(null);
+	const [activeTab, setActiveTab] = useState("price");
+	const [validInputs, setValidInputs] = useState({
+		price: { isValid: true, errMsg: "" },
+		discount: { isValid: true, errMsg: "" },
+		startDate: { isValid: true, errMsg: "" },
+		endDate: { isValid: true, errMsg: "" },
+	});
 
-          {/* Course Name */}
-          <div className="mb-6">
-            <label className="block font-medium text-gray-600 mb-2">Khóa</label>
-            <input
-              type="text"
-              placeholder="Tên khóa"
-              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
-              readOnly
-            />
-          </div>
+	useEffect(() => {
+		if (coursePriceQuery.data?.["price id"] > 0) {
+			setPrice(coursePriceQuery.data?.["price"]);
+			setIsSettingsVisible(coursePriceQuery.data?.["price"] > 0);
+			setIsDiscountEnabled(coursePriceQuery.data?.["discount"] > 0);
+			if (coursePriceQuery.data?.["discount"] > 0) {
+				setDiscount(coursePriceQuery.data?.["discount"]);
+				setStartDate(parseAbsoluteToLocal(coursePriceQuery.data?.["discount from"]));
+				setEndDate(parseAbsoluteToLocal(coursePriceQuery.data?.["discount to"]));
+			}
+		}
+	}, [coursePriceQuery.data]);
 
-          {/* Price and Duration */}
-          <div className="flex gap-6 mb-6">
-            <div className="w-1/2">
-              <label className="block font-medium text-gray-600 mb-2">Giá ($) </label>
-              <input
-                type="text"
-                placeholder="$ 00.00"
-                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
-              />
-            </div>
-            <div className="w-1/2">
-              <label className="block font-medium text-gray-600 mb-2">Thời hạn</label>
-              <div className="relative flex rounded-md overflow-hidden border border-gray-300">
-                <input
-                  type="text"
-                  value={duration}
-                  onChange={(e) => setDuration(e.target.value)}
-                  placeholder="Thời hạn"
-                  className="w-1/2 p-3 focus:outline-none focus:ring focus:ring-blue-200"
-                />
-                <select
-                  value={durationUnit}
-                  onChange={(e) => setDurationUnit(e.target.value)}
-                  className="w-1/2 px-3 py-2 text-sm text-gray-600 bg-white border shadow-sm outline-none appearance-none focus:ring-offset-2 "
-                >
-                  <option value="day">Ngày</option>
-                  <option value="month">Tháng</option>
-                  <option value="year">Năm</option>
-                </select>
-                <IoIosArrowDown className="absolute top-6 right-4 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
-              </div>
-            </div>
-          </div>
+	useEffect(() => {
+		if (!isDiscountEnabled) {
+			setDiscount(0);
+			setStartDate(null);
+			setEndDate(null);
+		}
+	}, [isDiscountEnabled]);
 
-          {/* Discount Settings */}
-          <div className="mb-6">
-            <input
-              type="checkbox"
-              checked={isDiscountEnabled}
-              onChange={() => setIsDiscountEnabled(!isDiscountEnabled)}
-              className="mr-2"
-            />
-            <label className="font-medium text-gray-600">Cài đặt giảm giá</label>
-          </div>
+	useEffect(() => {
+		if (!isSettingsVisible) {
+			setPrice(0);
+			updatePriceCourseMutation.mutate({
+				courseId: params?.courseId,
+				newPrice: price || 0,
+				newDiscount: discount || 0,
+				discountFrom: startDate ? `${startDate.year}/${startDate.month}/${startDate.day}` : null,
+				discountTo: endDate ? `${endDate.year}/${endDate.month}/${endDate.day}` : null,
+				currency: "USD",
+			});
+		}
+	}, [isSettingsVisible]);
 
-          {isDiscountEnabled && (
-            <div className="flex gap-6 mb-6">
-              {/* Discount Percentage */}
-              <div className="w-1/3">
-                <label className="block font-medium text-gray-600 mb-2">Giảm giá (%)</label>
-                <input
-                  type="text"
-                  placeholder="%00.00"
-                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
-                />
-              </div>
 
-              {/* Start Date */}
-              <div className="w-1/3 relative">
-                <label className="block font-medium text-gray-600 mb-2">Từ ngày</label>
-                <input
-                  type="text"
-                  placeholder="Ngày bắt đầu"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  onFocus={() => setShowDatePicker(true)}
-                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
-                />
-                <FaCalendarAlt
-                  className="absolute top-14 right-3 transform -translate-y-1/2 text-gray-500 cursor-pointer"
-                  onClick={() => setShowDatePicker(true)}
-                />
-              </div>
+	const updatePriceCourseMutation = useMutation({
+		mutationFn: async (payload) => {
+			return await CourseService.updateCoursePrice(payload, user, updateUserState);
+		},
+		onSuccess: (data) => {
+			toast.success(translation(data?.["messageCode"]));
+		},
+		onError: (error) => {
+			console.error(error);
+			toast.error(translation(error.response.data?.["errorCode"]));
+		},
+	});
 
-              {/* End Date */}
-              <div className="w-1/3 relative">
-                <label className="block font-medium text-gray-600 mb-2">Đến</label>
-                <input
-                  type="text"
-                  placeholder="Ngày kết thúc"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  onFocus={() => setShowDatePicker(true)}
-                  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
-                />
-                <FaCalendarAlt
-                  className="absolute top-14 right-3 transform -translate-y-1/2 text-gray-500 cursor-pointer"
-                  onClick={() => setShowDatePicker(true)}
-                />
-              </div>
-            </div>
-          )}
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		let submittable = true;
 
-          {/* Notifications Settings */}
-          <div className="flex gap-6 mb-6">
-            <div>
-              <input type="checkbox" className="mr-2" defaultChecked />
-              <label className="font-medium text-gray-600">Nhận thông báo doanh thu</label>
-            </div>
-            <div>
-              <input type="checkbox" className="mr-2" defaultChecked />
-              <label className="font-medium text-gray-600">Báo cáo, phân tích theo kỳ</label>
-            </div>
-          </div>
+		let priceRegex = new RegExp("^(200(\\.0{1,2})?|([1-9]?[0-9]|1[0-9]{2})(\\.[0-9]{1,2})?)$");// regex kiểm tra giá của khóa học nằm trong khoảng [1,200]
+		let discountRegex = new RegExp("^(1(\\.0{1,2})?|0(\\.[0-9]{1,2})?)$");
+		// check gia
+		if (!priceRegex.test(price)) {
+			setValidInputs(prev => ({
+				...prev,
+				price: { isValid: false, errMsg: "Price course is between 1.00 and 200.00 USD" },
+			}));
+			submittable = false;
+		} else {
+			setValidInputs(prev => ({
+				...prev,
+				price: { isValid: true, errMsg: "" },
+			}));
+		}
+		// check discount
+		if (!discountRegex.test(discount.toString())) {
+			setValidInputs(prev => ({
+				...prev,
+				discount: { isValid: false, errMsg: "Discount course is between 0.00 and 1.00 USD" },
+			}));
+			submittable = false;
+		} else {
+			setValidInputs(prev => ({
+				...prev,
+				discount: { isValid: true, errMsg: "" },
+			}));
+		}
+		// check ngay
+		if (endDate && startDate) {
+			if (endDate < startDate) {
+				setValidInputs(prev => ({
+					...prev,
+					endDate: { isValid: false, errMsg: "End date must be later than start date" },
+				}));
+				submittable = false;
+			} else {
+				setValidInputs(prev => ({
+					...prev,
+					endDate: { isValid: true, errMsg: "" },
+				}));
+			}
 
-          {/* Action Buttons */}
-          <div className="flex gap-4 justify-end">
-            <button className="px-6 py-3 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
-              Hủy
-            </button>
-            <button className="px-6 py-3 bg-orange-500 text-white rounded-md hover:bg-orange-600">
-              Xác Nhận
-            </button>
-          </div>
-        </div>
-      )}
+		}
 
-      {/* Date Picker Modal */}
-      {showDatePicker && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-4 rounded-md shadow-lg">
-            <h3 className="text-lg font-semibold mb-4">Chọn Ngày</h3>
-            <input
-              type="date"
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-            />
-            <div className="flex gap-4 justify-end mt-4">
-              <button
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
-                onClick={() => setShowDatePicker(false)}
-              >
-                Đóng
-              </button>
-              <button
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                onClick={() => {
-                  setShowDatePicker(false);
-                  setStartDate(selectedDate);
-                }}
-              >
-                Xác nhận
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-    </div>
-  );
+		console.log(submittable);
+
+		if (submittable) {
+			updatePriceCourseMutation.mutate({
+				courseId: params?.courseId,
+				newPrice: price || 0,
+				newDiscount: discount || 0,
+				discountFrom: startDate ? `${startDate.year}/${startDate.month}/${startDate.day}` : null,
+				discountTo: endDate ? `${endDate.year}/${endDate.month}/${endDate.day}` : null,
+				currency: "USD",
+			});
+		}
+	};
+
+	return (
+		<div className=" bg-gray-100 min-h-screen">
+			<form onSubmit={handleSubmit} className="p-6 bg-white rounded-lg max-w-4xl mx-auto mt-10 shadow-lg">
+				{/* Tabs and Switch */}
+				<div className="flex justify-between items-center border-b border-gray-300 mb-6 pb-4">
+					<div className="flex space-x-8">
+						<button
+							onClick={() => setActiveTab("price")}
+							className={`text-lg font-semibold flex ${
+								activeTab === "price" ? "text-orange-500 border-b-2 border-orange-500" : "text-gray-500"
+							}`}
+						><AiFillCrown className="text-2xl mr-2" />
+							<span>Thiết lập giá</span>
+						</button>
+						<button
+							onClick={() => setActiveTab("advance")}
+							className={`text-lg font-semibold ${
+								activeTab === "advance" ? "text-orange-500 border-b-2 border-orange-500" : "text-gray-500"
+							}`}
+						>
+							Doanh thu
+						</button>
+					</div>
+					<label className="relative inline-flex items-center cursor-pointer">
+						<input
+							type="checkbox"
+							className="sr-only"
+							checked={isSettingsVisible}
+							onChange={() => setIsSettingsVisible(!isSettingsVisible)}
+						/>
+						<div
+							className="w-12 h-6 bg-gray-300 rounded-full peer-focus:ring-2 peer-focus:ring-green-500 transition-all relative">
+							<div
+								className={`absolute top-0.5 left-1 h-5 w-5 rounded-full transition-all duration-200 ${
+									isSettingsVisible ? "bg-green-500 transform translate-x-6" : "bg-white"
+								}`}
+							></div>
+						</div>
+					</label>
+				</div>
+
+				{isSettingsVisible && (
+					<div className="bg-white p-8 rounded-md shadow-md">
+						<h2 className="text-2xl font-semibold mb-6">Cài đặt giá khóa học</h2>
+
+						{/* Course Name */}
+						<div className="mb-6">
+							<label className="block font-medium text-gray-600 mb-2">Khóa</label>
+							<Input
+								color="primary"
+								type="text"
+								placeholder="Tên khóa"
+								value={coursePriceQuery.data?.["name"]}
+								variant="bordered"
+								size="lg"
+								radius="sm"
+								readOnly
+								disabled
+							/>
+						</div>
+
+						{/* Price and Duration */}
+						<div className="flex gap-6 mb-6">
+							<div className="w-1/2">
+								<label className="block font-medium text-gray-600 mb-2">Giá ($) </label>
+								<Input
+									color="primary"
+									type="number"
+									value={price}
+									step={0.01}
+									onValueChange={setPrice}
+									placeholder="$ 0.00"
+									variant="bordered"
+									size="lg"
+									radius="sm"
+									endContent={<span>$</span>}
+									isInvalid={!validInputs.price.isValid}
+									errorMessage={validInputs.price.errMsg}
+								/>
+							</div>
+						</div>
+
+						{/* Discount Settings */}
+						<div className="mb-6">
+							<input
+								type="checkbox"
+								checked={isDiscountEnabled}
+								onChange={() => setIsDiscountEnabled(!isDiscountEnabled)}
+								className="mr-2"
+							/>
+							<label className="font-medium text-gray-600">Cài đặt giảm giá</label>
+						</div>
+
+						{isDiscountEnabled && (
+							<div className="flex gap-6 mb-6">
+								{/* Discount Percentage */}
+								<div className="w-1/3">
+									<label className="block font-medium text-gray-600 mb-2">Giảm giá (%)</label>
+									<Input
+										type="number"
+										step={0.01}
+										value={discount}
+										onValueChange={setDiscount}
+										placeholder="%00.00"
+										size="lg"
+										variant="bordered"
+										radius="sm"
+										isInvalid={!validInputs.discount.isValid}
+										errorMessage={validInputs.discount.errMsg}
+									/>
+								</div>
+
+								{/* Start Date */}
+								<div className="w-1/3 relative">
+									<label className="block font-medium text-gray-600 mb-2">Từ ngày (UTC)</label>
+									<DatePicker granularity="day" size="lg" variant="bordered" radius="sm"
+												aria-label="start date"
+												value={startDate}
+												onChange={setStartDate} />
+								</div>
+
+								{/* End Date */}
+								<div className="w-1/3 relative">
+									<label className="block font-medium text-gray-600 mb-2">Đến (UTC)</label>
+									<DatePicker granularity="day" size="lg" variant="bordered" radius="sm"
+												isInvalid={!validInputs.endDate.isValid}
+												errorMessage={validInputs.endDate.errMsg}
+												value={endDate}
+												aria-label="end date"
+												onChange={setEndDate} />
+								</div>
+							</div>
+						)}
+
+						{/* Notifications Settings */}
+						<div className="flex gap-6 mb-6">
+							<div>
+								<input type="checkbox" className="mr-2" defaultChecked />
+								<label className="font-medium text-gray-600">Nhận thông báo doanh thu</label>
+							</div>
+							<div>
+								<input type="checkbox" className="mr-2" defaultChecked />
+								<label className="font-medium text-gray-600">Báo cáo, phân tích theo kỳ</label>
+							</div>
+						</div>
+
+						{/* Action Buttons */}
+						<div className="flex gap-4 justify-end">
+							<Button type="reset"
+									color="default"
+									size="lg"
+									radius="sm"
+							>
+								Hủy
+							</Button>
+							<Button
+								isLoading={updatePriceCourseMutation.isPending}
+								type="submit"
+								color="secondary"
+								size="lg"
+								radius="sm"
+							>
+								Xác Nhận
+							</Button>
+						</div>
+					</div>
+				)}
+			</form>
+		</div>
+	);
 };
 
 export default CourseBusiness;
