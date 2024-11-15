@@ -17,7 +17,7 @@ export default function ProfileLayout({ children }) {
 					<SidebarProfile />
 				</div>
 				<div className="w-[calc(100%-300px)] ms-auto">
-					{user.info.lastName && user.info.firstName && user.info.phone && user.info.username ?
+					{user.info?.lastName && user.info?.firstName && user.info?.phone && user.info?.username ?
 						null : <div className="py-4 bg-warning-400 flex items-center justify-center text-white">
 							<IoIosWarning className="size-8 mr-2" />
 							{translation("WARNING_UPDATE_PROFILE")}

@@ -31,8 +31,8 @@ function UserHeader({ userState }) {
 						to={pathname.profile}
 						className="rounded-sm py-3"
 						startContent={<FaPencil className="size-4" />}
-						endContent={<PiWarningCircleFill
-							className="size-6 text-warning shadow-warning rounded-full" />}
+						endContent={userState.info?.lastName && userState.info?.firstName && userState.info?.phone && userState.info?.username ? null :
+							<PiWarningCircleFill className="size-6 text-warning shadow-warning rounded-full" />}
 					>
 						{translation("profile")}
 					</DropdownItem>

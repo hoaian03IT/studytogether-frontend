@@ -110,6 +110,16 @@ const Profile = () => {
 
 	const handleUploadImage = async (e) => {
 		const file = e.target.files[0];
+		if (file.type.split("/")[0] !== "image") {
+			toast.warn("File must be an image");
+			return;
+		}
+		let maxSize = 2; // MB
+		if (file.size / (1024 * 1024) <= maxSize) {
+			toast.warn("Image must be smaller than 2MB");
+			return;
+		}
+
 		const { base64 } = await base64Converter(file);
 		setFormValue(prev => ({ ...prev, avatar: base64 }));
 	};
@@ -214,6 +224,7 @@ const Profile = () => {
 							isInvalid={!validInputs.lastName.valid}
 							errorMessage={validInputs.lastName.errMsg}
 							size="lg"
+							isDisabled={!editable}
 						/>
 					</div>
 					<div className="mb-8">
@@ -230,6 +241,7 @@ const Profile = () => {
 							isInvalid={!validInputs.firstName.valid}
 							errorMessage={validInputs.firstName.errMsg}
 							size="lg"
+							isDisabled={!editable}
 						/>
 					</div>
 					<div className="mb-8">
@@ -246,6 +258,7 @@ const Profile = () => {
 							isInvalid={!validInputs.username.valid}
 							errorMessage={validInputs.username.errMsg}
 							size="lg"
+							isDisabled={!editable}
 						/>
 					</div>
 					<div className="mb-8">
@@ -262,6 +275,7 @@ const Profile = () => {
 							isInvalid={!validInputs.phone.valid}
 							errorMessage={validInputs.phone.errMsg}
 							size="lg"
+							isDisabled={!editable}
 						/>
 					</div>
 					<div className="mb-6">

@@ -1,24 +1,37 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Input } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
 import { AuthService } from "../apis/auth.api.js";
 import { pathname } from "../routes/index.js";
 import { isAxiosError } from "axios";
 import { toast } from "react-toastify";
+import { TranslationContext } from "../components/providers/TranslationProvider.jsx";
+import { validationForm } from "../utils/validateForm.js";
 
 const ForgotPassword = () => {
 	const [email, setEmail] = useState("");
 	const [loading, setLoading] = useState(false);
 	const navigate = useNavigate();
+	const [validInput, setValidInput] = useState({
+		valid: true,
+		errMsg: "",
+	});
+
+	const { translation } = useContext(TranslationContext);
 
 	const onChangeEmail = (event) => {
 		let value = event.target.value;
-
 		setEmail(value);
 	};
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
+		if (!validationForm.email(email)) {
+			setValidInput({ valid: false, errMsg: "Invalid email" });
+			return;
+		} else {
+			setValidInput({ valid: true, errMsg: "" });
+		}
 		setLoading(true);
 		try {
 			if (email) {
@@ -28,8 +41,8 @@ const ForgotPassword = () => {
 				navigate(pathname.changePasswordSuccessfully);
 			}
 		} catch (error) {
-			if (isAxiosError(error) && error.status == 401) {
-				toast.error(error.response.data.message);
+			if (isAxiosError(error)) {
+				toast.error(translation(error.response.data?.["errorCode"]));
 			}
 			console.error(error);
 		} finally {
@@ -48,7 +61,7 @@ const ForgotPassword = () => {
 				<form onSubmit={handleSubmit}>
 					<div className="mb-4">
 						<Input
-							type="email"
+							type="text"
 							placeholder="user@example.com"
 							value={email}
 							onChange={onChangeEmail}
@@ -57,6 +70,8 @@ const ForgotPassword = () => {
 							labelPlacement="outside"
 							radius="sm"
 							label={<span className="text-sm text-gray-600 select-none">Email</span>}
+							isInvalid={!validInput.valid}
+							errorMessage={validInput.errMsg}
 							required
 							isRequired />
 					</div>
