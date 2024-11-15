@@ -224,7 +224,6 @@ const Profile = () => {
 							isInvalid={!validInputs.lastName.valid}
 							errorMessage={validInputs.lastName.errMsg}
 							size="lg"
-							isDisabled={!editable}
 						/>
 					</div>
 					<div className="mb-8">
@@ -241,7 +240,6 @@ const Profile = () => {
 							isInvalid={!validInputs.firstName.valid}
 							errorMessage={validInputs.firstName.errMsg}
 							size="lg"
-							isDisabled={!editable}
 						/>
 					</div>
 					<div className="mb-8">
@@ -258,7 +256,6 @@ const Profile = () => {
 							isInvalid={!validInputs.username.valid}
 							errorMessage={validInputs.username.errMsg}
 							size="lg"
-							isDisabled={!editable}
 						/>
 					</div>
 					<div className="mb-8">
@@ -275,7 +272,6 @@ const Profile = () => {
 							isInvalid={!validInputs.phone.valid}
 							errorMessage={validInputs.phone.errMsg}
 							size="lg"
-							isDisabled={!editable}
 						/>
 					</div>
 					<div className="mb-6">

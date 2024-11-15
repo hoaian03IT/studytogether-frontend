@@ -6,7 +6,7 @@ import ThirdLayout from "../layouts/third-layout";
 import ProfileLayout from "../layouts/profile-layout";
 
 // import page bằng react lazy
-const HomePage = lazy(() => import("../screen/homepage"));
+const HomePage = lazy(() => import("../screen/home.jsx"));
 const SignInPage = lazy(() => import("../screen/sign-in"));
 const ForgotPasswordPage = lazy(() => import("../screen/forgot-password"));
 const ChangePasswordPage = lazy(() => import("../screen/change-password"));
