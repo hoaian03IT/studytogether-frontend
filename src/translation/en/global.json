@@ -19,6 +19,7 @@
     "PAYMENT_SUCCESS": "Payment successfully",
     "COURSE_ENROLLED": "You have enrolled this course before",
     "UPDATE_SUCCESS": "Update successfully",
+    "WARNING_UPDATE_PROFILE": "Please complete your profile information to access all features.",
     "header": {
       "home": "Home",
       "courses": "Courses",

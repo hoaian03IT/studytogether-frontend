@@ -8,6 +8,7 @@ import { IoLockOpenOutline, IoSettingsOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { pathname } from "../routes";
 import { GlobalStateContext } from "./providers/GlobalStateProvider.jsx";
+import { PiWarningCircleFill } from "react-icons/pi";
 
 function UserHeader({ userState }) {
 	const { translation } = useContext(TranslationContext);
@@ -29,7 +30,10 @@ function UserHeader({ userState }) {
 						as={Link}
 						to={pathname.profile}
 						className="rounded-sm py-3"
-						startContent={<FaPencil className="size-4" />}>
+						startContent={<FaPencil className="size-4" />}
+						endContent={<PiWarningCircleFill
+							className="size-6 text-warning shadow-warning rounded-full" />}
+					>
 						{translation("profile")}
 					</DropdownItem>
 					<DropdownItem

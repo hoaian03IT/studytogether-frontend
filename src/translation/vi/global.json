@@ -19,6 +19,7 @@
     "CHANGE_PASSWORD_SUCCESS": "Mật khẩu của bạn đã được thay đổi",
     "UPDATE_SUCCESS": "Cập nhật thành công",
     "COURSE_ENROLLED": "Bạn đã đăng ký khóa học này trước",
+    "WARNING_UPDATE_PROFILE": "Vui lòng bổ sung thông tin để sử dụng đầy đủ các tính năng.",
     "header": {
       "home": "Trang chủ",
       "courses": "Khoá từ vựng",

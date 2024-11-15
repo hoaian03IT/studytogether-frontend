@@ -11,8 +11,9 @@ import { AuthService } from "../apis/auth.api.js";
 import { TranslationContext } from "../components/providers/TranslationProvider.jsx";
 import { toast } from "react-toastify";
 import { pathname } from "../routes/index.js";
+import { IoChevronBack } from "react-icons/io5";
 
-const ResetPassword = () => {
+const ChangePasswordPage = () => {
 	const user = useRecoilValue(userState);
 	const { updateUserState } = useContext(GlobalStateContext);
 	const { translation } = useContext(TranslationContext);
@@ -135,7 +136,11 @@ const ResetPassword = () => {
 
 	return (
 		<div className="flex justify-center items-center mt-20">
-			<form onSubmit={handleSubmit} className="w-[400px] bg-white p-8 shadow-small rounded-md">
+			<form onSubmit={handleSubmit} className="w-[400px] bg-white p-8 shadow-small rounded-md relative">
+				<Button color="default" radius="full" variant="default" isIconOnly={true} size="sm"
+						onClick={() => navigate(-1)}
+						className="absolute top-2 left-2 text-secondary"><IoChevronBack
+					className="size-6" /></Button>
 				<h2 className="text-2xl font-bold mb-2 text-center">Đặt lại mật khẩu</h2>
 				<p className="text-gray-500 text-center mb-14 text-small">Nhập mật khẩu mới của bạn.</p>
 
@@ -230,4 +235,4 @@ const ResetPassword = () => {
 	);
 };
 
-export default ResetPassword;
+export default ChangePasswordPage;

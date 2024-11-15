@@ -85,7 +85,7 @@ function GlobalStateProvider({ children }) {
 								lastName: data?.["last name"],
 								avatar: data?.["avatar image"],
 								email: data?.email,
-								role: data?.role,
+								role: data?.["role name"],
 							},
 						}));
 						return data;

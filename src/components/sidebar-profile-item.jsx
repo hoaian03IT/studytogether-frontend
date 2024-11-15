@@ -1,14 +1,15 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import clsx from "clsx";
 
 const SidebarProfileItem = ({ label, link, children }) => {
-    return (
-        <Link
-            to={link}
-            className="px-5 py-3 bg-zinc-100 rounded-xl flex gap-[18px] items-center text-zinc-800 hover:bg-zinc-200 transition-all">
-            {children}
-            <p className="text-base font-semibold">{label}</p>
-        </Link>
-    );
+	return (
+		<NavLink
+			to={link}
+			className={({ isActive }) => clsx("px-5 py-3 bg-zinc-100 rounded-sm flex gap-[18px] items-center text-zinc-800 hover:bg-gray-200 transition-all", isActive ? "bg-gray-300" : "bg-white")}>
+			{children}
+			<p className="text-base font-semibold">{label}</p>
+		</NavLink>
+	);
 };
 
 export { SidebarProfileItem };
