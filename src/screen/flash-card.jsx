@@ -22,6 +22,7 @@ const FlashCard = () => {
         setIsFlipped(false);
         if (currentIndex < vocabularyList.length - 1) {
             setCurrentIndex(currentIndex + 1);
+			
         }
     };
 
