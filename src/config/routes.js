@@ -25,6 +25,7 @@ const Business = lazy(() => import("../screen/course-business"));
 const MulChoices = lazy(() => import("../screen/exercise-mc"));
 const CourseInformation = lazy(() => import("../screen/course-information.jsx"));
 const FlashCard = lazy(() => import("../screen/flash-card.jsx"));
+const ListExercise = lazy(() => import("../screen/list-excercise.jsx"));
 
 export const publicRoutes = [
 	{ path: pathname.home, component: HomePage, layout: PrimaryLayout },
@@ -68,4 +69,7 @@ export const publicRoutes = [
 		component: FlashCard,
 		layout: PrimaryLayout,
 	},
+	{ path: pathname.listExercise, component: ListExercise, layout: ThirdLayout },
+
+
 ];
