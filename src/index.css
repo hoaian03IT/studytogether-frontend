@@ -18,3 +18,14 @@
 .container {
     @apply max-w-screen-xl mx-auto w-full;
 }
+.perspective {
+    perspective: 1000px;
+  }
+  
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+  
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
