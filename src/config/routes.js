@@ -59,6 +59,7 @@ export const publicRoutes = [
 	{ path: pathname.payment, component: Purchase, layout: PrimaryLayout },
 	{ path: pathname.editCourse, component: EditCourse, layout: ThirdLayout },
 	{ path: pathname.mulChoices, component: MulChoices, layout: PrimaryLayout },
+	{ path: pathname.addVocab, component: AddVocab, layout: PrimaryLayout },
 	{
 		path: pathname.listExamples,
 		component: ListExamples,
