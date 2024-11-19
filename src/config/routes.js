@@ -22,7 +22,6 @@ const EditCourse = lazy(() => import("../screen/edit-course"));
 const ListExamples = lazy(() => import("../screen/list-examples"));
 const Purchase = lazy(() => import("../screen/course-purchase"));
 const Business = lazy(() => import("../screen/course-business"));
-const LearnProcess = lazy(() => import("../screen/learn-process"));
 const CourseInformation = lazy(() => import("../screen/course-information.jsx"));
 const FlashCard = lazy(() => import("../screen/flash-card.jsx"));
 const ListExercise = lazy(() => import("../screen/list-excercise.jsx"));
