@@ -201,7 +201,7 @@ function CourseInformation() {
 									<span className="ms-1 text-sm">{courseInfoQuery.data?.["n_enrollments"]}</span>
 								</div>
 							</Tooltip>
-							<Tooltip content="Feedbacks" placement="bottom" radius="sm">
+							<Tooltip content="Comments" placement="bottom" radius="sm">
 								<div className="flex items-center cursor-default">
 									<div
 										className="bg-third rounded-full size-6 flex items-center justify-center">

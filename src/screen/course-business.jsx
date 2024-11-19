@@ -61,19 +61,19 @@ const CourseBusiness = () => {
 		}
 	}, [isDiscountEnabled]);
 
-	useEffect(() => {
-		if (!isSettingsVisible) {
-			setPrice(0);
-			updatePriceCourseMutation.mutate({
-				courseId: params?.courseId,
-				newPrice: price || 0,
-				newDiscount: discount || 0,
-				discountFrom: startDate ? `${startDate.year}/${startDate.month}/${startDate.day}` : null,
-				discountTo: endDate ? `${endDate.year}/${endDate.month}/${endDate.day}` : null,
-				currency: "USD",
-			});
-		}
-	}, [isSettingsVisible]);
+	// useEffect(() => {
+	// 	if (!isSettingsVisible) {
+	// 		setPrice(0);
+	// 		updatePriceCourseMutation.mutate({
+	// 			courseId: params?.courseId,
+	// 			newPrice: price || 0,
+	// 			newDiscount: discount || 0,
+	// 			discountFrom: startDate ? `${startDate.year}/${startDate.month}/${startDate.day}` : null,
+	// 			discountTo: endDate ? `${endDate.year}/${endDate.month}/${endDate.day}` : null,
+	// 			currency: "USD",
+	// 		});
+	// 	}
+	// }, [isSettingsVisible]);
 
 
 	const updatePriceCourseMutation = useMutation({
@@ -88,6 +88,23 @@ const CourseBusiness = () => {
 			toast.error(translation(error.response.data?.["errorCode"]));
 		},
 	});
+
+	const handleUnCheck = () => {
+		if (isSettingsVisible) {
+			setIsSettingsVisible(false);
+			setPrice(0);
+			updatePriceCourseMutation.mutate({
+				courseId: params?.courseId,
+				newPrice: price || 0,
+				newDiscount: discount || 0,
+				discountFrom: startDate ? `${startDate.year}/${startDate.month}/${startDate.day}` : null,
+				discountTo: endDate ? `${endDate.year}/${endDate.month}/${endDate.day}` : null,
+				currency: "USD",
+			});
+		} else {
+			setIsSettingsVisible(true);
+		}
+	};
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -138,8 +155,6 @@ const CourseBusiness = () => {
 
 		}
 
-		console.log(submittable);
-
 		if (submittable) {
 			updatePriceCourseMutation.mutate({
 				courseId: params?.courseId,
@@ -180,7 +195,7 @@ const CourseBusiness = () => {
 							type="checkbox"
 							className="sr-only"
 							checked={isSettingsVisible}
-							onChange={() => setIsSettingsVisible(!isSettingsVisible)}
+							onChange={handleUnCheck}
 						/>
 						<div
 							className="w-12 h-6 bg-gray-300 rounded-full peer-focus:ring-2 peer-focus:ring-green-500 transition-all relative">

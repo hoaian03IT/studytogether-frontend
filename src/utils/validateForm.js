@@ -10,7 +10,7 @@ class ValidationForm {
 	}
 
 	username(value) {
-		const usernameRegex = /^[a-zA-Z0-9_-]{3,50}$/;
+		const usernameRegex = /^[a-zA-Z0-9_.-]{3,50}$/;
 		return usernameRegex.test(value);
 	}
 
