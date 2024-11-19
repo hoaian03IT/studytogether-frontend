@@ -17,7 +17,7 @@ const SignUpPage = lazy(() => import("../screen/sign-up"));
 const ProfilePage = lazy(() => import("../screen/profile"));
 const CreateCourse = lazy(() => import("../screen/create-course"));
 const ListCourse = lazy(() => import("../screen/list-course"));
-const AddVocab = lazy(() => import("../screen/add-vocab"));
+const AddVocab = lazy(() => import("../screen/course-vocabulary.jsx"));
 const EditCourse = lazy(() => import("../screen/edit-course"));
 const ListExamples = lazy(() => import("../screen/list-examples"));
 const Purchase = lazy(() => import("../screen/course-purchase"));
