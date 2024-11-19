@@ -10,12 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@canvasjs/react-charts": "^1.0.2",
     "@chakra-ui/react": "^3.0.1",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@greatsumini/react-facebook-login": "^3.3.3",
     "@internationalized/date": "^3.5.6",
     "@material-tailwind/react": "^2.1.10",
+    "@mui/x-charts": "^7.22.2",
     "@nextui-org/button": "^2.0.38",
     "@nextui-org/image": "^2.0.32",
     "@nextui-org/input": "^2.2.5",
