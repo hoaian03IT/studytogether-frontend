@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Progress, Modal } from '@nextui-org/react';
+import { Button, Modal } from '@nextui-org/react';
 
 const MultipleChoiceExercise = () => {
 
@@ -19,8 +19,6 @@ const MultipleChoiceExercise = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [progress, setProgress] = useState(0); 
-  const [showExitModal, setShowExitModal] = useState(false);
 
   const questionData = questions[currentQuestionIndex];
 
@@ -39,11 +37,10 @@ const MultipleChoiceExercise = () => {
   const handleContinue = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setProgress(progress + 10); 
     } else {
       alert('ĐÃ HOÀN THÀNH!');
     }
-    
+
     setIsSubmitted(false);
     setSelectedAnswer(null);
   };
@@ -51,11 +48,10 @@ const MultipleChoiceExercise = () => {
   const handleSkip = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setProgress(progress + 10); 
     } else {
       alert('You have completed the demo!');
     }
-    
+
     setIsSubmitted(false);
     setSelectedAnswer(null);
   };
@@ -65,7 +61,6 @@ const MultipleChoiceExercise = () => {
   };
 
   const handleConfirmExit = () => {
-    
     alert('Returning to the main screen...');
     setShowExitModal(false);
   };
@@ -78,18 +73,7 @@ const MultipleChoiceExercise = () => {
 
   return (
     <div className="flex flex-col items-center p-8 bg-white">
-      {/* Workflow Progress Bar and Exit Button */}
-      <div className="w-full flex items-center mb-4">
-        <button onClick={handleExit} className="text-gray-500 text-2xl">
-          ✖
-        </button>
-        <Progress
-          value={progress}
-          color={isSubmitted ? 'warning' : 'primary'}
-          className="flex-1 mx-4 h-2 rounded-full bg-gray-200"
-        />
-        <span className="text-gray-700">{progress}%</span>
-      </div>
+   
 
       <h2 className="text-xl font-bold mb-6">{questionData.question}</h2>
 
@@ -129,7 +113,6 @@ const MultipleChoiceExercise = () => {
         })}
       </div>
 
-      {/* Footer Section with Background */}
       <div
         className={`flex flex-col items-center justify-center w-full mt-8 p-8 rounded-lg ${
           isSubmitted
@@ -157,34 +140,14 @@ const MultipleChoiceExercise = () => {
           </Button>
         </div>
 
-        {/* Feedback Message */}
         {isSubmitted && (
           <div className="mt-4 text-lg font-semibold">
             {isCorrect ? 'Great job!' : "Don't give up. Try again!"}
           </div>
         )}
       </div>
-
-      {/* Exit Confirmation Modal */}
-      <Modal open={showExitModal} onClose={handleCancelExit}>
-        <Modal.Header>
-          <h2>Exit Exercise?</h2>
-        </Modal.Header>
-        <Modal.Body>
-          <p>Are you sure you want to exit? Your progress will be lost.</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button auto onClick={handleConfirmExit} color="error">
-            Yes, Exit
-          </Button>
-          <Button auto onClick={handleCancelExit}>
-            Cancel
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 };
 
 export default MultipleChoiceExercise;
-

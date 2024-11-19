@@ -18,7 +18,9 @@ export const pathname = {
 	courseInformation: "/course-information/:courseId",
 	payment: "/course-purchase/:courseId",
 	flashCard: "/flash-card",
-	mulChoices: "/exercise-mc",
+	learnProcess: "/learn-process",
 	listExercise: "/list-exercise/:courseId",
-	addVocab: "/add-vocab/:courseId"
+	addVocab: "/add-vocab/:courseId",
+	personalStatics: "/personal-statics"
+
 };

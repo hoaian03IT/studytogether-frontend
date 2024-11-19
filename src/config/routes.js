@@ -11,7 +11,7 @@ const SignInPage = lazy(() => import("../screen/sign-in"));
 const ForgotPasswordPage = lazy(() => import("../screen/forgot-password"));
 const ChangePasswordPage = lazy(() => import("../screen/change-password"));
 const ForgotSuccessfullyPage = lazy(() =>
-	import("../screen/forgot-password-successfully"),
+import("../screen/forgot-password-successfully"),
 );
 const SignUpPage = lazy(() => import("../screen/sign-up"));
 const ProfilePage = lazy(() => import("../screen/profile"));
@@ -22,10 +22,11 @@ const EditCourse = lazy(() => import("../screen/edit-course"));
 const ListExamples = lazy(() => import("../screen/list-examples"));
 const Purchase = lazy(() => import("../screen/course-purchase"));
 const Business = lazy(() => import("../screen/course-business"));
-const MulChoices = lazy(() => import("../screen/exercise-mc"));
+const LearnProcess = lazy(() => import("../screen/learn-process"));
 const CourseInformation = lazy(() => import("../screen/course-information.jsx"));
 const FlashCard = lazy(() => import("../screen/flash-card.jsx"));
 const ListExercise = lazy(() => import("../screen/list-excercise.jsx"));
+const PersonalStatics = lazy(() => import("../screen/personal-statics.jsx"));
 
 export const publicRoutes = [
 	{ path: pathname.home, component: HomePage, layout: PrimaryLayout },
@@ -58,7 +59,7 @@ export const publicRoutes = [
 	{ path: pathname.courseInformation, component: CourseInformation, layout: PrimaryLayout },
 	{ path: pathname.payment, component: Purchase, layout: PrimaryLayout },
 	{ path: pathname.editCourse, component: EditCourse, layout: ThirdLayout },
-	{ path: pathname.mulChoices, component: MulChoices, layout: PrimaryLayout },
+	{ path: pathname.learnProcess, component: LearnProcess, layout: PrimaryLayout },
 	{ path: pathname.addVocab, component: AddVocab, layout: PrimaryLayout },
 	{
 		path: pathname.listExamples,
@@ -71,6 +72,7 @@ export const publicRoutes = [
 		layout: PrimaryLayout,
 	},
 	{ path: pathname.listExercise, component: ListExercise, layout: ThirdLayout },
+	{ path: pathname.personalStatics, component:PersonalStatics, layout: PrimaryLayout },
 
 
 ];
