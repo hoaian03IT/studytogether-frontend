@@ -11,7 +11,7 @@ const SignInPage = lazy(() => import("../screen/sign-in"));
 const ForgotPasswordPage = lazy(() => import("../screen/forgot-password"));
 const ChangePasswordPage = lazy(() => import("../screen/change-password"));
 const ForgotSuccessfullyPage = lazy(() =>
-import("../screen/forgot-password-successfully"),
+	import("../screen/forgot-password-successfully"),
 );
 const SignUpPage = lazy(() => import("../screen/sign-up"));
 const ProfilePage = lazy(() => import("../screen/profile"));
@@ -27,6 +27,7 @@ const CourseInformation = lazy(() => import("../screen/course-information.jsx"))
 const FlashCard = lazy(() => import("../screen/flash-card.jsx"));
 const ListExercise = lazy(() => import("../screen/list-excercise.jsx"));
 const PersonalStatics = lazy(() => import("../screen/personal-statics.jsx"));
+const LearnPage = lazy(() => import("../screen/learn.jsx"));
 
 export const publicRoutes = [
 	{ path: pathname.home, component: HomePage, layout: PrimaryLayout },
@@ -72,6 +73,6 @@ export const publicRoutes = [
 		layout: PrimaryLayout,
 	},
 	{ path: pathname.listExercise, component: ListExercise, layout: ThirdLayout },
-	{ path: pathname.personalStatics, component:PersonalStatics, layout: PrimaryLayout },
+	{ path: pathname.personalStatics, component: PersonalStatics, layout: PrimaryLayout },
 	{ path: pathname.learn, component: LearnPage, layout: null },
 ];
