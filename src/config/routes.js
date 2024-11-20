@@ -22,11 +22,14 @@ const EditCourse = lazy(() => import("../screen/edit-course"));
 const ListExamples = lazy(() => import("../screen/list-examples"));
 const Purchase = lazy(() => import("../screen/course-purchase"));
 const Business = lazy(() => import("../screen/course-business"));
-const CourseInformation = lazy(() => import("../screen/course-information.jsx"));
+const CourseInformation = lazy(() =>
+	import("../screen/course-information.jsx"),
+);
 const FlashCard = lazy(() => import("../screen/flash-card.jsx"));
 const ListExercise = lazy(() => import("../screen/list-excercise.jsx"));
 const PersonalStatics = lazy(() => import("../screen/personal-statics.jsx"));
 const LearnPage = lazy(() => import("../screen/learn.jsx"));
+const FillInBlankPage = lazy(() => import("../screen/fill-in-blank.jsx"));
 
 export const publicRoutes = [
 	{ path: pathname.home, component: HomePage, layout: PrimaryLayout },
@@ -54,12 +57,24 @@ export const publicRoutes = [
 		layout: PrimaryLayout,
 	},
 	{ path: pathname.listCourse, component: ListCourse, layout: PrimaryLayout },
-	{ path: pathname.courseVocabulary, component: AddVocab, layout: ThirdLayout },
+	{
+		path: pathname.courseVocabulary,
+		component: AddVocab,
+		layout: ThirdLayout,
+	},
 	{ path: pathname.courseBusiness, component: Business, layout: ThirdLayout },
-	{ path: pathname.courseInformation, component: CourseInformation, layout: PrimaryLayout },
+	{
+		path: pathname.courseInformation,
+		component: CourseInformation,
+		layout: PrimaryLayout,
+	},
 	{ path: pathname.payment, component: Purchase, layout: PrimaryLayout },
 	{ path: pathname.editCourse, component: EditCourse, layout: ThirdLayout },
-	{ path: pathname.courseVocabulary, component: AddVocab, layout: PrimaryLayout },
+	{
+		path: pathname.courseVocabulary,
+		component: AddVocab,
+		layout: PrimaryLayout,
+	},
 	{
 		path: pathname.listExamples,
 		component: ListExamples,
@@ -70,7 +85,16 @@ export const publicRoutes = [
 		component: FlashCard,
 		layout: PrimaryLayout,
 	},
-	{ path: pathname.listExercise, component: ListExercise, layout: ThirdLayout },
-	{ path: pathname.personalStatics, component: PersonalStatics, layout: PrimaryLayout },
+	{
+		path: pathname.listExercise,
+		component: ListExercise,
+		layout: ThirdLayout,
+	},
+	{
+		path: pathname.personalStatics,
+		component: PersonalStatics,
+		layout: PrimaryLayout,
+	},
 	{ path: pathname.learn, component: LearnPage, layout: null },
+	{ path: pathname.fillInBlank, component: FillInBlankPage, layout: null },
 ];

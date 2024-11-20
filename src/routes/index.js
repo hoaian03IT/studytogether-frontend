@@ -21,4 +21,5 @@ export const pathname = {
 	listExercise: "/list-exercise/:courseId",
 	personalStatics: "/personal-statics",
 	learn: "/learn",
+	fillInBlank: "/fill-in-blank",
 };
