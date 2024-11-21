@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Select, SelectItem } from "@nextui-org/react";
-import {Button} from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
 
 export default function Filter() {
-  const [selectedStatus, setSelectedStatus] = useState(new Set(["all"])); 
+  const [selectedStatus, setSelectedStatus] = useState(new Set(["all"]));
 
   const status = [
     { label: "Free", key: "free" },
@@ -41,7 +41,7 @@ export default function Filter() {
           placeholder=""
           className="min-w-[150px]"
           selectedKeys={selectedStatus}
-          onSelectionChange={(keys) => setSelectedStatus(keys)} 
+          onSelectionChange={(keys) => setSelectedStatus(keys)}
         >
           {(item) => <SelectItem key={item.key}>{item.label}</SelectItem>}
         </Select>
@@ -84,9 +84,9 @@ export default function Filter() {
         </Select>
       </div>
       <div>
-      <Button className="bg-green-300 min-h-[52px] min-w-[100px] text-white font-bold hover:shadow-lg transition">
-      FILTER
-    </Button>
+        <Button className="bg-green-300 min-h-[52px] min-w-[100px] text-white font-bold hover:shadow-lg transition">
+          FILTER
+        </Button>
       </div>
     </div>
   );

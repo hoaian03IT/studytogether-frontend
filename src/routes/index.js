@@ -22,4 +22,5 @@ export const pathname = {
 	personalStatics: "/personal-statics",
 	learn: "/learn",
 	fillInBlank: "/fill-in-blank",
+	myCourse: "/my-course",
 };

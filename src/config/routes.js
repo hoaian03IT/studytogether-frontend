@@ -30,6 +30,7 @@ const ListExercise = lazy(() => import("../screen/list-excercise.jsx"));
 const PersonalStatics = lazy(() => import("../screen/personal-statics.jsx"));
 const LearnPage = lazy(() => import("../screen/learn.jsx"));
 const FillInBlankPage = lazy(() => import("../screen/fill-in-blank.jsx"));
+const MyCourse = lazy(() => import("../screen/my-course.jsx"));
 
 export const publicRoutes = [
 	{ path: pathname.home, component: HomePage, layout: PrimaryLayout },
@@ -97,4 +98,5 @@ export const publicRoutes = [
 	},
 	{ path: pathname.learn, component: LearnPage, layout: null },
 	{ path: pathname.fillInBlank, component: FillInBlankPage, layout: null },
+	{ path: pathname.myCourse, component: MyCourse, layout: PrimaryLayout },
 ];

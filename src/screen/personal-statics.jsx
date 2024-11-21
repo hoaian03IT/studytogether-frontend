@@ -144,7 +144,7 @@ const PersonalStatics = () => {
         {/* Left Section: Image */}
         <div className="flex-shrink-0">
           <img
-            src="https://nextui.org/images/hero-card-complete.jpeg" // Replace with your image URL
+            src="https://nextui.org/images/hero-card-complete.jpeg" 
             alt="Historical Words"
             className="w-40 h-40 rounded-lg object-cover"
           />
