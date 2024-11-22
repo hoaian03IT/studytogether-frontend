@@ -20,5 +20,6 @@ export const pathname = {
 	flashCard: "flash-card",
 	mulChoices: "/exercise-mc",
 	listExercise: "/list-exercise",
-	courseParticipant: "/course-participant"
+	courseParticipant: "/course-participant",
+	notificationComponent: "/notification-component",
 };

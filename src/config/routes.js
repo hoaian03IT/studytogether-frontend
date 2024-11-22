@@ -32,6 +32,7 @@ const ListExercise = lazy(() => import("../screen/list-excercise.jsx"));
 const CourseParticipant = lazy(() =>
 	import("../screen/course-participant.jsx"),
 );
+const NotificationComponent=lazy(() => import ("../screen/notification-component.jsx"));
 
 export const publicRoutes = [
 	{ path: pathname.home, component: HomePage, layout: PrimaryLayout },
@@ -90,4 +91,10 @@ export const publicRoutes = [
 		component: CourseParticipant,
 		layout: PrimaryLayout,
 	},
+	{
+		path:pathname.notificationComponent,
+		component: NotificationComponent,
+		
+	},
+
 ];
