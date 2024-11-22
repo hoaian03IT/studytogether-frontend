@@ -24,9 +24,14 @@ const ListExamples = lazy(() => import("../screen/list-examples"));
 const Purchase = lazy(() => import("../screen/course-purchase"));
 const Business = lazy(() => import("../screen/course-business"));
 const MulChoices = lazy(() => import("../screen/exercise-mc"));
-const CourseInformation = lazy(() => import("../screen/course-information.jsx"));
+const CourseInformation = lazy(() =>
+	import("../screen/course-information.jsx"),
+);
 const FlashCard = lazy(() => import("../screen/flash-card.jsx"));
-const ListExercise= lazy(() => import("../screen/list-excercise.jsx"));
+const ListExercise = lazy(() => import("../screen/list-excercise.jsx"));
+const CourseParticipant = lazy(() =>
+	import("../screen/course-participant.jsx"),
+);
 
 export const publicRoutes = [
 	{ path: pathname.home, component: HomePage, layout: PrimaryLayout },
@@ -56,7 +61,11 @@ export const publicRoutes = [
 	{ path: pathname.listCourse, component: ListCourse, layout: PrimaryLayout },
 	{ path: pathname.addVocab, component: AddVocab, layout: ThirdLayout },
 	{ path: pathname.courseBusiness, component: Business, layout: ThirdLayout },
-	{ path: pathname.courseInformation, component: CourseInformation, layout: PrimaryLayout },
+	{
+		path: pathname.courseInformation,
+		component: CourseInformation,
+		layout: PrimaryLayout,
+	},
 	{ path: pathname.payment, component: Purchase, layout: PrimaryLayout },
 	{ path: pathname.editCourse, component: EditCourse, layout: ThirdLayout },
 	{ path: pathname.mulChoices, component: MulChoices, layout: PrimaryLayout },
@@ -70,7 +79,15 @@ export const publicRoutes = [
 		component: FlashCard,
 		layout: PrimaryLayout,
 	},
-	{path: pathname.listExercise, component: ListExercise, layout: ListExerciseLayout },
-	
-
+	{
+		path: pathname.listExercise,
+		component: ListExercise,
+		layout: ListExerciseLayout,
+	},
+	{ path: pathname.editCourse, component: EditCourse, layout: ThirdLayout },
+	{
+		path: pathname.courseParticipant,
+		component: CourseParticipant,
+		layout: PrimaryLayout,
+	},
 ];

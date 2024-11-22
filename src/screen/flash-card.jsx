@@ -4,7 +4,7 @@ import { IoVolumeHigh } from "react-icons/io5";
 
 const FlashCard = () => {
     const vocabularyList = [
-        { front: "Apple", back: "Quả táo" },
+        { front: "snake", back: "Lê Duy ,Đặng An lũ rắn độc" },
         { front:  "Hello", back: "xin chào" },
         { front: "collect", back: "thu thập" },
         { front: "milk tea", back: "trà sữa" },
@@ -22,7 +22,7 @@ const FlashCard = () => {
         setIsFlipped(false);
         if (currentIndex < vocabularyList.length - 1) {
             setCurrentIndex(currentIndex + 1);
-			
+
         }
     };
 
