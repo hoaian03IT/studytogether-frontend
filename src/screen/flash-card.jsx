@@ -18,13 +18,15 @@ const FlashCard = () => {
 		setIsFlipped(!isFlipped);
 	};
 
-	const handleNext = () => {
-		setIsFlipped(false);
-		if (currentIndex < vocabularyList.length - 1) {
-			setCurrentIndex(currentIndex + 1);
+    const handleNext = () => {
+        setIsFlipped(false);
+        if (currentIndex < vocabularyList.length - 1) {
+            setCurrentIndex(currentIndex + 1);
 
-		}
-	};
+        }
+    };
+
+	
 
 	const handleBack = () => {
 		setIsFlipped(false);
