@@ -6,6 +6,13 @@ class LearnProcessServiceClass {
 		const res = await httpAuth.get(`/learn/new-words?ci=${courseId}`);
 		return res.data;
 	}
+
+	async updateLearnNewWordSession(payload, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const { courseId, words, points } = payload; // words = [{wordId: number, isWrong: boolean, isRepeat: boolean}]
+		const res = await httpAuth.post("/learn/update-new-words", { courseId, words, points });
+		return res.data;
+	}
 }
 
 const LearnProcessService = new LearnProcessServiceClass();

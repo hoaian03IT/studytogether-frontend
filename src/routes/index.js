@@ -23,9 +23,7 @@ export const pathname = {
 	learn: "/learn",
 	fillInBlank: "/fill-in-blank",
 	myCourse: "/my-course",
-	flashCard: "flash-card",
 	mulChoices: "/exercise-mc",
-	listExercise: "/list-exercise",
 	courseParticipant: "/course-participant",
 	notificationComponent: "/notification-component",
 };

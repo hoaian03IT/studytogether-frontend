@@ -1,14 +1,10 @@
 import React, { Fragment, useContext, useState } from "react";
-import { RiUserShared2Fill } from "react-icons/ri";
-import { IoIosArrowDown, IoIosCloseCircle } from "react-icons/io";
+import { IoIosCloseCircle } from "react-icons/io";
 import { FaMicrophone } from "react-icons/fa";
 import { TbTextPlus } from "react-icons/tb";
 import { CgAttachment } from "react-icons/cg";
 import { LuPlus } from "react-icons/lu";
-import { ImBin } from "react-icons/im";
-import { IoVolumeHigh } from "react-icons/io5";
 import { AiOutlinePicture } from "react-icons/ai";
-import { FcEditImage } from "react-icons/fc";
 import { VocabularyService } from "../apis/vocabulary.api.js";
 import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
 import { userState } from "../recoil/atoms/user.atom.js";
@@ -32,8 +28,8 @@ import { Image } from "@nextui-org/image";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { base64Converter } from "../utils/base64-convert.js";
-import { MdEdit } from "react-icons/md";
 import { queryKeys } from "../react-query/query-keys.js";
+import { WordListEdit } from "../components/word-list-edit.jsx";
 
 
 function AddLevels() {
@@ -45,7 +41,6 @@ function AddLevels() {
 	const queryClient = useQueryClient();
 
 
-	const [showPermissionModal, setShowPermissionModal] = useState(false);
 	const [vocabulary, setVocabulary] = useState("");
 	const [definition, setDefinition] = useState("");
 	const [typeWord, setTypeWord] = useState("");
@@ -268,12 +263,6 @@ function AddLevels() {
 		setSelectedFile(event.target.files[0]);
 	};
 
-	const handleClickOutside = (event) => {
-		if (event.target.classList.contains("modal-overlay")) {
-			setShowPermissionModal(false);
-		}
-	};
-
 	const handleRenameLevel = (levelId, levelName) => {
 		setShowRenameModal(true);
 		setRenameLevel({ levelId, levelName });
@@ -426,59 +415,8 @@ function AddLevels() {
 			<div className="bg-white p-6 rounded-lg shadow-md relative mt-6 mb-6">
 				<h2 className="text-xl font-bold mb-4">Tạo bộ từ vựng cho riêng bạn</h2>
 				<p className="text-gray-400">Bộ từ vựng gia đình</p>
-
-				{/* User icon for permission modal */}
-				<button
-					onClick={() => setShowPermissionModal(true)}
-				><RiUserShared2Fill className="absolute top-4 right-6 size-5" />
-				</button>
 			</div>
-			{/* Permission Modal */}
-			{showPermissionModal && (
-				<div
-					className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center modal-overlay z-50"
-					onClick={handleClickOutside}>
-					<div className="relative bg-white p-6 rounded-lg shadow-lg w-1/3 z-60">
-						<div className="flex justify-between items-center mb-6">
-							<h2 className="text-lg font-bold">QUYỀN TRUY CẬP VÀ CHỈNH SỬA </h2>
-							<button onClick={() => setShowPermissionModal(false)}>
-								<IoIosCloseCircle className=" right-4 size-6" />
-							</button>
-						</div>
 
-						<div className="grid grid-cols-2 gap-6">
-							<div className="relative">
-								<label className="block text-sm font-medium mb-2">Quyền truy cập</label>
-								<select
-									className="w-full px-3 py-2 mb-20 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2">
-									<option>Chỉ mình tôi</option>
-									<option>Mọi người</option>
-								</select>
-								<IoIosArrowDown
-									className="absolute top-12 right-5 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
-							</div>
-
-							<div className="relative">
-								<label className="block text-sm font-medium mb-2">Quyền chỉnh sửa</label>
-								<select
-									className="w-full px-3 py-2 text-sm text-gray-600 bg-white border rounded-lg shadow-sm outline-none appearance-none focus:ring-offset-2 focus:ring-indigo-600 focus:ring-2">
-									<option>Chỉ mình tôi</option>
-									<option>Mọi người</option>
-								</select>
-								<IoIosArrowDown
-									className="absolute top-12 right-4  transform -translate-y-1/2 text-gray-400 pointer-events-none" />
-							</div>
-						</div>
-						<button
-							onClick={() => setShowPermissionModal(false)}
-							className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 mt-16 mb-6 bg-orange-500 text-white py-2 px-6 rounded-lg hover:bg-orange-600 transition"
-						>
-							Lưu
-						</button>
-
-					</div>
-				</div>
-			)}
 			<div className="flex mb-4">
 				<button onClick={() => setShowTextModal(true)}
 						className="flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2"><TbTextPlus
@@ -683,70 +621,53 @@ function AddLevels() {
 					</div>
 					<Accordion className="bg-blue-100" selectionMode="multiple">
 						{vocabularyQuery.data?.map(item => {
-							return <AccordionItem key={item?.levelId} title={item?.levelName}
-												  disableIndicatorAnimation={true}
-												  indicator={({ isOpen }) => (isOpen ?
-													  <div className="flex items-center text-blue-400 font-bold gap-4">
-														  <span>Ẩn</span>
-														  <span className="hover:underline"
-																onClick={() => handleRenameLevel(item?.levelId, item?.levelName)}
-														  >Sửa tên</span>
-														  <span className="hover:underline"
-																onClick={() => showDeleteConfirmation({
-																	type: "group",
-																	groupId: item?.levelId,
-																})}>Xoá
+							return <AccordionItem
+								key={item?.levelId} title={item?.levelName}
+								disableIndicatorAnimation={true}
+								indicator={({ isOpen }) => (isOpen ?
+									<div className="flex items-center text-blue-400 font-bold gap-4">
+										<span>Ẩn</span>
+										<span className="hover:underline"
+											  onClick={() => handleRenameLevel(item?.levelId, item?.levelName)}
+										>Sửa tên</span>
+										<span className="hover:underline"
+											  onClick={() => showDeleteConfirmation({
+												  type: "group",
+												  groupId: item?.levelId,
+											  })}>Xoá
 														  </span>
-													  </div> :
-													  <div className="flex items-center text-blue-400 font-bold gap-4">
-														  <span>Hiện</span>
-														  <span className="hover:underline"
-																onClick={() => handleRenameLevel(item?.levelId, item?.levelName)}>Sửa tên</span>
-														  <span className="hover:underline"
-																onClick={() => showDeleteConfirmation({
-																	type: "group",
-																	groupId: item?.levelId,
-																})}>Xoá
+									</div> :
+									<div className="flex items-center text-blue-400 font-bold gap-4">
+										<span>Hiện</span>
+										<span className="hover:underline"
+											  onClick={() => handleRenameLevel(item?.levelId, item?.levelName)}>Sửa tên</span>
+										<span className="hover:underline"
+											  onClick={() => showDeleteConfirmation({
+												  type: "group",
+												  groupId: item?.levelId,
+											  })}>Xoá
 														  </span>
-													  </div>)}>
+									</div>)}>
 								<ul>
 									{item?.words?.map((word, index) => {
-										return <li key={word?.wordId}
-												   className="grid grid-cols-7 bg-gray-100 p-3 rounded-sm items-center gap-x-2 my-2">
-											<p className="font-bold col-span-2">{index + 1}. {word?.word} ({word?.type})</p>
-											<p className="col-span-2 ml-4">{word?.definition}</p>
-											<div className="col-span-1 flex justify-center items-center">
-												{word?.pronunciation && <IoVolumeHigh size={24}
-																					  className="text-blue-500 hover:text-blue-700 transition" />}
-											</div>
-											<div className="col-span-1 flex justify-center items-center">
-												{word?.image && <FcEditImage size={24} />}
-											</div>
-											<div className="col-span-1 flex justify-center items-center gap-4">
-												<button
-													onClick={() => showDeleteConfirmation({
-														type: "vocab",
-														levelId: item?.levelId,
-														wordId: word?.wordId,
-													})}
-													className="text-red-500 hover:text-red-700 transition">
-													<ImBin />
-												</button>
-												<button
-													className="text-primary hover:text-blue-800	transition">
-													<MdEdit className="size-5"
-															onClick={() => handleEditWord({
-																levelId: item?.levelId,
-																wordId: word?.wordId,
-																word: word?.word,
-																pronunciation: word?.pronunciation,
-																type: word?.type,
-																image: word?.image,
-																definition: word?.definition,
-															})} />
-												</button>
-											</div>
-										</li>;
+										const handleEdit = () => handleEditWord({
+											levelId: item?.levelId,
+											wordId: word?.wordId,
+											word: word?.word,
+											pronunciation: word?.pronunciation,
+											type: word?.type,
+											image: word?.image,
+											definition: word?.definition,
+										});
+
+										const handleShowConfirmDeletion = () => showDeleteConfirmation({
+											type: "vocab",
+											levelId: item?.levelId,
+											wordId: word?.wordId,
+										});
+										return <WordListEdit key={index} index={index} word={word}
+															 handleEdit={handleEdit}
+															 handleDeleteConfirmation={handleShowConfirmDeletion} />;
 									})}
 								</ul>
 							</AccordionItem>;
@@ -777,7 +698,6 @@ function AddLevels() {
 						</form>
 					)}
 				</div>
-
 			</div>
 
 			{showTextModal && (

@@ -6,7 +6,6 @@ import { Textarea } from "@nextui-org/input";
 import { SelectItem } from "@nextui-org/select";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
-import { pathname } from "../routes/index.js";
 import { LanguageService } from "../apis/language.api.js";
 import { CourseLevelService } from "../apis/courseLevel.api.js";
 import defaultUploadImage from "../assets/default-placeholder-upload.png";
@@ -15,6 +14,8 @@ import { base64Converter } from "../utils/base64-convert.js";
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom.js";
 import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
+import { TbEdit } from "react-icons/tb";
+import { TranslationContext } from "../components/providers/TranslationProvider.jsx";
 
 const MAX_CHAR_COURSE_NAME = 100;
 const MAX_CHAR_TAG = 30;
@@ -34,6 +35,7 @@ const EditCourseInfor = () => {
 	});
 	let user = useRecoilValue(userState);
 	let { updateUserState } = useContext(GlobalStateContext);
+	let { translation } = useContext(TranslationContext);
 
 	const [formValue, setFormValue] = useState({
 		targetLanguageId: "",
@@ -44,45 +46,43 @@ const EditCourseInfor = () => {
 		shortDescription: "",
 		detailedDescription: "",
 		image: "",
+		isPrivate: null,
 	});
+
+	const [editable, setEditable] = useState(false);
 
 	const navigate = useNavigate();
 	const inputFileRef = useRef();
 
 
 	useEffect(() => {
-		setFormValue({
-			targetLanguageId: courseInfoQuery.data?.["target language id"]?.toString(), // Select Component của NextUI chỉ chấp nhận string
-			sourceLanguageId: courseInfoQuery.data?.["source language id"]?.toString(),// Select Component của NextUI chỉ chấp nhận string
-			courseLevelId: courseInfoQuery.data?.["course level id"]?.toString(),// Select Component của NextUI chỉ chấp nhận string
-			courseName: courseInfoQuery.data?.["name"],
-			tag: courseInfoQuery.data?.["tag"],
-			shortDescription: courseInfoQuery.data?.["short description"],
-			detailedDescription: courseInfoQuery.data?.["detailed description"],
-			image: courseInfoQuery.data?.["image"],
-		});
+		handleFormValueInitial(courseInfoQuery.data);
 	}, [courseInfoQuery.data]);
-	
+
+	const handleFormValueInitial = (courseInfo) => {
+		setFormValue({
+			targetLanguageId: courseInfo?.["target language id"]?.toString(), // Select Component của NextUI chỉ chấp nhận string
+			sourceLanguageId: courseInfo?.["source language id"]?.toString(),// Select Component của NextUI chỉ chấp nhận string
+			courseLevelId: courseInfo?.["course level id"]?.toString(),// Select Component của NextUI chỉ chấp nhận string
+			courseName: courseInfo?.["name"],
+			tag: courseInfo?.["tag"],
+			shortDescription: courseInfo?.["short description"],
+			detailedDescription: courseInfo?.["detailed description"],
+			image: courseInfo?.["image"],
+			isPrivate: courseInfo?.["is private"].toString(),// Select Component của NextUI chỉ chấp nhận string
+		});
+	};
+
 
 	const updateCourseMutation = useMutation({
-		mutationFn: async () => {
-			return await CourseService.updateCourseInformation({
-				courseId: params?.courseId,
-				courseName: formValue.courseName,
-				sourceLanguageId: formValue.sourceLanguageId,
-				courseLevelId: formValue.courseLevelId,
-				tag: formValue.tag,
-				shortDescription: formValue.shortDescription,
-				detailedDescription: formValue.detailedDescription,
-				image: formValue.image === courseInfoQuery.data?.["image"] ? null : formValue.image,
-			}, user, updateUserState);
+		mutationFn: async (payload) => {
+			return await CourseService.updateCourseInformation(payload, user, updateUserState);
 		},
 		onSuccess: (data) => {
 			toast.success("Cập nhật khóa học thành công!");
-			navigate("/courses");
 		},
 		onError: (error) => {
-			toast.error("Cập nhật khóa học thất bại!");
+			toast.error(translation(error.response.data?.errorCode));
 			console.error(error);
 		},
 	});
@@ -111,7 +111,6 @@ const EditCourseInfor = () => {
 		},
 	});
 
-
 	const onChangeImage = async (e) => {
 		const file = e.target.files[0];
 		if (file.type.split("/")[0] !== "image") {
@@ -126,7 +125,6 @@ const EditCourseInfor = () => {
 			toast.warn("Image must be smaller than 2MB");
 		}
 	};
-
 
 	const handleOpenFileSelect = () => {
 		inputFileRef.current.click();
@@ -143,34 +141,61 @@ const EditCourseInfor = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
+		if (!editable) return;
 		if (formValue.targetLanguageId === formValue.sourceLanguageId) {
 			toast.warn("Ngôn ngữ học và ngôn ngữ gốc không được giống nhau!");
 			return;
 		}
 
-		updateCourseMutation.mutate();
+		updateCourseMutation.mutate({
+			courseId: params?.courseId,
+			courseName: formValue.courseName,
+			sourceLanguageId: formValue.sourceLanguageId,
+			courseLevelId: formValue.courseLevelId,
+			tag: formValue.tag,
+			shortDescription: formValue.shortDescription,
+			detailedDescription: formValue.detailedDescription,
+			image: formValue.image === courseInfoQuery.data?.["image"] ? null : formValue.image,
+			isPrivate: formValue.isPrivate,
+		});
+		setEditable(false);
 	};
 
 	const handleCancel = () => {
-		setFormValue({
-			targetLanguageId: "",
-			sourceLanguageId: "",
-			courseLevelId: "",
-			courseName: "",
-			tag: "",
-			shortDescription: "",
-			detailedDescription: "",
-		});
-		navigate(pathname.home);
+		handleFormValueInitial(courseInfoQuery.data);
+		setEditable(false);
 	};
 
 	return (
 		<div className="bg-white px-6 rounded w-full flex flex-col items-center">
 			<div className="max-w-screen-lg w-full">
-				<form onSubmit={handleSubmit} className="my-6 w-full grid gap-x-4 gap-y-5 grid-cols-6">
+				<div>
+					<button className="flex items-center text-secondary text-xl hover:underline transition-all"
+							onClick={() => setEditable(!editable)}>
+						Chỉnh sửa ngay
+						<TbEdit className="size-6" />
+					</button>
+				</div>
+				<form onSubmit={handleSubmit} onReset={handleCancel}
+					  className="my-6 w-full grid gap-x-4 gap-y-5 grid-cols-6">
 					<div className="col-span-4 grid grid-cols-2 gap-y-5">
-						<div className="col-span-2 grid grid-cols-2 gap-4">
+						<div className="col-span-2 grid grid-cols-3 gap-4">
 							<Select
+								isDisabled={!editable}
+								selectedKeys={[formValue.isPrivate]}
+								size="lg"
+								label={<Label>Quyền truy cập</Label>}
+								labelPlacement="outside"
+								radius="sm"
+								isRequired
+								name="isPrivate"
+								value={formValue.isPrivate}
+								onChange={handleInputChange}>
+								<SelectItem value="0" key="0">Public</SelectItem>
+								<SelectItem value="1" key="1">Private</SelectItem>
+							</Select>
+							<Select
+								isDisabled={!editable}
 								selectedKeys={[formValue.sourceLanguageId]}
 								size="lg"
 								label={<Label>Ngôn ngữ gốc</Label>}
@@ -193,6 +218,7 @@ const EditCourseInfor = () => {
 								))}
 							</Select>
 							<Select
+								isDisabled={!editable}
 								selectedKeys={[formValue.targetLanguageId]}
 								size="lg"
 								label={<Label>Ngôn ngữ học</Label>}
@@ -216,6 +242,7 @@ const EditCourseInfor = () => {
 							</Select>
 						</div>
 						<Select
+							isDisabled={!editable}
 							selectedKeys={[formValue.courseLevelId]}
 							size="lg"
 							label={<Label>Cấp độ</Label>}
@@ -237,6 +264,7 @@ const EditCourseInfor = () => {
 							))}
 						</Select>
 						<Input
+							isDisabled={!editable}
 							size="lg"
 							name="courseName"
 							type="text"
@@ -257,6 +285,7 @@ const EditCourseInfor = () => {
 								className="text-sm text-gray-400">{formValue.courseName?.length}/{MAX_CHAR_COURSE_NAME}</span>}
 						/>
 						<Input
+							isDisabled={!editable}
 							size="lg"
 							name="tag"
 							type="text"
@@ -289,14 +318,17 @@ const EditCourseInfor = () => {
 								src={formValue.image || defaultUploadImage}
 								alt=""
 							/>
-							<Input ref={inputFileRef} type="file" radius="sm" onChange={onChangeImage} multiple={false}
+							<Input isDisabled={!editable} ref={inputFileRef} type="file" radius="sm"
+								   onChange={onChangeImage} multiple={false}
 								   accept="image/*" className="hidden" />
 							<div className="flex items-center justify-center gap-4">
-								<button type="button" className="text-sm underline select-none active:opacity-80"
+								<button disabled={!editable} type="button"
+										className="text-sm underline select-none active:opacity-80"
 										onClick={() => setFormValue(prev => ({ ...prev, image: null }))}>
 									Remove
 								</button>
-								<button type="button" className="text-sm underline select-none active:opacity-80"
+								<button disabled={!editable} type="button"
+										className="text-sm underline select-none active:opacity-80"
 										onClick={() => setFormValue(prev => ({
 											...prev,
 											image: courseInfoQuery.data?.["image"],
@@ -308,6 +340,7 @@ const EditCourseInfor = () => {
 					</div>
 
 					<Textarea
+						isDisabled={!editable}
 						size="lg"
 						name="shortDescription"
 						type="text"
@@ -328,6 +361,7 @@ const EditCourseInfor = () => {
 							className="text-sm text-gray-400">{formValue.shortDescription?.length}/{MAX_SHORT_DESCRIPTION}</span>}
 					/>
 					<Textarea
+						isDisabled={!editable}
 						size="lg"
 						disableAutosize
 						label={<Label>Mô tả chi tiết</Label>}
@@ -340,10 +374,9 @@ const EditCourseInfor = () => {
 						rows={8}
 						name="detailedDescription"
 					/>
-					<div className="col-span-6 grid grid-cols-12 gap-4">
+					{editable && <div className="col-span-6 grid grid-cols-12 gap-4">
 						<Button
-							type="button"
-							onClick={handleCancel}
+							type="reset"
 							className="col-start-6 col-span-1 bg-gray-300 text-gray-700 px-4 py-2 rounded">
 							Hủy
 						</Button>
@@ -351,7 +384,7 @@ const EditCourseInfor = () => {
 								isLoading={updateCourseMutation.isPending}>
 							Lưu
 						</Button>
-					</div>
+					</div>}
 				</form>
 			</div>
 		</div>
