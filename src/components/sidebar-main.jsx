@@ -20,7 +20,7 @@ function SidebarMain() {
         {
             label: translation("sidebar-main.courses"),
             icon: MdOutlineCollectionsBookmark,
-            path: "/courses",
+            path: "/my-course",
         },
         {
             label: translation("sidebar-main.flash-card"),

@@ -18,7 +18,12 @@ export const pathname = {
 	courseInformation: "/course-information/:courseId",
 	payment: "/course-purchase/:courseId",
 	flashCard: "/flash-card",
-	listExercise: "/list-exerciseư/:courseId",
+	listExercise: "/list-exercise/:courseId",
 	personalStatics: "/personal-statics",
 	learn: "/learn",
+	fillInBlank: "/fill-in-blank",
+	myCourse: "/my-course",
+	mulChoices: "/exercise-mc",
+	courseParticipant: "/course-participant",
+	notificationComponent: "/notification-component",
 };

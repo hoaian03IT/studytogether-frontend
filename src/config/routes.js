@@ -29,6 +29,11 @@ const FlashCard = lazy(() => import("../screen/flash-card.jsx"));
 const ListExercise = lazy(() => import("../screen/list-excercise.jsx"));
 const PersonalStatics = lazy(() => import("../screen/personal-statics.jsx"));
 const LearnPage = lazy(() => import("../screen/learn.jsx"));
+const MyCourse = lazy(() => import("../screen/my-course.jsx"));
+const CourseParticipant = lazy(() =>
+	import("../screen/course-participant.jsx"),
+);
+const NotificationComponent=lazy(() => import ("../screen/notification-component.jsx"));
 
 export const publicRoutes = [
 	{ path: pathname.home, component: HomePage, layout: PrimaryLayout },
@@ -95,4 +100,17 @@ export const publicRoutes = [
 		layout: PrimaryLayout,
 	},
 	{ path: pathname.learn, component: LearnPage, layout: null },
+	{ path: pathname.myCourse, component: MyCourse, layout: PrimaryLayout },
+	{ path: pathname.editCourse, component: EditCourse, layout: ThirdLayout },
+	{
+		path: pathname.courseParticipant,
+		component: CourseParticipant,
+		layout: PrimaryLayout,
+	},
+	{
+		path:pathname.notificationComponent,
+		component: NotificationComponent,
+
+	},
+
 ];
