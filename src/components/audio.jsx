@@ -1,7 +1,8 @@
 import { PiSpeakerSimpleHighBold } from "react-icons/pi";
 import { useEffect, useRef } from "react";
+import clsx from "clsx";
 
-function Audio({ src, Icon = PiSpeakerSimpleHighBold, show = true, rd = 0 }) {
+function Audio({ src, Icon = PiSpeakerSimpleHighBold, show = true, autoPlay = true, size, rd = 0 }) {
 	const audioRef = useRef(null);
 
 	const handlePlay = () => {
@@ -11,17 +12,18 @@ function Audio({ src, Icon = PiSpeakerSimpleHighBold, show = true, rd = 0 }) {
 	};
 
 	useEffect(() => {
-		if (audioRef.current) {
+		if (autoPlay && audioRef.current) {
 			handlePlay();
 		}
 	}, [audioRef.current, rd]);
 
 	return <div>
-		<audio autoPlay ref={audioRef} src={src} className="hidden">
+		<audio autoPlay={autoPlay} ref={audioRef} src={src} className="hidden">
 			<source src={src} type="audio/mp3" />
 		</audio>
 		{show && <button type="button" onClick={handlePlay}>
-			<Icon className="size-8 text-secondary active:opacity-50 transition-all" />
+			<Icon
+				className={clsx("size-8 text-secondary active:opacity-50 transition-all", size === "sm" ? "size-4" : size === "md" ? "size-5" ? size === "lg" : "size-8" : "")} />
 		</button>}
 	</div>;
 }

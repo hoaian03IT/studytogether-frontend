@@ -37,6 +37,7 @@ class CourseServiceClass {
 			shortDescription,
 			detailedDescription,
 			image,
+			isPrivate = 0,
 		} = payload;
 		const httpAuth = createHttpAuth(user, updateUserState);
 		const response = await httpAuth.post(`/course/update`, {
@@ -48,6 +49,7 @@ class CourseServiceClass {
 			shortDescription,
 			detailedDescription,
 			image,
+			isPrivate,
 		});
 		return response.data;
 	}
