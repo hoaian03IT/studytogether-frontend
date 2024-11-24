@@ -11,6 +11,7 @@ import { useRecoilValue } from "recoil";
 import { TranslationContext } from "../components/providers/TranslationProvider.jsx";
 import { toast } from "react-toastify";
 import { parseAbsoluteToLocal } from "@internationalized/date";
+import Revenue from "../screen/course-revenue.jsx";
 
 const CourseBusiness = () => {
 	const params = useParams();
@@ -335,6 +336,7 @@ const CourseBusiness = () => {
 					</div>
 				)}
 			</form>
+			<Revenue/>
 		</div>
 	);
 };
