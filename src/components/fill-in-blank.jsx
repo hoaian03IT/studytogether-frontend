@@ -1,7 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Button } from "@nextui-org/react";
+import { generateRandomLetter } from "../utils/randomLetterFromAnswerAndQuestion.js";
 
 const Card = ({ children, className }) => (
-	<div className={`bg-white rounded-lg shadow-lg ${className}`}>
+	<div className={`${className}`}>
 		{children}
 	</div>
 );
@@ -40,6 +42,7 @@ const FillBlanksQuiz = () => {
 		Math.floor(Math.random() * quizData.length),
 	);
 	const currentQuestion = quizData[currentQuestionIndex];
+	const letterOptions = generateRandomLetter(quizData[currentQuestionIndex].sentence, quizData[currentQuestionIndex].answer);
 
 	const [chars, setChars] = useState(
 		new Array(currentQuestion.answer.length).fill(""),
@@ -114,74 +117,42 @@ const FillBlanksQuiz = () => {
 		inputRefs.current[0]?.focus();
 	};
 
-	const handleNextQuestion = () => {
-		const nextIndex = (currentQuestionIndex + 1) % quizData.length;
-		setCurrentQuestionIndex(nextIndex);
-		setChars(new Array(quizData[nextIndex].answer.length).fill(""));
-		setIsCorrect(false);
-		setShowHint(false);
-		setIsSubmitted(false);
-	};
 
 	return (
-		<div className='min-h-screen bg-gray-50 flex items-center justify-center p-4'>
-			<Card className='w-full max-w-lg'>
-				{/* Timer Header */}
-				<div className='flex items-center p-4 border-b'>
-					<div className='flex items-center space-x-2'>
-						<span className='text-lg font-semibold'>00:00</span>
-						<button className='p-1 rounded-full hover:bg-gray-100'>
-							<svg
-								className='w-4 h-4'
-								fill='none'
-								viewBox='0 0 24 24'
-								stroke='currentColor'>
-								<path
-									strokeLinecap='round'
-									strokeLinejoin='round'
-									strokeWidth={2}
-									d='M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15'
-								/>
-							</svg>
-						</button>
-					</div>
-					<span className='ml-auto text-gray-600'>
-						Fill in the blanks #{currentQuestionIndex + 1}
-					</span>
-				</div>
-
+		<div>
+			<Card className="w-full">
 				{/* Quiz Content */}
-				<div className='p-6'>
-					<h2 className='text-lg font-medium mb-4'>
+				<div className="p-6">
+					<h2 className="text-lg font-medium mb-10">
 						Complete the sentence with the correct word
 					</h2>
-					<div className='mb-6 text-gray-700'>
+					<div className="mb-6 text-gray-700 text-4xl">
 						{currentQuestion.sentence.split("___")[0]}
-						<div className='inline-flex gap-2'>
+						<div className="inline-flex gap-2">
 							{chars.map((char, index) => (
 								<input
 									key={index}
 									ref={(el) =>
 										(inputRefs.current[index] = el)
 									}
-									type='text'
+									type="text"
 									value={char}
 									onChange={(e) =>
 										handleCharChange(index, e.target.value)
 									}
 									onKeyDown={(e) => handleKeyDown(index, e)}
-									className={`w-10 h-10 border-2 rounded text-center text-lg font-medium 
-                           focus:border-blue-500 focus:outline-none uppercase
+									className={`w-16 h-14 bg-transparent border-b-2 border-primary text-center text-4xl font-bold 
+                           focus:border-blue-500 focus:outline-none
                            ${
-								isSubmitted && isCorrect
-									? "border-green-500 bg-green-50"
-									: ""
-							}
+										isSubmitted && isCorrect
+											? "border-green-500 bg-green-50"
+											: ""
+									}
                            ${
-								isSubmitted && !isCorrect
-									? "border-red-500 bg-red-50"
-									: ""
-							}`}
+										isSubmitted && !isCorrect
+											? "border-red-500 bg-red-50"
+											: ""
+									}`}
 									maxLength={1}
 									disabled={isSubmitted}
 								/>
@@ -190,79 +161,38 @@ const FillBlanksQuiz = () => {
 						{currentQuestion.sentence.split("___")[1]}
 					</div>
 
-					{/* Helper Buttons */}
-					{!isSubmitted && (
-						<div className='flex gap-2 mb-4'>
-							<button
-								onClick={() => setShowHint(true)}
-								className='text-sm text-blue-600 hover:text-blue-700'>
-								Show Hint
-							</button>
-						</div>
-					)}
-
-					{/* Hint */}
-					{showHint && !isSubmitted && (
-						<div className='mb-4 p-3 bg-blue-50 rounded-lg'>
-							<p className='text-sm text-blue-700'>
-								Hint: {currentQuestion.hint}
-							</p>
-						</div>
-					)}
-
 					{/* Answer Status */}
 					{isSubmitted && (
 						<div
 							className={`p-3 rounded-lg mb-4 ${
 								isCorrect ? "bg-green-50" : "bg-red-50"
 							}`}>
-							<div className='flex items-center'>
+							<div className="flex items-center">
 								{isCorrect ? (
-									<span className='text-green-700'>
+									<span className="text-green-700">
 										✓ Correct! The answer is "
 										{currentQuestion.answer}"
 									</span>
 								) : (
-									<span className='text-red-700'>
+									<span className="text-red-700">
 										× Incorrect. Try again!
 									</span>
 								)}
 								<button
 									onClick={handleReset}
-									className='ml-auto text-sm text-gray-600 hover:text-gray-800'>
+									className="ml-auto text-sm text-gray-600 hover:text-gray-800">
 									Solve again
 								</button>
 							</div>
 						</div>
 					)}
 				</div>
-
-				{/* Footer */}
-				<div className='flex items-center justify-between p-4 border-t bg-gray-50'>
-					<button className='px-4 py-2 text-gray-600 hover:bg-gray-200 rounded'>
-						Exit
-					</button>
-					<div className='flex items-center space-x-4'>
-						{isCorrect && (
-							<button
-								className='p-2 hover:bg-gray-200 rounded'
-								onClick={handleNextQuestion}>
-								Next →
-							</button>
-						)}
-					</div>
-					<button
-						onClick={handleSubmit}
-						disabled={!isAllFilled || isSubmitted}
-						className={`px-4 py-2 rounded ${
-							!isAllFilled || isSubmitted
-								? "bg-gray-300 cursor-not-allowed"
-								: "bg-blue-600 hover:bg-blue-700 text-white"
-						}`}>
-						Submit
-					</button>
-				</div>
 			</Card>
+			<div className="mt-10 w-full flex gap-2 justify-center">
+				{letterOptions?.map((letter, index) =>
+					<Button key={index} className="bg-white text-2xl" variant="shadow" size="lg"
+							isIconOnly>{letter}</Button>)}
+			</div>
 		</div>
 	);
 };
