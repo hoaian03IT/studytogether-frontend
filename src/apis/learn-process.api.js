@@ -9,7 +9,7 @@ class LearnProcessServiceClass {
 
 	async updateLearnNewWordSession(payload, userState, updateUserState) {
 		const httpAuth = createHttpAuth(userState, updateUserState);
-		const { courseId, words, points } = payload; // words = [{wordId: number, isWrong: boolean, isRepeat: boolean}]
+		const { courseId, words, points } = payload; // words = [{wordId: number, wrongTimes: number, repeatable: boolean}]
 		const res = await httpAuth.post("/learn/update-new-words", { courseId, words, points });
 		return res.data;
 	}

@@ -131,7 +131,6 @@ function AddLevels() {
 		mutationFn: async (payload) => await VocabularyService.addNewVocabulary(payload, user, updateUserState),
 		onSuccess: (data) => {
 			const newWord = data?.newWord;
-			console.log(newWord);
 			let newVocabularyList = vocabularyQuery.data;
 			for (let i = 0; i < newVocabularyList?.length; i++) {
 				if (newVocabularyList[i].levelId === newWord["level id"]) {
@@ -391,7 +390,6 @@ function AddLevels() {
 	const saveGroup = async (e) => {
 		e.preventDefault();
 		if (groupName) {
-			console.log(groupName);
 			addLevelMutation.mutate({ courseId: params?.courseId, groupName });
 		}
 	};

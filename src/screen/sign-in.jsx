@@ -111,7 +111,6 @@ const SignIn = () => {
 	});
 
 	const facebookLoginSuccessHandler = (response) => {
-		console.log(response);
 		mutationFacebookLogin.mutate({ token: response.accessToken });
 	};
 	return (

@@ -11,7 +11,7 @@ import { LuPencilLine } from "react-icons/lu";
 import { CourseInformationDescription } from "../components/course-information-description.jsx";
 import { CourseInformationContent } from "../components/course-information-content.jsx";
 import { Link as LinkDom, useNavigate, useParams } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CourseInformationComment } from "../components/course-information-comment.jsx";
 import { CourseService } from "../apis/course.api.js";
 import { queryKeys } from "../react-query/query-keys.js";
@@ -20,11 +20,14 @@ import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom.js";
 import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
 import { pathname } from "../routes/index.js";
+import { toast } from "react-toastify";
+import { TranslationContext } from "../components/providers/TranslationProvider.jsx";
 
 function CourseInformation() {
 	const params = useParams();
 	const user = useRecoilValue(userState);
 	const { updateUserState } = useContext(GlobalStateContext);
+	const { translation } = useContext(TranslationContext);
 
 	const clientQuery = useQueryClient();
 
@@ -42,10 +45,6 @@ function CourseInformation() {
 			setEnrolled(false);
 		});
 	}, [params?.courseId, updateUserState, user, user.isLogged]);
-
-	useEffect(() => {
-		console.log(enrolled);
-	}, [enrolled]);
 
 	const courseInfoQuery = useQuery({
 		queryKey: [queryKeys.courseInfo, params?.courseId],
@@ -67,9 +66,34 @@ function CourseInformation() {
 		enabled: !clientQuery.getQueryData([queryKeys.coursePrice, params?.courseId]),
 	});
 
+	const enrollMutation = useMutation({
+		mutationFn: async () => {
+			return await EnrollmentService.createEnrollment(params?.courseId, user, updateUserState);
+		},
+		onSuccess: (data) => {
+			console.log(data);
+		},
+		onError: (error) => {
+			toast.error(translation(error.response.data?.errorCode));
+		},
+	});
+
 	const handledPrice = coursePriceQuery.data?.["price"] * (1 - coursePriceQuery.data?.["discount"]);
 
 	const navigate = useNavigate();
+
+	const handleLearnOrBuy = () => {
+		if (enrolled) {
+			navigate(pathname.learn + "?ci=" + params?.courseId);
+			return;
+		}
+
+		if (handledPrice > 0) {
+			navigate(pathname.payment.split(":")[0] + params?.courseId);
+		} else {
+			enrollMutation.mutate();
+		}
+	};
 
 	return <div className="m-6 grid grid-cols-1 gap-4">
 		<div className="flex items-center bg-white p-2 rounded-md">
@@ -94,12 +118,13 @@ function CourseInformation() {
 						<p className="text-gray-200 text-sm font-normal w-1/2 text-center">
 							You need to buy to see full lessons of this course, thank you!
 						</p>
-						{enrolled ? <Button className="bg-third text-third-foreground shadow-2xl" radius="sm"
+						{enrolled ? <Button onClick={handleLearnOrBuy}
+											className="bg-third text-third-foreground shadow-2xl" radius="sm"
 							>
 								Learn now
 							</Button> :
 							<Button className="bg-third text-third-foreground shadow-2xl" radius="sm"
-									onClick={() => navigate(pathname.payment.split(":")[0] + params?.courseId)}>
+									onClick={handleLearnOrBuy}>
 								Buy now -
 								{coursePriceQuery.data?.["currency"] === "USD" ? USDollar.format(handledPrice) : VNDong.format(handledPrice)}
 							</Button>}
@@ -108,7 +133,8 @@ function CourseInformation() {
 						<p className="text-gray-200 text-sm font-normal w-1/2 text-center">
 							There are a lot of words waiting for you to learn
 						</p>
-						<Button className="bg-third text-third-foreground shadow-2xl" radius="sm">
+						<Button className="bg-third text-third-foreground shadow-2xl" radius="sm"
+								onClick={handleLearnOrBuy}>
 							{enrolled ? "Join now" : "Learn now"}
 						</Button>
 					</Fragment>
@@ -136,13 +162,14 @@ function CourseInformation() {
 						<div className="mt-8 flex flex-col justify-center space-y-2">
 							{!enrolled ? <Fragment>
 								<Button className="bg-third text-third-foreground font-bold text-base"
-										onClick={() => navigate(pathname.payment.split(":")[0] + params?.courseId)}
+										onClick={handleLearnOrBuy}
 										size="lg"
 										radius="sm">Buy
 									now</Button>
 								<Button variant="bordered" className="font-bold text-base" size="lg"
 										radius="sm">Add to whitelist</Button>
-							</Fragment> : <Button className="bg-third text-third-foreground font-bold text-base" size="lg"
+							</Fragment> : <Button onClick={handleLearnOrBuy}
+												  className="bg-third text-third-foreground font-bold text-base" size="lg"
 												  radius="sm">Learn now</Button>}
 						</div>
 					</Fragment> :
@@ -153,7 +180,8 @@ function CourseInformation() {
 							<span className="ml-1">for you</span>
 						</div>
 						<div className="mt-8 flex flex-col justify-center space-y-2">
-							<Button className="bg-third text-third-foreground font-bold text-base" size="lg"
+							<Button onClick={handleLearnOrBuy}
+									className="bg-third text-third-foreground font-bold text-base" size="lg"
 									radius="sm">Participate with us</Button>
 						</div>
 					</Fragment>}

@@ -32,7 +32,7 @@ function LearnPage() {
 	const [whitelist, setWhitelist] = useState([]);
 	const [currentPoints, setCurrentPoints] = useState(0);
 	const [nextable, setNextable] = useState(false);
-	const [wrongWords, setWrongWords] = useState([]);
+	const [wrongWords, setWrongWords] = useState({});
 	const [progress, setProgress] = useState({
 		current: 0, total: 0,
 	});
@@ -123,8 +123,8 @@ function LearnPage() {
 		let words = learnNewWordSessionQuery.data?.map(item => {
 			return {
 				wordId: item?.wordId,
-				isWrong: wrongWords.includes(item?.wordId),
-				isRepeat: whitelist.includes(item?.wordId),
+				wrongTimes: wrongWords?.[item?.wordId] || 0,
+				repeatable: whitelist.includes(item?.wordId),
 			};
 		});
 		updateLearnNewWordProgressMutation.mutate({ courseId: queries.get("ci"), words, points: currentPoints });
@@ -134,6 +134,7 @@ function LearnPage() {
 		if (isCorrect)
 			setProgress(prev => ({ ...prev, current: prev.current + 1 }));
 	};
+
 
 	const handleNext = () => {
 		handleCalculatePoints();
@@ -150,10 +151,13 @@ function LearnPage() {
 		let tmpQuestions = [...questions];
 		if (!isCorrect) {
 			tmpQuestions.push({ ...question, isWrong: true });
-			setWrongWords(prev => prev.includes(question?.["wordId"]) ? prev : [...prev, question?.["wordId"]]);
+			setWrongWords(prev => ({
+				...prev,
+				[question?.wordId]: prev.hasOwnProperty(question?.wordId) ? prev[question?.wordId] + 1 : 1,
+			}));
 		}
 
-		if (tmpQuestions.length < 3 && collections.length > 0) {
+		if (tmpQuestions.length < 5 && collections.length > 0) {
 			handleAddQuestionsFromNewCollection(tmpQuestions);
 		} else {
 			// lay cau hoi random tu list questions
@@ -164,31 +168,31 @@ function LearnPage() {
 		}
 	};
 
-	return (
-		<div className="flex flex-col h-screen">
-			<div className="bg-primary">
-				<div className="text-2xl font-bold underline container py-2">
-					<div className="flex items-center justify-between">
-						<div className="flex items-center gap-2">
-							<FaRegLightbulb className="size-8 text-white" />
-							<span>English - New level</span>
-						</div>
-						<div>
-							<Tooltip content="Exit current session" className="bg-gray-800 text-white"
-									 placement="bottom"
-									 offset={2}
-									 radius="none"
-									 closeDelay={100}>
-								<button onClick={() => navigate("/course-participant")}>
-									<RiCloseLine className="size-12 opacity-40" />
-								</button>
-							</Tooltip>
-						</div>
+	return <div className="flex flex-col h-screen">
+		<div className="bg-primary">
+			<div className="text-2xl font-bold underline container py-2">
+				<div className="flex items-center justify-between">
+					<div className="flex items-center gap-2">
+						<FaRegLightbulb className="size-8 text-white" />
+						<span>English - New level</span>
+					</div>
+					<div>
+						<Tooltip content="Exit current session" className="bg-gray-800 text-white"
+								 placement="bottom"
+								 offset={2}
+								 radius="none"
+								 closeDelay={100}>
+							<button onClick={() => navigate("/course-participant")}>
+								<RiCloseLine className="size-12 opacity-40" />
+							</button>
+						</Tooltip>
 					</div>
 				</div>
 			</div>
-			<div className="bg-gray-200 flex-1">
-				<div className="container">
+		</div>
+		<div className="bg-gray-200 flex-1">
+			{
+				learnNewWordSessionQuery?.isPending ? <span>Loading...</span> : <div className="container">
 					<div className="py-2">
 						<div className="flex justify-between items-start gap-8">
 							<div className="flex-1">
@@ -261,9 +265,9 @@ function LearnPage() {
 
 					</div>
 				</div>
-			</div>
+			}
 		</div>
-	);
+	</div>;
 }
 
 export default LearnPage;

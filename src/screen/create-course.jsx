@@ -110,7 +110,7 @@ const CreateCourse = () => {
 	};
 
 	const handleOpenFileSelect = () => {
-		console.log(inputFileRef.current.click());
+		inputFileRef.current.click();
 	};
 
 	const handleInputChange = (e) => {
