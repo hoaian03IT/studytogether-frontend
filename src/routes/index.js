@@ -26,4 +26,5 @@ export const pathname = {
 	mulChoices: "/exercise-mc",
 	courseParticipant: "/course-participant",
 	notificationComponent: "/notification-component",
+	speedReview: "/speed-review",
 };

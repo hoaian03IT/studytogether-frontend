@@ -17,7 +17,8 @@ const WordDefinition = ({ word, definition, type, transcript, image, audio, exam
 					<p className="uppercase text-sm">word</p>
 					<div className="flex items-center gap-4">
 						<p className="ms-4 text-4xl">
-							<strong>{word}</strong> {type ? `(${type})` : ""} {transcript ? `- ${transcript}` : ""}
+							<strong>{word}</strong> {type ? `(${type})` : ""} {transcript ?
+							<span className="font-custom-inter">- {transcript}</span> : ""}
 						</p>
 						<Audio src={audio} show={!!audio} />
 					</div>

@@ -23,6 +23,7 @@
     "COURSE_ENROLLED": "You have enrolled this course before",
     "UPDATE_SUCCESS": "Update successfully",
     "WARNING_UPDATE_PROFILE": "Please complete your profile information to access all features.",
+    "NOT_YET_ENROLLMENT": "You have not enrolled this course yet",
     "header": {
       "home": "Home",
       "courses": "Courses",

@@ -33,7 +33,8 @@ const MyCourse = lazy(() => import("../screen/my-course.jsx"));
 const CourseParticipant = lazy(() =>
 	import("../screen/course-participant.jsx"),
 );
-const NotificationComponent=lazy(() => import ("../screen/notification-component.jsx"));
+const NotificationComponent = lazy(() => import ("../screen/notification-component.jsx"));
+const SpeedReviewPage = lazy(() => import("../screen/speed-review.jsx"));
 
 export const publicRoutes = [
 	{ path: pathname.home, component: HomePage, layout: PrimaryLayout },
@@ -100,6 +101,7 @@ export const publicRoutes = [
 		layout: PrimaryLayout,
 	},
 	{ path: pathname.learn, component: LearnPage, layout: null },
+	{ path: pathname.speedReview, component: SpeedReviewPage, layout: null },
 	{ path: pathname.myCourse, component: MyCourse, layout: PrimaryLayout },
 	{ path: pathname.editCourse, component: EditCourse, layout: ThirdLayout },
 	{
@@ -108,7 +110,7 @@ export const publicRoutes = [
 		layout: PrimaryLayout,
 	},
 	{
-		path:pathname.notificationComponent,
+		path: pathname.notificationComponent,
 		component: NotificationComponent,
 
 	},

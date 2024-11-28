@@ -13,6 +13,12 @@ class LearnProcessServiceClass {
 		const res = await httpAuth.post("/learn/update-new-words", { courseId, words, points });
 		return res.data;
 	}
+
+	async fetchSpeedReviewSession(courseId, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.get(`/learn/speed-review?ci=${courseId}`);
+		return res.data;
+	}
 }
 
 const LearnProcessService = new LearnProcessServiceClass();

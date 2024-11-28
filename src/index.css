@@ -28,6 +28,12 @@
     font-style: normal;
 }
 
+.font-custom-inter {
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
 .container {
     @apply max-w-screen-xl mx-auto w-full;
 }
