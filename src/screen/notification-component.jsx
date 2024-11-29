@@ -1,9 +1,10 @@
-import { div } from "framer-motion/client";
-import React from "react";
-import { AiOutlineEllipsis } from "react-icons/ai";
+import { AiOutlineClose } from "react-icons/ai";
 import { Button } from "@nextui-org/react";
 
+import React, { useState } from "react";
 const NotificationComponent = () => {
+	const handleDelete = () => {};
+
 	const notifications = [
 		{
 			icon: "🔥",
@@ -25,15 +26,25 @@ const NotificationComponent = () => {
 			message: "Sarah Khan replied to your feedback",
 			time: "01:55 PM 29 July, 2024",
 		},
+		{
+			icon: "💬",
+			message: "Sarah Khan replied to your feedback",
+			time: "01:55 PM 29 July, 2024",
+		},
+		{
+			icon: "💬",
+			message: "Sarah Khan replied to your feedback",
+			time: "01:55 PM 29 July, 2024",
+		},
 	];
 
 	return (
-		<div className='bg-gray-100 min-h-screen flex items-center justify-center'>
+		<div className='bg-gray-100 flex items-center justify-center rounded-lg'>
 			<div className='w-full max-w-md p-4 bg-white rounded-lg shadow-md'>
-				<h2 className='text-xl font-semibold text-gray-700 mb-4'>
+				<h2 className='text-xl font-semibold text-black mb-4'>
 					Notifications
 				</h2>
-				<div className='space-y-4'>
+				<div className='h-96 space-y-4 overflow-y-auto'>
 					{notifications.map((notification, index) => (
 						<div
 							key={index}
@@ -49,9 +60,16 @@ const NotificationComponent = () => {
 									{notification.time}
 								</p>
 							</div>
-							<Button className='ml-auto max-w-5 text-gray-400 hover:text-gray-600 size-10 rounded-full'>
-								<AiOutlineEllipsis />
-							</Button>
+							<div className='ml-auto'>
+								<Button
+									className='bg-transparent'
+									isIconOnly
+									radius='full'
+									size='sm'
+									aria-label='Options'>
+									<AiOutlineClose />
+								</Button>
+							</div>
 						</div>
 					))}
 				</div>
@@ -59,4 +77,4 @@ const NotificationComponent = () => {
 		</div>
 	);
 };
-export default NotificationComponent;
+export { NotificationComponent };
