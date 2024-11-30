@@ -20,7 +20,7 @@ function CourseInformationComment({ courseId, authorUsername }) {
 	return <div>
 		<h2 className="text-xl font-bold">Comments({courseCommentQuery.data?.reduce((prev, curr) => prev + curr?.["replies"]?.length + 1, 0) || 0})</h2>
 		{courseCommentQuery.isLoading ?
-			<div className="flex justify-center"><CircularProgress label="Loading..." /></div> :
+			<div className="flex justify-center"><CircularProgress label="LoadingThreeDot..." /></div> :
 			<div className="mt-8">
 				{courseCommentQuery.data?.map(item =>
 					<Feedback

@@ -21,7 +21,7 @@ function CourseInformationContent({ courseId }) {
 			<h2 className="text-xl font-bold">Course content</h2>
 		</div>
 		{courseContentQuery.isLoading ?
-			<div className="flex justify-center"><CircularProgress label="Loading..." /></div> :
+			<div className="flex justify-center"><CircularProgress label="LoadingThreeDot..." /></div> :
 			<div className="bg-white mt-10">
 				<div className="flex items-center text-sm p-2">
 					<p className="flex-1 font-normal text-secondary text-xl">Course collections</p>

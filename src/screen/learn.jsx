@@ -17,6 +17,7 @@ import { FaRegLightbulb } from "react-icons/fa";
 import clsx from "clsx";
 import { FaHeart } from "react-icons/fa6";
 import { IoIosArrowForward } from "react-icons/io";
+import { LoadingWaitAMinute } from "../components/loadings/loading-wait-a-minute.jsx";
 
 function LearnPage() {
 	const user = useRecoilValue(userState);
@@ -33,7 +34,7 @@ function LearnPage() {
 	const [question, setQuestion] = useState(null);
 	const [whitelist, setWhitelist] = useState([]);
 	const [currentPoints, setCurrentPoints] = useState(0);
-	const [nextable, setNextable] = useState(false);
+	const [nextable, setNextable] = useState(false); // cung y nghia voi isSubmitted
 	const [wrongWords, setWrongWords] = useState({});
 	const [progress, setProgress] = useState({
 		current: 0, total: 0,
@@ -178,86 +179,84 @@ function LearnPage() {
 		<HeaderLearnProgress page="learn" title={`Learning level: ${learningLevelNames}`} />
 		<div className="bg-gray-200 h-full">
 			{
-				learnNewWordSessionQuery?.isPending ? <span>Loading...</span> : <div className="container">
-					<div className="py-2">
-						<div className="grid grid-cols-1 gap-x-4 gap-y-12">
-							<div className="grid-rows-1 col-span-full">
-								<ProgressBarPoint points={currentPoints}
-												  progressValue={progress.current}
-												  progressMax={progress.total}
-												  progressMin={0} />
-							</div>
-							<div className="grid-rows-2 col-span-full">
-								<div className="grid grid-cols-12 gap-4">
-									<div className="lg:col-span-11 sm:lg:col-span-10">
-										{question?.template === "definition" ?
-											<WordDefinition word={question?.word}
-															definition={question?.definition}
-															audio={question?.pronunciation}
-															image={question?.image}
-															type={question?.type}
-															transcript={question?.transcript}
-															examples={question?.examples}
-															handleCheckResult={handleCheckResult}
-											/> : question?.template === "multiple-choice" ?
-												<MultipleChoiceExercise question={question?.question}
-																		answer={question?.answer}
-																		options={question?.options}
-																		pronunciation={question?.pronunciation}
-																		image={question?.image}
-																		handleCheckResult={handleCheckResult}
-																		isCorrect={isCorrect}
-																		rd={rd}
-												/> : question?.template === "text" ?
-													<TextQuiz question={question?.question}
-															  answer={question?.answer}
-															  image={question?.image}
-															  audio={question?.pronunciation}
-															  handleCheckResult={handleCheckResult}
-															  isCorrect={isCorrect}
-															  rd={rd} /> :
-													<div>Other</div>
-										}
-									</div>
-									<div className="lg:col-span-1 sm:lg:col-span-2 flex flex-col items-center">
-										{nextable ?
-											<Button className="flex flex-col max-h-none h-max w-20 py-4 px-2"
-													radius="sm"
-													onClick={handleNext}
-													color="secondary"
-													variant="shadow">
-												<IoIosArrowForward className="size-12" />
-												<span className="font-semibold text-xl">Next</span>
-											</Button> :
-											<Button
-												className="flex flex-col max-h-none h-max w-20 py-4 px-2 bg-warning-300"
-												radius="sm"
-												variant="shadow">
-												<FaRegLightbulb className="size-12" />
-												<span className="font-semibold text-xl">Hint</span>
-											</Button>}
-										<Tooltip content="Marked word will appear much in practice"
-												 className="bg-gray-800 text-white text-[10px] w-40 text-center"
-												 placement="bottom"
-												 offset={2}
-												 radius="none"
-												 closeDelay={100}>
-											<button className="mt-5"
-													onClick={() => handleToggleMarkDown(question?.wordId)}>
-												<FaHeart
-													className={clsx("size-6 transition-all", whitelist.includes(question?.wordId) ? "text-danger" : "text-gray-400")} />
-											</button>
-										</Tooltip>
-									</div>
+				learnNewWordSessionQuery?.isPending || updateLearnNewWordProgressMutation.isPending ?
+					<LoadingWaitAMinute /> : <div className="container">
+						<div className="py-2">
+							<div className="grid grid-cols-1 gap-x-4 gap-y-12">
+								<div className="grid-rows-1 col-span-full">
+									<ProgressBarPoint points={currentPoints}
+													  progressValue={progress.current}
+													  progressMax={progress.total}
+													  progressMin={0} />
 								</div>
+								<div className="grid-rows-2 col-span-full">
+									<div className="grid grid-cols-12 gap-4">
+										<div className="sm:col-span-10 lg:col-span-11">
+											{question?.template === "definition" ?
+												<WordDefinition word={question?.word}
+																definition={question?.definition}
+																audio={question?.pronunciation}
+																image={question?.image}
+																type={question?.type}
+																transcript={question?.transcript}
+																examples={question?.examples}
+																handleCheckResult={handleCheckResult}
+												/> : question?.template === "multiple-choice" ?
+													<MultipleChoiceExercise question={question?.question}
+																			answer={question?.answer}
+																			options={question?.options}
+																			pronunciation={question?.pronunciation}
+																			image={question?.image}
+																			handleCheckResult={handleCheckResult}
+																			isCorrect={isCorrect}
+																			rd={rd}
+													/> : question?.template === "text" ?
+														<TextQuiz question={question?.question}
+																  answer={question?.answer}
+																  image={question?.image}
+																  audio={question?.pronunciation}
+																  handleCheckResult={handleCheckResult}
+																  isCorrect={isCorrect}
+																  rd={rd} /> :
+														<div>Other</div>
+											}
+										</div>
+										<div className="sm:col-span-2 lg:col-span-1 flex flex-col items-center">
+											{nextable ?
+												<Button className="flex flex-col max-h-none h-max w-full py-4 px-2"
+														radius="sm"
+														onClick={handleNext}
+														color="secondary"
+														variant="shadow">
+													<IoIosArrowForward className="size-12" />
+													<span className="font-semibold text-xl">Next</span>
+												</Button> :
+												<Button
+													className="flex flex-col max-h-none h-max w-full py-4 px-2 bg-warning-300"
+													radius="sm"
+													variant="shadow">
+													<FaRegLightbulb className="size-12" />
+													<span className="font-semibold text-xl">Hint</span>
+												</Button>}
+											<Tooltip content="Marked word will appear much in practice"
+													 className="bg-gray-800 text-white text-[10px] w-40 text-center"
+													 placement="bottom"
+													 offset={2}
+													 radius="none"
+													 closeDelay={100}>
+												<button className="mt-5"
+														onClick={() => handleToggleMarkDown(question?.wordId)}>
+													<FaHeart
+														className={clsx("size-6 transition-all", whitelist.includes(question?.wordId) ? "text-danger" : "text-gray-400")} />
+												</button>
+											</Tooltip>
+										</div>
+									</div>
 
+								</div>
 							</div>
-
-
 						</div>
-
 					</div>
-				</div>
 			}
 		</div>
 	</div>;
