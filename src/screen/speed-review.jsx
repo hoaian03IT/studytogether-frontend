@@ -15,6 +15,8 @@ import clsx from "clsx";
 import { LoadingWaitAMinute } from "../components/loadings/loading-wait-a-minute.jsx";
 import { TextQuiz } from "../components/text-quiz.jsx";
 import { LearnProcessService } from "../apis/learn-process.api.js";
+import { blendArray } from "../utils/blend-array.js";
+import { CountDown } from "../components/count-down.jsx";
 
 const INIT_REMAINING_CHANCES = 3;
 
@@ -24,9 +26,9 @@ function SpeedReview() {
 	const { translation } = useContext(TranslationContext);
 
 	// states
+	const [timeStart, setTimeStart] = useState(5);
 	const [currentPoints, setCurrentPoints] = useState(0);
 	const [unitPoint, setUnitPoint] = useState(0);
-	const [collections, setCollections] = useState([]);
 	const [questions, setQuestions] = useState([]);
 	const [question, setQuestion] = useState(null);
 	const [timeCount, setTimeCount] = useState({
@@ -46,9 +48,23 @@ function SpeedReview() {
 	const quizRef = useRef(null);
 	const pronunciationRef = useRef(null);
 
+	useEffect(() => {
+		let handler;
+		if (timeStart > 0) {
+			handler = setTimeout(() => {
+				setTimeStart(prev => Math.max(prev - 1, 0));
+			}, 1000);
+		}
+
+		return () => clearTimeout(handler);
+	}, [timeStart]);
+
 	// timer event
 	useEffect(() => {
 		let remaining = timeCount.remaining;
+
+		if (timeStart > 0)
+			return;
 
 		const handleTimeCount = () => {
 			if (remaining > 0 && remainingChances > 0) {
@@ -61,7 +77,7 @@ function SpeedReview() {
 
 		const handler = setInterval(handleTimeCount, 1000);
 		return () => clearInterval(handler);
-	}, [question, remainingChances]);
+	}, [question, remainingChances, timeStart]);
 
 	// bat su kien neu nhu thoi gian con lai = 0 thi tu dong submit
 	useEffect(() => {
@@ -75,7 +91,7 @@ function SpeedReview() {
 		if (isSubmitted && question) {
 			if (!isCorrect) {
 				setRemainingChances(prev => {
-					 // Giữ giá trị không âm
+					// Giữ giá trị không âm
 					return Math.max(prev - 1, 0);
 				});
 			} else {
@@ -110,15 +126,12 @@ function SpeedReview() {
 	useEffect(() => {
 		if (isSubmitted) {
 			const timeoutId = setTimeout(() => {
-				if ((collections.length === 0 && questions.length === 0) || remainingChances === 0) {
+				if (questions.length === 0 || remainingChances === 0) {
 					updateProgressMutation.mutate({
 						courseId: queries.get("ci"),
 						words: complete,
 						points: currentPoints,
 					});
-
-				} else if (collections.length > 0 && questions.length === 0) {
-					handleAddScreens();
 				} else {
 					let tmpQuestions = [...questions];
 					handleNextQuestion(tmpQuestions.shift());
@@ -135,25 +148,12 @@ function SpeedReview() {
 		setIsSubmitted(false);
 	};
 
-	const handleAddScreens = () => {
-		setCollections(prev => {
-
-			const updatedPrev = [...prev];
-			const screens = [...updatedPrev.splice(0, 1)[0].screens];
-
-			handleNextQuestion(screens.splice(0, 1)[0]);
-
-			setQuestions(screens);
-			return updatedPrev;
-		});
-	};
-
 	// call apis
 	const speedReviewSessionQuery = useQuery({
 		queryKey: [user.info?.username, queries.get("ci")],
 		queryFn: async ({ queryKey }) => {
 			try {
-				const data = await LearnProcessService.fetchSpeedReviewSession(queryKey[1], user, updateUserState);
+				let data = await LearnProcessService.fetchSpeedReviewSession(queryKey[1], user, updateUserState);
 				if (data?.returns?.length === 0) {
 					navigate(pathname.courseParticipant);
 					toast.info(translation("NOT_LEARN_ANY_WORD"));
@@ -162,10 +162,16 @@ function SpeedReview() {
 
 				setUnitPoint(data?.["pointEachScreen"]);
 
-				const rawCollections = [...data?.["returns"]];
-				setCollections([...rawCollections]);
+				let rawCollections = [...data?.["returns"]];
+				let rawQuestions = [];
+				for (let item of rawCollections) {
+					rawQuestions = rawQuestions.concat(item?.screens);
+				}
 
-				handleAddScreens();
+				rawQuestions = blendArray(rawQuestions);
+
+				handleNextQuestion(rawQuestions.splice(0, 1)[0]);
+				setQuestions(rawQuestions);
 
 				return rawCollections;
 			} catch (error) {
@@ -194,7 +200,7 @@ function SpeedReview() {
 		pronunciationRef.current.play();
 	};
 
-	return <div className="flex flex-col h-screen">
+	return timeStart > 0 ? <CountDown number={timeStart} /> : <div className="flex flex-col h-screen">
 		<HeaderLearnProgress page="speed-review" title="Speed Review" />
 		{speedReviewSessionQuery.isPending || updateProgressMutation.isPending ? <LoadingWaitAMinute /> :
 			<div className="bg-gray-200 h-full">

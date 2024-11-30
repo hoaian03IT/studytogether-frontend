@@ -9,12 +9,8 @@ function ProgressBarPoint({ progressValue, progressMax, progressMin = 0, points,
 					  minValue={progressMin}
 					  maxValue={progressMax} radius="none" />
 		</div>
-		<div className="sm:col-span-2 lg:col-span-1">
-			<input aria-label="point"
-				   aria-labelledby="point"
-				   className="w-full h-5 -translate-y-1 rounded-sm text-center text-[10px] pointer-events-none"
-				   type="text" value={points} onChange={() => {
-			}} />
+		<div className="sm:col-span-2 lg:col-span-1 bg-white h-5 text-sm text-center font-semibold">
+			{points}
 		</div>
 	</div>;
 }

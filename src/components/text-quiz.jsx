@@ -13,7 +13,7 @@ export const TextQuiz = forwardRef(({ question, answer, audio, isCorrect, handle
 		setValue("");
 		setIsSubmitted(false);
 		setRandomLetters(generateRandomLetter(question, answer));
-	}, [rd]);
+	}, [answer, question, rd]);
 
 	useImperativeHandle(ref, () => {
 		return {
@@ -40,7 +40,7 @@ export const TextQuiz = forwardRef(({ question, answer, audio, isCorrect, handle
 	};
 
 	return <div>
-		<form onSubmit={handleSubmit}>
+		<form onSubmit={handleSubmit} autoFocus>
 			<h2 className="text-4xl font-bold mb-6 flex flex-col items-center justify-center gap-2">{question} {audio &&
 				<Audio src={audio} show={!!audio} rd={rd} />}
 			</h2>
