@@ -19,6 +19,13 @@ class LearnProcessServiceClass {
 		const res = await httpAuth.get(`/learn/speed-review?ci=${courseId}`);
 		return res.data;
 	}
+
+	async updateLearnProgress(payload, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const { courseId, words, points } = payload;
+		const res = await httpAuth.post(`/learn/update-progress`, { courseId, words, points });
+		return res.data;
+	}
 }
 
 const LearnProcessService = new LearnProcessServiceClass();

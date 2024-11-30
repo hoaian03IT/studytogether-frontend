@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { generateRandomLetter } from "../utils/randomLetterFromAnswerAndQuestion.js";
 import { Button } from "@nextui-org/react";
 import { FaRegSadCry, FaRegThumbsUp } from "react-icons/fa";
 import { Audio } from "./audio.jsx";
 
-export const TextQuiz = ({ question, answer, audio, isCorrect, handleCheckResult, rd }) => {
+export const TextQuiz = forwardRef(({ question, answer, audio, isCorrect, handleCheckResult, rd }, ref) => {
 	const [value, setValue] = useState("");
 	const [randomLetters, setRandomLetters] = useState(generateRandomLetter(question, answer));
 	const [isSubmitted, setIsSubmitted] = useState(false);
@@ -15,13 +15,23 @@ export const TextQuiz = ({ question, answer, audio, isCorrect, handleCheckResult
 		setRandomLetters(generateRandomLetter(question, answer));
 	}, [rd]);
 
+	useImperativeHandle(ref, () => {
+		return {
+			submit: () => {
+				handleSubmit();
+			},
+		};
+	}, [value]);
+
 	const handleChooseLetter = (e) => {
 		const { value } = e.target;
 		setValue(prev => `${prev}${value}`);
 	};
 
 	const handleSubmit = (e) => {
-		e.preventDefault();
+		if (e) {
+			e.preventDefault();
+		}
 		if (isSubmitted) {
 			return;
 		}
@@ -61,4 +71,4 @@ export const TextQuiz = ({ question, answer, audio, isCorrect, handleCheckResult
 				className="font-bold underline">{answer}</strong></div> : <div></div>}
 		</form>
 	</div>;
-};
+});

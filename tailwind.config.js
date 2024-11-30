@@ -37,6 +37,14 @@ export default withMT({
 							DEFAULT: "#3DCBB1",
 							foreground: "#ffffff",
 						},
+						success: {
+							DEFAULT: "#9EDF9C",
+							foreground: "#ffffff",
+						},
+						danger: {
+							DEFAULT: "#FF8A8A",
+							foreground: "#ffffff",
+						},
 					},
 				},
 			},

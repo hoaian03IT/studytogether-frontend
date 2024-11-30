@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { publicRoutes } from "./config/routes";
 import { Fragment, Suspense } from "react";
-import { Loading } from "./components/loading";
+import { LoadingThreeDot } from "./components/loadings/loading-three-dot.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -21,7 +21,7 @@ function App() {
 							path={route.path}
 							element={
 								<Layout>
-									<Suspense fallback={<Loading />}>
+									<Suspense fallback={<LoadingThreeDot />}>
 										<Component />
 									</Suspense>
 								</Layout>

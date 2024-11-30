@@ -2,10 +2,10 @@ import { FaRegLightbulb } from "react-icons/fa";
 import { Tooltip } from "@nextui-org/react";
 import { RiCloseLine } from "react-icons/ri";
 import { IoGitCompareOutline, IoSpeedometerOutline } from "react-icons/io5";
-import React from "react";
+import React, { memo } from "react";
 import clsx from "clsx";
 
-function HeaderLearnProgress({ page = "learn", title }) {
+const HeaderLearnProgress = memo(function({ page = "learn", title }) {
 	return <div
 		className={clsx(page === "speed-review" ? "bg-danger" : page === "classic-review" ? "bg-third" : "bg-primary")}>
 		<div className="text-2xl font-bold container py-2">
@@ -32,9 +32,8 @@ function HeaderLearnProgress({ page = "learn", title }) {
 			</div>
 		</div>
 		<div>
-
 		</div>
 	</div>;
-}
+});
 
 export { HeaderLearnProgress };
