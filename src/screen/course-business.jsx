@@ -168,6 +168,11 @@ const CourseBusiness = () => {
 		}
 	};
 
+	const renderTabContent = () => {
+		if (activeTab === "price") return renderPriceTab(); // Giao diện "Thiết lập giá"
+		if (activeTab === "advance") return <Revenue courseId={params.courseId} />; // Giao diện "Doanh thu"
+	};
+
 	return (
 		<div className=" bg-gray-100 min-h-screen">
 			<form onSubmit={handleSubmit} className="p-6 bg-white rounded-lg max-w-4xl mx-auto mt-10 shadow-lg">
