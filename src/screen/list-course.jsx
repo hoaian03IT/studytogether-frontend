@@ -1,8 +1,6 @@
 import { div } from "framer-motion/client";
 import React, { useState } from "react";
 import { Button } from "@nextui-org/react";
-import { Input } from "@nextui-org/input";
-import { RxMagnifyingGlass } from "react-icons/rx";
 import { Image } from "@nextui-org/image";
 import { FaBookBookmark } from "react-icons/fa6";
 import { BsFillPeopleFill } from "react-icons/bs";
@@ -132,22 +130,7 @@ const ListCourse = () => {
         LỰA CHỌN BỘ TỪ VỰNG CHO RIÊNG BẠN
       </h1>
       <div>
-      <div className="flex py-3 gap-2 justify-end ">
-        <Button type="button" className="">
-          Tạo khóa
-        </Button>
-        <div className="flex items-center bg-white  border-1 rounded-[80%]">
-          <Input
-            type="text"
-            radius="sm"
-            placeholder=" Tìm kiếm"
-            className="col-span-2 row-start-2 border-spacing-2 "
-            endContent={
-              <RxMagnifyingGlass className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0 size-6" />
-            }
-          />
-        </div>
-      </div>
+      
       <SearchnFilter />
       </div>
       

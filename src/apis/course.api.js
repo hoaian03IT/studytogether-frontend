@@ -1,6 +1,7 @@
 import { createHttpAuth, http } from "../config/http";
 import { toast } from "react-toastify";
 
+
 class CourseServiceClass {
 	async createCourse(userState, updateUserState, payload) {
 		const {
@@ -107,6 +108,18 @@ class CourseServiceClass {
 		}
 	}
 
+	async searchCourses(params) {
+		try {
+			const res = await http.get(`/course/search-course`, { params });
+			return res.data;
+		} catch (error) {
+			toast.error("Error fetching search results");
+			console.error("Error in searchCourses:", error);
+			return { courses: [] }; 
+		}
+	}
+	
+
 	async updateCoursePrice(payload, userState, updateState) {
 		const {
 			courseId,
@@ -128,6 +141,8 @@ class CourseServiceClass {
 		return res.data;
 	}
 }
+
+
 
 const CourseService = new CourseServiceClass();
 
