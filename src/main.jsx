@@ -4,13 +4,14 @@ import "./index.css";
 import { NextUIProvider } from "@nextui-org/react";
 import { BrowserRouter } from "react-router-dom";
 import "./config/i18next.js";
-import { TranslationProvider } from "./components/providers/TranslationProvider.jsx";
+import { TranslationProvider } from "./providers/TranslationProvider.jsx";
 import { RecoilRoot } from "recoil";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { GlobalStateProvider } from "./components/providers/GlobalStateProvider.jsx";
+import { GlobalStateProvider } from "./providers/GlobalStateProvider.jsx";
 import { StrictMode } from "react";
+import { SocketClientProvider } from "./providers/socket-client-provider.jsx";
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -27,12 +28,14 @@ createRoot(document.getElementById("root")).render(
 				<QueryClientProvider client={queryClient}>
 					<GoogleOAuthProvider clientId={import.meta.env.VITE_GG_CLIENT_ID}>
 						<RecoilRoot>
-							<TranslationProvider>
-								<ReactQueryDevtools initialIsOpen={false} />
-								<GlobalStateProvider>
-									<App />
-								</GlobalStateProvider>
-							</TranslationProvider>
+							<SocketClientProvider>
+								<TranslationProvider>
+									<ReactQueryDevtools initialIsOpen={false} />
+									<GlobalStateProvider>
+										<App />
+									</GlobalStateProvider>
+								</TranslationProvider>
+							</SocketClientProvider>
 						</RecoilRoot>
 					</GoogleOAuthProvider>
 				</QueryClientProvider>

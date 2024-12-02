@@ -12,9 +12,9 @@ import { validationForm } from "../utils/validateForm.js";
 import { useDebounce } from "../hooks/useDebounce.jsx";
 import { UserService } from "../apis/user.api.js";
 import { useMutation } from "@tanstack/react-query";
-import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
+import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 import { toast } from "react-toastify";
-import { TranslationContext } from "../components/providers/TranslationProvider.jsx";
+import { TranslationContext } from "../providers/TranslationProvider.jsx";
 
 const Profile = () => {
 	const [user, setUser] = useRecoilState(userState);

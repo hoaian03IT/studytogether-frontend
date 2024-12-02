@@ -6,9 +6,9 @@ import { useParams } from "react-router-dom";
 import { CourseService } from "../apis/course.api.js";
 import { Button, DatePicker, Input } from "@nextui-org/react";
 import { userState } from "../recoil/atoms/user.atom.js";
-import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
+import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 import { useRecoilValue } from "recoil";
-import { TranslationContext } from "../components/providers/TranslationProvider.jsx";
+import { TranslationContext } from "../providers/TranslationProvider.jsx";
 import { toast } from "react-toastify";
 import { parseAbsoluteToLocal } from "@internationalized/date";
 import Revenue from "../screen/course-revenue.jsx";
@@ -341,7 +341,7 @@ const CourseBusiness = () => {
 					</div>
 				)}
 			</form>
-			<Revenue/>
+			<Revenue />
 		</div>
 	);
 };

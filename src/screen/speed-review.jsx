@@ -26,7 +26,7 @@ function SpeedReview() {
 	const { translation } = useContext(TranslationContext);
 
 	// states
-	const [timeStart, setTimeStart] = useState(5);
+	const [timeStart, setTimeStart] = useState(3); // 3s ready to start
 	const [currentPoints, setCurrentPoints] = useState(0);
 	const [unitPoint, setUnitPoint] = useState(0);
 	const [questions, setQuestions] = useState([]);

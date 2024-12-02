@@ -1,7 +1,7 @@
 import { Header } from "../components/header";
 import { SidebarProfile } from "../components/sidebar-profile";
 import { useContext } from "react";
-import { TranslationContext } from "../components/providers/TranslationProvider.jsx";
+import { TranslationContext } from "../providers/TranslationProvider.jsx";
 import { IoIosWarning } from "react-icons/io";
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom.js";

@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ExampleService } from "../apis/example.api.js";
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom.js";
-import { GlobalStateContext } from "./providers/GlobalStateProvider.jsx";
+import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 import { queryKeys } from "../react-query/query-keys.js";
 
 const ExampleCard = ({ courseId, exampleId, wordId, title, example, explanation }) => {

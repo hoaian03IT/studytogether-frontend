@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
+import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom.js";
 import { CourseService } from "../apis/course.api.js";

@@ -4,7 +4,7 @@ import { Button } from "@nextui-org/react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom.js";
-import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
+import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 import { toast } from "react-toastify";
 import { pathname } from "../routes/index.js";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -14,7 +14,7 @@ import { USDollar, VNDong } from "../utils/currency.js";
 import vnpayLogo from "../assets/vnp-logo.png";
 import vnpayLogoHorizontal from "../assets/vnpay-horizontal-logo.png";
 import { PaymentService } from "../apis/payment.api.js";
-import { TranslationContext } from "../components/providers/TranslationProvider.jsx";
+import { TranslationContext } from "../providers/TranslationProvider.jsx";
 import { EnrollmentService } from "../apis/enrollment.api.js";
 
 const initialPaypalOptions = {

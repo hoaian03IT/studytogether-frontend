@@ -1,9 +1,8 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom.js";
-import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
+import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 import { useLocation, useNavigate } from "react-router-dom";
-import { TranslationContext } from "../components/providers/TranslationProvider.jsx";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { LearnProcessService } from "../apis/learn-process.api.js";
 import { toast } from "react-toastify";

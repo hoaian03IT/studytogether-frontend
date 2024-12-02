@@ -5,7 +5,7 @@ import { AuthService } from "../apis/auth.api.js";
 import { pathname } from "../routes/index.js";
 import { isAxiosError } from "axios";
 import { toast } from "react-toastify";
-import { TranslationContext } from "../components/providers/TranslationProvider.jsx";
+import { TranslationContext } from "../providers/TranslationProvider.jsx";
 import { validationForm } from "../utils/validateForm.js";
 
 const ForgotPassword = () => {
