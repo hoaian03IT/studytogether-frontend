@@ -158,7 +158,7 @@ const ListCourse = () => {
               </div>
             </div>
             <div>
-              <Button type="button" className="flex bg-sky-500 ml-3">
+              <Button type="button" className="flex bg-sky-500 ml-3 bg-blue-gray-400git ">
                 Bắt đầu
               </Button>
             </div>
