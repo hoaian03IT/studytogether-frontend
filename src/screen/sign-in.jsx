@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Checkbox, Input } from "@nextui-org/react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
-import { TranslationContext } from "../components/providers/TranslationProvider";
+import { TranslationContext } from "../providers/TranslationProvider";
 import { useMutation } from "@tanstack/react-query";
 import { AuthService } from "../apis/auth.api";
 import { toast } from "react-toastify";

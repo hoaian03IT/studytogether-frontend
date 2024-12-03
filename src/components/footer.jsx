@@ -5,7 +5,7 @@ import { IoLocationOutline, IoMailOutline } from "react-icons/io5";
 import { Input, Textarea } from "@nextui-org/input";
 import { Button } from "@nextui-org/button";
 import { useContext, useState } from "react";
-import { TranslationContext } from "./providers/TranslationProvider";
+import { TranslationContext } from "../providers/TranslationProvider";
 
 export const Footer = () => {
 	const { translation } = useContext(TranslationContext);

@@ -6,7 +6,7 @@ import { CgAttachment } from "react-icons/cg";
 import { LuPlus } from "react-icons/lu";
 import { AiOutlinePicture } from "react-icons/ai";
 import { VocabularyService } from "../apis/vocabulary.api.js";
-import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
+import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 import { userState } from "../recoil/atoms/user.atom.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRecoilValue } from "recoil";

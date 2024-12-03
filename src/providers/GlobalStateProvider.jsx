@@ -1,14 +1,14 @@
 import { createContext, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useRecoilState } from "recoil";
-import { userState } from "../../recoil/atoms/user.atom.js";
-import { UserService } from "../../apis/user.api.js";
-import { queryKeys } from "../../react-query/query-keys.js";
-import { AuthService } from "../../apis/auth.api.js";
+import { userState } from "../recoil/atoms/user.atom.js";
+import { UserService } from "../apis/user.api.js";
+import { queryKeys } from "../react-query/query-keys.js";
+import { AuthService } from "../apis/auth.api.js";
 import { toast } from "react-toastify";
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
-import { pathname } from "../../routes/index.js";
+import { pathname } from "../routes/index.js";
 
 const GlobalStateContext = createContext({
 	updateUserState: () => {

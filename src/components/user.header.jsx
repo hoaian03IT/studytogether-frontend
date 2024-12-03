@@ -1,13 +1,13 @@
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image } from "@nextui-org/react";
 import { loadImage } from "../utils/loadImage";
 import { useContext } from "react";
-import { TranslationContext } from "./providers/TranslationProvider";
+import { TranslationContext } from "../providers/TranslationProvider";
 import { FaArrowRightFromBracket, FaPencil } from "react-icons/fa6";
 import { FaRegBell, FaRegQuestionCircle } from "react-icons/fa";
 import { IoLockOpenOutline, IoSettingsOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { pathname } from "../routes";
-import { GlobalStateContext } from "./providers/GlobalStateProvider.jsx";
+import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 import { PiWarningCircleFill } from "react-icons/pi";
 
 function UserHeader({ userState }) {

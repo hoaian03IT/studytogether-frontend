@@ -6,7 +6,7 @@ import { pathname } from "../routes";
 import { Fragment, useContext, useState } from "react";
 import { FaSortDown } from "react-icons/fa";
 import clsx from "clsx";
-import { TranslationContext } from "./providers/TranslationProvider";
+import { TranslationContext } from "../providers/TranslationProvider";
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom";
 import { UserHeader } from "./user.header";
@@ -22,7 +22,7 @@ export const Header = ({ fluid = false }) => {
 		setShowLanguageOption(false);
 	};
 
-	
+
 	return (
 		<div className="sticky top-0 z-50">
 			<Navbar maxWidth={fluid ? "full" : "xl"} className="bg-primary h-[3.5rem]">

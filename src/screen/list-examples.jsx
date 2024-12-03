@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ExampleService } from "../apis/example.api.js";
 import { userState } from "../recoil/atoms/user.atom.js";
-import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
+import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 import { useRecoilValue } from "recoil";
 import { ExampleCard } from "../components/example-card.jsx";
 import clsx from "clsx";
