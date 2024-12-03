@@ -87,16 +87,16 @@ const MyCourse = () => {
 	const [isModalVisible, setIsModalVisible] = useState(false);
 
 	const handleDelete = () => {
-		setIsModalVisible(true); // Trigger modal
+		setIsModalVisible(true); 
 	};
 
 	const confirmDelete = () => {
 		console.log("Item deleted");
-		setIsModalVisible(false); // Close modal
+		setIsModalVisible(false); 
 	};
 
 	const cancelDelete = () => {
-		setIsModalVisible(false); // Close modal
+		setIsModalVisible(false); 
 	};
 
 	return (
