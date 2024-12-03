@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom.js";
 import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { LearnProcessService } from "../apis/learn-process.api.js";
 import { toast } from "react-toastify";
@@ -17,6 +17,7 @@ import clsx from "clsx";
 import { FaHeart } from "react-icons/fa6";
 import { IoIosArrowForward } from "react-icons/io";
 import { LoadingWaitAMinute } from "../components/loadings/loading-wait-a-minute.jsx";
+import { TranslationContext } from "../providers/TranslationProvider.jsx";
 
 function LearnPage() {
 	const user = useRecoilValue(userState);
@@ -40,8 +41,6 @@ function LearnPage() {
 	});
 	const [isCorrect, setIsCorrect] = useState(true);
 	const [learningLevelNames, setLearningLevelNames] = useState("");
-
-	const navigate = useNavigate();
 
 	const learnNewWordSessionQuery = useQuery({
 		queryKey: [user.info?.username, queries.get("ci")],

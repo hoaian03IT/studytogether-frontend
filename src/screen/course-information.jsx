@@ -18,16 +18,18 @@ import { queryKeys } from "../react-query/query-keys.js";
 import { EnrollmentService } from "../apis/enrollment.api.js";
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom.js";
-import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
+import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 import { pathname } from "../routes/index.js";
 import { toast } from "react-toastify";
-import { TranslationContext } from "../components/providers/TranslationProvider.jsx";
+import { TranslationContext } from "../providers/TranslationProvider.jsx";
+import { SocketClientContext } from "../providers/socket-client-provider.jsx";
 
 function CourseInformation() {
 	const params = useParams();
 	const user = useRecoilValue(userState);
 	const { updateUserState } = useContext(GlobalStateContext);
 	const { translation } = useContext(TranslationContext);
+	const { SocketHandler } = useContext(SocketClientContext);
 
 	const clientQuery = useQueryClient();
 
@@ -70,8 +72,9 @@ function CourseInformation() {
 		mutationFn: async () => {
 			return await EnrollmentService.createEnrollment(params?.courseId, user, updateUserState);
 		},
-		onSuccess: (data) => {
-			console.log(data);
+		onSuccess: (res) => {
+			SocketHandler.handleEmitEnrollCourse(res.data?.["enrollment id"]);
+			navigate(pathname.courseParticipant);
 		},
 		onError: (error) => {
 			toast.error(translation(error.response.data?.errorCode));
@@ -118,13 +121,13 @@ function CourseInformation() {
 						<p className="text-gray-200 text-sm font-normal w-1/2 text-center">
 							You need to buy to see full lessons of this course, thank you!
 						</p>
-						{enrolled ? <Button onClick={handleLearnOrBuy}
+						{enrolled ? <Button onClick={handleLearnOrBuy} isLoading={enrollMutation.isPending}
 											className="bg-third text-third-foreground shadow-2xl" radius="sm"
 							>
 								Learn now
 							</Button> :
 							<Button className="bg-third text-third-foreground shadow-2xl" radius="sm"
-									onClick={handleLearnOrBuy}>
+									onClick={handleLearnOrBuy} isLoading={enrollMutation.isPending}>
 								Buy now -
 								{coursePriceQuery.data?.["currency"] === "USD" ? USDollar.format(handledPrice) : VNDong.format(handledPrice)}
 							</Button>}
@@ -134,6 +137,7 @@ function CourseInformation() {
 							There are a lot of words waiting for you to learn
 						</p>
 						<Button className="bg-third text-third-foreground shadow-2xl" radius="sm"
+								isLoading={enrollMutation.isPending}
 								onClick={handleLearnOrBuy}>
 							{enrolled ? "Join now" : "Learn now"}
 						</Button>
@@ -162,13 +166,13 @@ function CourseInformation() {
 						<div className="mt-8 flex flex-col justify-center space-y-2">
 							{!enrolled ? <Fragment>
 								<Button className="bg-third text-third-foreground font-bold text-base"
-										onClick={handleLearnOrBuy}
+										onClick={handleLearnOrBuy} isLoading={enrollMutation.isPending}
 										size="lg"
 										radius="sm">Buy
 									now</Button>
 								<Button variant="bordered" className="font-bold text-base" size="lg"
 										radius="sm">Add to whitelist</Button>
-							</Fragment> : <Button onClick={handleLearnOrBuy}
+							</Fragment> : <Button onClick={handleLearnOrBuy} isLoading={enrollMutation.isPending}
 												  className="bg-third text-third-foreground font-bold text-base" size="lg"
 												  radius="sm">Learn now</Button>}
 						</div>
@@ -180,7 +184,7 @@ function CourseInformation() {
 							<span className="ml-1">for you</span>
 						</div>
 						<div className="mt-8 flex flex-col justify-center space-y-2">
-							<Button onClick={handleLearnOrBuy}
+							<Button onClick={handleLearnOrBuy} isLoading={enrollMutation.isPending}
 									className="bg-third text-third-foreground font-bold text-base" size="lg"
 									radius="sm">Participate with us</Button>
 						</div>

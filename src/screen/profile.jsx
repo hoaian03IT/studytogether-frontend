@@ -31,6 +31,7 @@ const Profile = () => {
 		avatar: user.info.avatar,
 	});
 
+
 	const [validInputs, setValidInputs] = useState({
 		firstName: {
 			valid: true, errMsg: "",
@@ -80,6 +81,7 @@ const Profile = () => {
 					lastName: data?.["updatedInfo"]?.["last name"],
 					phone: data?.["updatedInfo"]?.["phone"],
 					username: data?.["updatedInfo"]?.["username"],
+					avatar: data?.["updatedInfo"]?.["avatar image"],
 				},
 			}));
 			setEditable(false);
