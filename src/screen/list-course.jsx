@@ -1,10 +1,12 @@
-import { div } from "framer-motion/client";
-import React, { useState } from "react";
-import { Button } from "@nextui-org/react";
+import React, { useState, useEffect } from "react";
+import {
+	Avatar,
+	Button,
+} from "@nextui-org/react";
 import { Image } from "@nextui-org/image";
-import { FaBookBookmark } from "react-icons/fa6";
+import { FaBookBookmark, FaTrophy } from "react-icons/fa6";
 import { BsFillPeopleFill } from "react-icons/bs";
-import { FaTrophy } from "react-icons/fa6";
+import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
 import SearchnFilter from '../components/search-filter'; 
 
 
@@ -168,4 +170,5 @@ const ListCourse = () => {
     </div>
   );
 };
+
 export default ListCourse;
