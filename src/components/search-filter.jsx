@@ -19,7 +19,7 @@ export default function Filter() {
     price: "all",
     nPage: 1,
     nLimit: 15,
-    t: "normal", // Chế độ tìm kiếm mặc định là "normal"
+    t: "normal",
   });
 
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -233,3 +233,4 @@ export default function Filter() {
     </div>
   );
 }
+
