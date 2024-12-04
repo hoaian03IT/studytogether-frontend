@@ -9,7 +9,6 @@ import "react-toastify/dist/ReactToastify.css";
 function App() {
 	return (
 		<div>
-			<ToastContainer stacked />
 			<Routes>
 				{publicRoutes?.map((route) => {
 					const Component = route.component;
@@ -23,6 +22,7 @@ function App() {
 									<Suspense fallback={<LoadingThreeDot />}>
 										<Component />
 									</Suspense>
+									<ToastContainer stacked />
 								</Layout>
 							}
 						/>

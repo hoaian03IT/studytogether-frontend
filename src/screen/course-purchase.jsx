@@ -16,6 +16,7 @@ import vnpayLogoHorizontal from "../assets/vnpay-horizontal-logo.png";
 import { PaymentService } from "../apis/payment.api.js";
 import { TranslationContext } from "../providers/TranslationProvider.jsx";
 import { EnrollmentService } from "../apis/enrollment.api.js";
+import { SocketClientContext } from "../providers/socket-client-provider.jsx";
 
 const initialPaypalOptions = {
 	clientId: import.meta.env.VITE_PAYPAL_CLIENT_ID,
@@ -29,6 +30,7 @@ function Payment() {
 	const user = useRecoilValue(userState);
 	const { updateUserState } = useContext(GlobalStateContext);
 	const { translation } = useContext(TranslationContext);
+	const { SocketHandler } = useContext(SocketClientContext);
 
 	const clientQuery = useQueryClient();
 
@@ -104,10 +106,12 @@ function Payment() {
 			if (res.data?.["enrollment id"]) {
 				clearInterval(intervalId);
 				setIsEnrollment(true);
+
+				// handle emit enroll course to server socket
+				SocketHandler.handleEmitEnrollCourse(res.data?.["enrollment id"]);
 			} else {
 				setIsEnrollment(false);
 			}
-
 		}, 4000);
 	};
 
@@ -118,8 +122,12 @@ function Payment() {
 				courseId: params?.courseId,
 				intent: initialPaypalOptions.intent,
 			}, user, updateUserState);
-			toast.success(translation(dataRes?.["messageCode"]));
 			setIsEnrollment(true);
+			
+			// handle emit enroll course to server socket
+			SocketHandler.handleEmitEnrollCourse(dataRes?.enrollmentId);
+
+			toast.success(translation(dataRes?.["messageCode"]));
 		} catch (error) {
 			toast.warn(translation(error.response.data?.["errorCode"]));
 		}

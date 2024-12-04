@@ -28,14 +28,14 @@ createRoot(document.getElementById("root")).render(
 				<QueryClientProvider client={queryClient}>
 					<GoogleOAuthProvider clientId={import.meta.env.VITE_GG_CLIENT_ID}>
 						<RecoilRoot>
-							<SocketClientProvider>
-								<TranslationProvider>
-									<ReactQueryDevtools initialIsOpen={false} />
-									<GlobalStateProvider>
+							<GlobalStateProvider>
+								<SocketClientProvider>
+									<TranslationProvider>
+										<ReactQueryDevtools initialIsOpen={false} />
 										<App />
-									</GlobalStateProvider>
-								</TranslationProvider>
-							</SocketClientProvider>
+									</TranslationProvider>
+								</SocketClientProvider>
+							</GlobalStateProvider>
 						</RecoilRoot>
 					</GoogleOAuthProvider>
 				</QueryClientProvider>

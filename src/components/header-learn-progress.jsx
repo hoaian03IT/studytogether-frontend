@@ -4,8 +4,11 @@ import { RiCloseLine } from "react-icons/ri";
 import { IoGitCompareOutline, IoSpeedometerOutline } from "react-icons/io5";
 import React, { memo } from "react";
 import clsx from "clsx";
+import { useNavigate } from "react-router-dom";
 
 const HeaderLearnProgress = memo(function({ page = "learn", title }) {
+
+	const navigate = useNavigate();
 	return <div
 		className={clsx(page === "speed-review" ? "bg-danger" : page === "classic-review" ? "bg-third" : "bg-primary")}>
 		<div className="text-2xl font-bold container py-2">
