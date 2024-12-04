@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Select, SelectItem } from "@nextui-org/react";
 import { Button } from "@nextui-org/react";
 import { Input } from "@nextui-org/input";
@@ -9,8 +9,18 @@ import { CourseLevelService } from "../apis/courseLevel.api.js";
 import { CourseService } from "../apis/course.api.js";
 import { queryKeys } from "../react-query/query-keys.js";
 import { Pagination } from "@nextui-org/react";
+import { toast } from "react-toastify";
+import { useDebounce } from "../hooks/useDebounce.jsx";
+import { CgSortAz } from "react-icons/cg";
+import { pathname } from "../routes";
+import { GoPlus } from "react-icons/go";
+import { useNavigate } from "react-router-dom";
 
-export default function Filter() {
+
+export default function Filter({ onFilter }) {
+
+  const navigate = useNavigate();
+  
   const [formValue, setFormValue] = useState({
     targetLanguageId: "",
     sourceLanguageId: "",
@@ -21,6 +31,9 @@ export default function Filter() {
     nLimit: 15,
     t: "normal",
   });
+
+
+  const searchTextDebounced = useDebounce(formValue.searchTerm, 800)
 
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 
@@ -62,38 +75,45 @@ export default function Filter() {
   });
 
   // Fetch courses
-  const courseQuery = useQuery({
-    queryKey: [queryKeys.searchCourse, formValue],
-    queryFn: async () => {
-      try {
-        const data = await CourseService.searchCourses({
-          ts: formValue.searchTerm,
-          t: formValue.t, 
-          tli: formValue.targetLanguageId?.currentKey,
-          sli: formValue.sourceLanguageId?.currentKey,
-          cli: formValue.levels.length > 0 ? formValue.levels.join(",") : null,
-          mip: formValue.price === "low" ? 0 : formValue.price === "high" ? 50 : 0,
-          map: formValue.price === "low" ? 50 : formValue.price === "high" ? 99999 : 99999,
-          nlm: formValue.nLimit,
-          np: formValue.nPage,
-        });
-        return data.courses;
-      } catch (error) {
-        console.error("Error fetching courses:", error);
-        return [];
-      }
+  const courseQuery = useMutation({
+    mutationFn: async (formValue) => {
+
+      const response = await CourseService.searchCourses({
+        ts: formValue.searchTerm,
+        t: formValue.t,
+        tli: formValue.targetLanguageId?.currentKey,
+        sli: formValue.sourceLanguageId?.currentKey,
+        cli: formValue.levels.length > 0 ? formValue.levels.join(",") : null,
+        mip: formValue.price === "low" ? 0 : formValue.price === "high" ? 50 : 0,
+        map: formValue.price === "low" ? 50 : formValue.price === "high" ? 99999 : 99999,
+        nlm: formValue.nLimit,
+        np: formValue.nPage,
+      })
+
+      return response.courses;
     },
-    enabled: !!formValue.searchTerm.trim(), // Chỉ chạy khi có nội dung tìm kiếm
+    onSuccess: (data) => {
+      onFilter(data || []);
+    },
+    onError: (error) => {
+      console.error("Error in searchCourses:", error);
+      toast.error(translation(error.response.data?.errorCode))
+    },
   });
 
-  // Update formValue state
+  useEffect(() => {
+
+    courseQuery.mutate({ ...formValue, searchTerm: searchTextDebounced })
+  }, [formValue.levels, formValue.nLimit, formValue.nPage, formValue.price, formValue.sourceLanguageId, formValue.targetLanguageId, searchTextDebounced]);
+
+
   const handleInputChange = (name, value) => {
     setFormValue((prev) => ({
       ...prev,
       [name]: value,
     }));
 
-    // Reset page về 1 khi thay đổi bộ lọc
+
     if (name !== "nPage") {
       setFormValue((prev) => ({
         ...prev,
@@ -104,8 +124,6 @@ export default function Filter() {
 
   const toggleAdvancedFilters = () => {
     setShowAdvancedFilters((prev) => !prev);
-
-    // Chuyển đổi giữa "normal" và "advance"
     handleInputChange("t", showAdvancedFilters ? "normal" : "advance");
   };
 
@@ -114,17 +132,26 @@ export default function Filter() {
       {/* Search Bar */}
       <div className="flex py-3 gap-2 my-8 justify-end ml-auto">
         <Button
+          className="px-2 py-1 flex justify-end mr-auto bg-green-500 text-white text-sm font-bold rounded-lg shadow-md hover:bg-blue-600"
+          onClick={() => navigate(pathname.createCourse)}
+        >
+          <GoPlus className="text-xl" />
+          Create
+        </Button>
+
+        <Button
           color="primary"
-          disabled={!formValue.searchTerm.trim()} // Nút bị disable nếu không có nội dung tìm kiếm
+          disabled={!formValue.searchTerm.trim()}
           onClick={toggleAdvancedFilters}
         >
-          {showAdvancedFilters ? "Tắt lọc nâng cao" : "Lọc nâng cao"}
+          <CgSortAz className="text-2xl font-bold" />
+          {showAdvancedFilters ? "Advanced filtering off" : "Advanced filtering"}
         </Button>
         <div className="flex items-center bg-white border-1 rounded-[80%]">
           <Input
             type="text"
             radius="sm"
-            placeholder="Tìm kiếm"
+            placeholder="Search"
             value={formValue.searchTerm}
             onChange={(e) => handleInputChange("searchTerm", e.target.value)}
             className="col-span-2 row-start-2 border-spacing-2"
@@ -169,7 +196,6 @@ export default function Filter() {
             </Select>
           </div>
 
-          {/* Target Language */}
           <div>
             <Select
               label="Ngôn ngữ học"
@@ -186,7 +212,6 @@ export default function Filter() {
             </Select>
           </div>
 
-          {/* Levels */}
           <div>
             <Select
               label="Cấp độ"
@@ -205,22 +230,7 @@ export default function Filter() {
         </div>
       )}
 
-      {/* Results */}
-      <div>
-        {courseQuery.isFetching ? (
-          <p>Loading...</p>
-        ) : courseQuery.data?.length > 0 ? (
-          <ul>
-            {courseQuery.data.map((course) => (
-              <li key={course["course id"]}>
-                {course["course name"]} - ${course["price"]}
-              </li>
-            ))}
-          </ul>
-        ) : formValue.searchTerm.trim() ? (
-          <p>No courses found.</p>
-        ) : null}
-      </div>
+
 
       {/* Pagination */}
       <div className="flex justify-center my-4">
@@ -232,5 +242,4 @@ export default function Filter() {
       </div>
     </div>
   );
-}
-
+} 

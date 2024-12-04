@@ -18,10 +18,10 @@ import { queryKeys } from "../react-query/query-keys.js";
 import { EnrollmentService } from "../apis/enrollment.api.js";
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom.js";
-import { GlobalStateContext } from "../components/providers/GlobalStateProvider.jsx";
+import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 import { pathname } from "../routes/index.js";
 import { toast } from "react-toastify";
-import { TranslationContext } from "../components/providers/TranslationProvider.jsx";
+import { TranslationContext } from "../providers/TranslationProvider.jsx";
 
 function CourseInformation() {
 	const params = useParams();

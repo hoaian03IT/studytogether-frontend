@@ -100,14 +100,24 @@ class CourseServiceClass {
 
 	async fetchCoursePrices(courseId) {
 		try {
-			const res = await http.get(`/course/prices?course-id=${courseId}`);
-			return res.data;
+		  console.log("Fetching course prices for courseId:", courseId);
+		  const res = await http.get(`/course/prices?course-id=${courseId}`);
+		  return res.data;
 		} catch (error) {
-			toast.error("Oops! Something went wrong!");
-			return {};
+		  console.error("Error fetching course prices:", error);
+		  if (error.response) {
+			toast.error(`Error: ${error.response.data?.message || "Something went wrong!"}`);
+			return error.response.data;
+		  } else if (error.request) {
+			toast.error("Error: No response from server!");
+		  } else {
+			toast.error(`Error: ${error.message}`);
+		  }
+		  return {};
 		}
-	}
-
+	  }
+	  
+	
 	async searchCourses(params) {
 		try {
 			const res = await http.get(`/course/search-course`, { params });
@@ -118,7 +128,7 @@ class CourseServiceClass {
 			return { courses: [] }; 
 		}
 	}
-	
+
 
 	async updateCoursePrice(payload, userState, updateState) {
 		const {
@@ -140,6 +150,8 @@ class CourseServiceClass {
 		});
 		return res.data;
 	}
+
+	
 }
 
 

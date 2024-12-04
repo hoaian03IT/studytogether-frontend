@@ -10,6 +10,7 @@ import { TranslationContext } from "../providers/TranslationProvider";
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom";
 import { UserHeader } from "./user.header";
+import { CgSortAz } from "react-icons/cg";
 
 export const Header = ({ fluid = false }) => {
 	const user = useRecoilValue(userState);
@@ -42,7 +43,7 @@ export const Header = ({ fluid = false }) => {
 					</NavbarItem>
 					<NavbarItem>
 						<NavLink
-							to={pathname.vocabularySet}
+							to={pathname.listCourse}
 							className={({ isActive }) =>
 								clsx("text-xl", isActive ? "underline font-bold" : "font-semibold")
 							}>

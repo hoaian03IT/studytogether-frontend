@@ -87,16 +87,16 @@ const MyCourse = () => {
 	const [isModalVisible, setIsModalVisible] = useState(false);
 
 	const handleDelete = () => {
-		setIsModalVisible(true); 
+		setIsModalVisible(true);
 	};
 
 	const confirmDelete = () => {
 		console.log("Item deleted");
-		setIsModalVisible(false); 
+		setIsModalVisible(false);
 	};
 
 	const cancelDelete = () => {
-		setIsModalVisible(false); 
+		setIsModalVisible(false);
 	};
 
 	return (
@@ -137,8 +137,8 @@ const MyCourse = () => {
 								<Popover>
 									<PopoverTrigger>
 										<Button isIconOnly
-												className="rounded-full bg-white border-2 border-gray-500 mr-4"
-												aria-label="Options">
+											className="rounded-full bg-white border-2 border-gray-500 mr-4"
+											aria-label="Options">
 											<BsThreeDots className="text-medium" />
 										</Button>
 									</PopoverTrigger>
@@ -234,8 +234,8 @@ const MyCourse = () => {
 										<Popover>
 											<PopoverTrigger>
 												<Button isIconOnly
-														className="rounded-full bg-white border-2 border-gray-500 mr-4"
-														aria-label="Options">
+													className="rounded-full bg-white border-2 border-gray-500 mr-4"
+													aria-label="Options">
 													<BsThreeDots className="text-medium" />
 												</Button>
 											</PopoverTrigger>
