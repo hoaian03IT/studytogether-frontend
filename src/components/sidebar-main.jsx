@@ -8,6 +8,7 @@ import { useContext, useState } from "react";
 import { SidebarMainItem } from "./sidebar-main-item";
 import { TranslationContext } from "../providers/TranslationProvider";
 import { NotificationComponent } from "../screen/notification-component";
+import { pathname } from "../routes/index.js";
 
 function SidebarMain() {
 	const { translation } = useContext(TranslationContext);
@@ -39,7 +40,7 @@ function SidebarMain() {
 		{
 			label: translation("sidebar-main.search"),
 			icon: MdSearch,
-			path: "/",
+			path: pathname.listCourse,
 		},
 	];
 
