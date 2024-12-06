@@ -38,6 +38,7 @@ const CourseParticipant = lazy(() =>
 );
 const NotificationComponent = lazy(() => import ("../screen/notification-component.jsx"));
 const SpeedReviewPage = lazy(() => import("../screen/speed-review.jsx"));
+const StatisticRevenueOfWebsite = lazy (() => import("../screen/statistic-revenue-of-website.jsx"));
 
 export const publicRoutes = [
 	{ path: pathname.home, component: HomePage, layout: PrimaryLayout },
@@ -120,5 +121,15 @@ export const publicRoutes = [
 		component: NotificationComponent,
 
 	},
+	{
+		path: pathname.statisticRevenueOfWebsite,
+		component: StatisticRevenueOfWebsite,
+		
+
+	},
+	
+
+	
+
 
 ];

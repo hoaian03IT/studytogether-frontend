@@ -27,8 +27,5 @@ export const pathname = {
 	courseParticipant: "/course-participant",
 	notificationComponent: "/notification-component",
 	speedReview: "/speed-review",
-	ownCourse:"/mycourse-own",
-	finishedCourse:"/mycourse-finished",
-	unfinishedCourse:"/mycourse-unfinished",
-
+	statisticRevenueOfWebsite:"statistic-revenue-of-website",
 };
