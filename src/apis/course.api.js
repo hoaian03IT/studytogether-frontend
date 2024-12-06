@@ -129,6 +129,28 @@ class CourseServiceClass {
 		}
 	}
 
+	async getOwnCourses(userState, updateUserState) {
+		try {
+		  const httpAuth = createHttpAuth(userState, updateUserState);
+		  const res = await httpAuth.get("/course/own-course");
+		  return res.data.courses;
+		} catch (error) {
+		  console.error("Error loading own courses:", error);
+		  throw new Error(error.response?.data?.message || "Unable to fetch own courses");
+		}
+	  }
+	  async fetchUnfinishedCourses(user) {
+		try {
+		  const httpAuth = createHttpAuth(user, (updatedUser) => {}); 
+		  const res = await httpAuth.get("/course/enrolled-course");
+		  return res.data.incompleteCourses;
+		} catch (error) {
+		  console.error("Error fetching unfinished courses:", error);
+		  throw error;
+		}
+	  }
+
+
 
 	async updateCoursePrice(payload, userState, updateState) {
 		const {
@@ -150,6 +172,21 @@ class CourseServiceClass {
 		});
 		return res.data;
 	}
+
+	async deleteOwnCourse(courseId, userState, updateUserState) {
+		try {
+		  const httpAuth = createHttpAuth(userState, updateUserState);
+		  const res = await httpAuth.delete(`/course/destroy/${courseId}`);
+		  return res.data; 
+		} catch (error) {
+		  console.error("Error deleting course:", error);
+		  throw error; 
+		}
+	  }
+	
+
+
+	  
 
 	
 }

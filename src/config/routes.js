@@ -30,6 +30,9 @@ const ListExercise = lazy(() => import("../screen/list-excercise.jsx"));
 const PersonalStatics = lazy(() => import("../screen/personal-statics.jsx"));
 const LearnPage = lazy(() => import("../screen/learn.jsx"));
 const MyCourse = lazy(() => import("../screen/my-course.jsx"));
+const OwnCourse = lazy(() => import("../screen/mycourse-own.jsx"));
+const FinishedCourse = lazy(() => import("../screen/mycourse-finished.jsx"));
+const UnfinishedCourse = lazy(() => import("../screen/mycourse-unfinished.jsx"));
 const CourseParticipant = lazy(() =>
 	import("../screen/course-participant.jsx"),
 );
@@ -103,6 +106,9 @@ export const publicRoutes = [
 	{ path: pathname.learn, component: LearnPage, layout: null },
 	{ path: pathname.speedReview, component: SpeedReviewPage, layout: null },
 	{ path: pathname.myCourse, component: MyCourse, layout: PrimaryLayout },
+	{ path: pathname.ownCourse, component: OwnCourse, layout: PrimaryLayout },
+	{ path: pathname.finishedCourse, component: FinishedCourse, layout: PrimaryLayout },
+	{ path: pathname.unfinishedCourse, component: UnfinishedCourse, layout: PrimaryLayout },
 	{ path: pathname.editCourse, component: EditCourse, layout: ThirdLayout },
 	{
 		path: pathname.courseParticipant,
