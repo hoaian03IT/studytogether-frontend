@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Checkbox, Input, Radio, RadioGroup } from "@nextui-org/react";
 import { BsEyeFill, BsEyeSlashFill } from "react-icons/bs";
-import { TranslationContext } from "../components/providers/TranslationProvider";
+import { TranslationContext } from "../providers/TranslationProvider.jsx";
 import { useRecoilState } from "recoil";
 import { userState } from "../recoil/atoms/user.atom";
 import { toast } from "react-toastify";
