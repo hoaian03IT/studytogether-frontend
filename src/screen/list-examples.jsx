@@ -116,7 +116,7 @@ const ListExamples = () => {
 
 
 	return (
-		<div className="flex items-start w-full p-4 bg-slate-100 gap-5">
+		<div className="flex items-start w-full bg-slate-100 gap-5">
 			<div className="w-full">
 				<div className="flex w-full gap-4 mb-5 items-start justify-between">
 					<div className="w-full justify-between">

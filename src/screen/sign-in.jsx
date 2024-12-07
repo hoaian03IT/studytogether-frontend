@@ -6,7 +6,7 @@ import { TranslationContext } from "../providers/TranslationProvider";
 import { useMutation } from "@tanstack/react-query";
 import { AuthService } from "../apis/auth.api";
 import { toast } from "react-toastify";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { userState } from "../recoil/atoms/user.atom";
 import { useQueryString } from "../hooks/useQueryString.jsx";
 import { pathname } from "../routes";
@@ -16,7 +16,7 @@ import FacebookLogin from "@greatsumini/react-facebook-login";
 
 const SignIn = () => {
 	const { translation } = useContext(TranslationContext);
-	const [user, setUser] = useRecoilState(userState);
+	const setUser = useSetRecoilState(userState);
 
 	const [usernameOrEmail, setUsernameOrEmail] = useState({ value: "", error: "" });
 	const [password, setPassword] = useState({ value: "", error: "" });
@@ -30,23 +30,23 @@ const SignIn = () => {
 		mutationFn: AuthService.loginUserAccount,
 		onSuccess: (res) => handleUpdateUserState({ status: res.status, data: res.data }),
 		onError: async (error) => {
-			toast.warn(error.response.data.message);
+			toast.warn(translation(error.response.data?.errorCode));
 		},
 	});
 
 	const mutationFacebookLogin = useMutation({
 		mutationFn: AuthService.facebookLogin,
 		onSuccess: (res) => handleUpdateUserState({ status: res.status, data: res.data }),
-		onError: async (error) => {
-			toast.warn(error.response.data.message);
+		onError: (error) => {
+			toast.error(translation(error.response.data?.errorCode));
 		},
 	});
 
 	const mutationGoogleLogin = useMutation({
 		mutationFn: AuthService.googleLogin,
 		onSuccess: (res) => handleUpdateUserState({ status: res.status, data: res.data }),
-		onError: async (error) => {
-			toast.warn(error.response.data.message);
+		onError: (error) => {
+			toast.error(translation(error.response.data?.errorCode));
 		},
 	});
 
@@ -106,7 +106,7 @@ const SignIn = () => {
 			mutationGoogleLogin.mutate({ token: credentials.access_token });
 		},
 		onError: (err) => {
-			toast.error(err.response.data.message || err.message);
+			toast.error(translation(err.response.data?.errorCode || err.message));
 		},
 	});
 

@@ -74,15 +74,15 @@ export default function Filter({ onFilter }) {
 	const courseQuery = useMutation({
 		mutationFn: async (formValue) => {
 			let selectedPriceOption = priceOptions.find(item => item.key === formValue?.price.anchorKey);
-			
+
 			const response = await CourseService.searchCourses({
 				ts: formValue.searchTerm,
 				t: formValue.t,
 				tli: formValue.targetLanguageId?.currentKey,
 				sli: formValue.sourceLanguageId?.currentKey,
 				cli: formValue.levels.length > 0 ? formValue.levels.join(",") : null,
-				mip: selectedPriceOption.min,
-				map: selectedPriceOption.max,
+				mip: selectedPriceOption?.min,
+				map: selectedPriceOption?.max,
 				nlm: formValue.nLimit,
 				np: formValue.nPage,
 			});

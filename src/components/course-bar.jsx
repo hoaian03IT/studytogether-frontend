@@ -1,17 +1,13 @@
 import React from "react";
 import { NavLink, useLocation, useParams } from "react-router-dom";
-import { PiPencilDuotone } from "react-icons/pi";
-import { FaBook } from "react-icons/fa";
-import { MdAssignmentLate, MdLibraryBooks } from "react-icons/md";
-import { LiaSellcast } from "react-icons/lia";
 import { pathname } from "../routes/index.js";
 
 const menuItems = [
-	{ path: pathname.courseVocabulary, label: "TỪ VỰNG", icon: <PiPencilDuotone className="size-8" /> },
-	{ path: pathname.listExamples, label: "VÍ DỤ", icon: <MdAssignmentLate className="size-8" /> },
-	{ path: "/exercise-page", label: "BÀI TẬP", icon: <FaBook className="size-6" /> },
-	{ path: pathname.editCourse, label: "CHI TIẾT KHÓA", icon: <MdLibraryBooks className="size-8" /> },
-	{ path: pathname.courseBusiness, label: "KINH DOANH", icon: <LiaSellcast className="size-8" /> },
+	{ path: pathname.courseVocabulary, label: "TỪ VỰNG", icon: "✒️" },
+	{ path: pathname.listExamples, label: "VÍ DỤ", icon: "📑" },
+	{ path: pathname.listExercise, label: "BÀI TẬP", icon: "📚" },
+	{ path: pathname.editCourse, label: "THÔNG TIN KHÓA", icon: "ℹ️" },
+	{ path: pathname.courseBusiness, label: "KINH DOANH", icon: "💰" },
 ];
 
 const CourseBar = () => {
@@ -26,7 +22,7 @@ const CourseBar = () => {
 					key={item.path}
 					className={({ isActive }) => `px-6 py-4 flex items-center gap-2 transition-colors duration-300 ${isActive ? "bg-blue-100 border-b-4 border-blue-500 font-bold text-blue-600" : "text-gray-600 hover:bg-blue-200"}`}
 				>
-					{item.icon}
+					<span className="text-2xl">{item.icon}</span>
 					<span>{item.label}</span>
 				</NavLink>
 			))}

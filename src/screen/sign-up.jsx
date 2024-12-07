@@ -37,7 +37,7 @@ const SignUp = () => {
 		},
 
 		onError: async (error) => {
-			toast.warn(error.response.data.message);
+			toast.warn(translation(error.response.data?.errorCode));
 		},
 	});
 
@@ -45,7 +45,7 @@ const SignUp = () => {
 		mutationFn: AuthService.facebookLogin,
 		onSuccess: (res) => handleUpdateUserState({ status: res.status, data: res.data }),
 		onError: async (error) => {
-			toast.warn(error.response.data.message);
+			toast.warn(translation(error.response.data?.errorCode));
 		},
 	});
 
@@ -53,7 +53,7 @@ const SignUp = () => {
 		mutationFn: AuthService.googleLogin,
 		onSuccess: (res) => handleUpdateUserState({ status: res.status, data: res.data }),
 		onError: async (error) => {
-			toast.warn(error.response.data.message);
+			toast.warn(translation(error.response.data?.errorCode));
 		},
 	});
 

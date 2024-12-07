@@ -84,7 +84,7 @@ function SocketClientProvider({ children }) {
 		return () => {
 			socketRef.current.disconnect();
 		};
-	}, [user?.info.username, user.isLogged]);
+	}, [user?.info?.username, user.isLogged]);
 
 	return (
 		<SocketClientContext.Provider

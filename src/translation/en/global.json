@@ -25,6 +25,7 @@
     "WARNING_UPDATE_PROFILE": "Please complete your profile information to access all features.",
     "NOT_YET_ENROLLMENT": "You have not enrolled this course yet",
     "NOT_LEARN_ANY_WORD": "\"You have not learnt any words of thís course yet!\"",
+    "INCORRECT_ACCOUNT/PASSWORD": "Incorrect account or password",
     "header": {
       "home": "Home",
       "courses": "Courses",
@@ -79,6 +80,9 @@
       "had-account": "Have you had account?",
       "now": "now",
       "success-message": "Welcome to StudyTogether"
+    },
+    "list-exercise": {
+      "select-level-before": "Please select levels before inserting"
     }
   }
 }

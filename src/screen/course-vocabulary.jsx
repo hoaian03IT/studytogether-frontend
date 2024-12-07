@@ -522,7 +522,7 @@ function AddLevels() {
 							</button>
 
 							<input
-								type="file" accept=".mp3, .mp4" onChange={handleAudioChange} id="audioInput"
+								type="file" accept=".mp3" onChange={handleAudioChange} id="audioInput"
 								className="hidden"
 							/>
 							{audio && (

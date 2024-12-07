@@ -25,6 +25,7 @@
     "WARNING_UPDATE_PROFILE": "Vui lòng bổ sung thông tin để sử dụng đầy đủ các tính năng.",
     "NOT_YET_ENROLLMENT": "Bạn chưa đăng ký khóa học này",
     "NOT_LEARN_ANY_WORD": "Bạn chưa học từ vựng trong trong khóa học này!",
+    "INCORRECT_ACCOUNT/PASSWORD": "Sai tài khoản hoặc mật khẩu",
     "header": {
       "home": "Trang chủ",
       "courses": "Khoá từ vựng",
@@ -79,6 +80,9 @@
       "had-account": "Bạn đã có tài khoản?",
       "now": "ngay",
       "success-message": "Chào mừng đến với StudyTogether"
+    },
+    "list-exercise": {
+      "select-level-before": "Vui lòng chọn cấp độ trước khi thêm"
     }
   }
 }

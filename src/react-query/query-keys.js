@@ -11,6 +11,8 @@ const queryKeys = {
 	flashCard: "flash-card",
 	coursePrice: "course-price",
 	enrollmentInfo: "enrollment-info",
+	level: "level",
+	exercise: "course-exercise",
 };
 
 export { queryKeys };
