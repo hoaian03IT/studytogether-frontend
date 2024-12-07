@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Image } from "@nextui-org/image";
 import { FaBookBookmark, FaTrophy } from "react-icons/fa6";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
