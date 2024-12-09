@@ -48,8 +48,8 @@ const CourseBusiness = () => {
 			setIsDiscountEnabled(coursePriceQuery.data?.["discount"] > 0);
 			if (coursePriceQuery.data?.["discount"] > 0) {
 				setDiscount(coursePriceQuery.data?.["discount"]);
-				setStartDate(parseAbsoluteToLocal(coursePriceQuery.data?.["discount from"]));
-				setEndDate(parseAbsoluteToLocal(coursePriceQuery.data?.["discount to"]));
+				setStartDate(parseAbsoluteToLocal(coursePriceQuery.data?.["discount from"] || null));
+				setEndDate(parseAbsoluteToLocal(coursePriceQuery.data?.["discount to"] || null));
 			}
 		}
 	}, [coursePriceQuery.data]);
@@ -75,7 +75,6 @@ const CourseBusiness = () => {
 	// 		});
 	// 	}
 	// }, [isSettingsVisible]);
-
 
 	const updatePriceCourseMutation = useMutation({
 		mutationFn: async (payload) => {
@@ -111,30 +110,30 @@ const CourseBusiness = () => {
 		e.preventDefault();
 		let submittable = true;
 
-		let priceRegex = new RegExp("^(200(\\.0{1,2})?|([1-9]?[0-9]|1[0-9]{2})(\\.[0-9]{1,2})?)$");// regex kiểm tra giá của khóa học nằm trong khoảng [1,200]
+		let priceRegex = new RegExp("^(200(\\.0{1,2})?|([1-9]?[0-9]|1[0-9]{2})(\\.[0-9]{1,2})?)$"); // regex kiểm tra giá của khóa học nằm trong khoảng [1,200]
 		let discountRegex = new RegExp("^(1(\\.0{1,2})?|0(\\.[0-9]{1,2})?)$");
 		// check gia
 		if (!priceRegex.test(price)) {
-			setValidInputs(prev => ({
+			setValidInputs((prev) => ({
 				...prev,
 				price: { isValid: false, errMsg: "Price course is between 1.00 and 200.00 USD" },
 			}));
 			submittable = false;
 		} else {
-			setValidInputs(prev => ({
+			setValidInputs((prev) => ({
 				...prev,
 				price: { isValid: true, errMsg: "" },
 			}));
 		}
 		// check discount
 		if (!discountRegex.test(discount.toString())) {
-			setValidInputs(prev => ({
+			setValidInputs((prev) => ({
 				...prev,
 				discount: { isValid: false, errMsg: "Discount course is between 0.00 and 1.00 USD" },
 			}));
 			submittable = false;
 		} else {
-			setValidInputs(prev => ({
+			setValidInputs((prev) => ({
 				...prev,
 				discount: { isValid: true, errMsg: "" },
 			}));
@@ -142,18 +141,17 @@ const CourseBusiness = () => {
 		// check ngay
 		if (endDate && startDate) {
 			if (endDate < startDate) {
-				setValidInputs(prev => ({
+				setValidInputs((prev) => ({
 					...prev,
 					endDate: { isValid: false, errMsg: "End date must be later than start date" },
 				}));
 				submittable = false;
 			} else {
-				setValidInputs(prev => ({
+				setValidInputs((prev) => ({
 					...prev,
 					endDate: { isValid: true, errMsg: "" },
 				}));
 			}
-
 		}
 
 		if (submittable) {
@@ -174,80 +172,79 @@ const CourseBusiness = () => {
 	};
 
 	return (
-		<div className=" bg-gray-100 min-h-screen">
-			<form onSubmit={handleSubmit} className="p-6 bg-white rounded-lg max-w-4xl mx-auto mt-10 shadow-lg">
+		<div className=' bg-gray-100 min-h-screen'>
+			<form onSubmit={handleSubmit} className='p-6 bg-white rounded-lg max-w-4xl mx-auto mt-10 shadow-lg'>
 				{/* Tabs and Switch */}
-				<div className="flex justify-between items-center border-b border-gray-300 mb-6 pb-4">
-					<div className="flex space-x-8">
+				<div className='flex justify-between items-center border-b border-gray-300 mb-6 pb-4'>
+					<div className='flex space-x-8'>
 						<button
 							onClick={() => setActiveTab("price")}
 							className={`text-lg font-semibold flex ${
 								activeTab === "price" ? "text-orange-500 border-b-2 border-orange-500" : "text-gray-500"
-							}`}
-						><AiFillCrown className="text-2xl mr-2" />
+							}`}>
+							<AiFillCrown className='text-2xl mr-2' />
 							<span>Thiết lập giá</span>
 						</button>
 						<button
 							onClick={() => setActiveTab("advance")}
 							className={`text-lg font-semibold ${
-								activeTab === "advance" ? "text-orange-500 border-b-2 border-orange-500" : "text-gray-500"
-							}`}
-						>
+								activeTab === "advance"
+									? "text-orange-500 border-b-2 border-orange-500"
+									: "text-gray-500"
+							}`}>
 							Doanh thu
 						</button>
 					</div>
-					<label className="relative inline-flex items-center cursor-pointer">
+					<label className='relative inline-flex items-center cursor-pointer'>
 						<input
-							type="checkbox"
-							className="sr-only"
+							type='checkbox'
+							className='sr-only'
 							checked={isSettingsVisible}
 							onChange={handleUnCheck}
 						/>
-						<div
-							className="w-12 h-6 bg-gray-300 rounded-full peer-focus:ring-2 peer-focus:ring-green-500 transition-all relative">
+						<div className='w-12 h-6 bg-gray-300 rounded-full peer-focus:ring-2 peer-focus:ring-green-500 transition-all relative'>
 							<div
 								className={`absolute top-0.5 left-1 h-5 w-5 rounded-full transition-all duration-200 ${
 									isSettingsVisible ? "bg-green-500 transform translate-x-6" : "bg-white"
-								}`}
-							></div>
+								}`}></div>
 						</div>
 					</label>
 				</div>
 
 				{isSettingsVisible && (
-					<div className="bg-white p-8 rounded-md shadow-md">
-						<h2 className="text-2xl font-semibold mb-6">Cài đặt giá khóa học</h2>
+					<div className='bg-white p-8 rounded-md shadow-md'>
+						<h2 className='text-2xl font-semibold mb-6'>Cài đặt giá khóa học</h2>
 
 						{/* Course Name */}
-						<div className="mb-6">
-							<label className="block font-medium text-gray-600 mb-2">Khóa</label>
+						<div className='mb-6'>
+							<label className='block font-medium text-gray-600 mb-2'>Khóa</label>
 							<Input
-								color="primary"
-								type="text"
-								placeholder="Tên khóa"
+								color='primary'
+								type='text'
+								placeholder='Tên khóa'
 								value={coursePriceQuery.data?.["name"]}
-								variant="bordered"
-								size="lg"
-								radius="sm"
+								variant='bordered'
+								size='lg'
+								radius='sm'
 								readOnly
 								disabled
 							/>
 						</div>
 
 						{/* Price and Duration */}
-						<div className="flex gap-6 mb-6">
-							<div className="w-1/2">
-								<label className="block font-medium text-gray-600 mb-2">Giá ($) </label>
+						<div className='flex gap-6 mb-6'>
+							<div className='w-1/2'>
+								<label className='block font-medium text-gray-600 mb-2'>Giá ($) </label>
 								<Input
-									color="primary"
-									type="number"
+									color='primary'
+									type='number'
 									value={price}
 									step={0.01}
 									onValueChange={setPrice}
-									placeholder="$ 0.00"
-									variant="bordered"
-									size="lg"
-									radius="sm"
+									placeholder='$ 0.00'
+									variant='bordered'
+									size='lg'
+									radius='sm'
 									endContent={<span>$</span>}
 									isInvalid={!validInputs.price.isValid}
 									errorMessage={validInputs.price.errMsg}
@@ -256,85 +253,90 @@ const CourseBusiness = () => {
 						</div>
 
 						{/* Discount Settings */}
-						<div className="mb-6">
+						<div className='mb-6'>
 							<input
-								type="checkbox"
+								type='checkbox'
 								checked={isDiscountEnabled}
 								onChange={() => setIsDiscountEnabled(!isDiscountEnabled)}
-								className="mr-2"
+								className='mr-2'
 							/>
-							<label className="font-medium text-gray-600">Cài đặt giảm giá</label>
+							<label className='font-medium text-gray-600'>Cài đặt giảm giá</label>
 						</div>
 
 						{isDiscountEnabled && (
-							<div className="flex gap-6 mb-6">
+							<div className='flex gap-6 mb-6'>
 								{/* Discount Percentage */}
-								<div className="w-1/3">
-									<label className="block font-medium text-gray-600 mb-2">Giảm giá (%)</label>
+								<div className='w-1/3'>
+									<label className='block font-medium text-gray-600 mb-2'>Giảm giá (%)</label>
 									<Input
-										type="number"
+										type='number'
 										step={0.01}
 										value={discount}
 										onValueChange={setDiscount}
-										placeholder="%00.00"
-										size="lg"
-										variant="bordered"
-										radius="sm"
+										placeholder='%0.00'
+										size='lg'
+										variant='bordered'
+										radius='sm'
 										isInvalid={!validInputs.discount.isValid}
 										errorMessage={validInputs.discount.errMsg}
 									/>
 								</div>
 
 								{/* Start Date */}
-								<div className="w-1/3 relative">
-									<label className="block font-medium text-gray-600 mb-2">Từ ngày (UTC)</label>
-									<DatePicker granularity="day" size="lg" variant="bordered" radius="sm"
-												aria-label="start date"
-												value={startDate}
-												onChange={setStartDate} />
+								<div className='w-1/3 relative'>
+									<label className='block font-medium text-gray-600 mb-2'>Từ ngày (UTC)</label>
+									<DatePicker
+										granularity='day'
+										size='lg'
+										variant='bordered'
+										radius='sm'
+										aria-label='start date'
+										value={startDate}
+										onChange={setStartDate}
+									/>
 								</div>
 
 								{/* End Date */}
-								<div className="w-1/3 relative">
-									<label className="block font-medium text-gray-600 mb-2">Đến (UTC)</label>
-									<DatePicker granularity="day" size="lg" variant="bordered" radius="sm"
-												isInvalid={!validInputs.endDate.isValid}
-												errorMessage={validInputs.endDate.errMsg}
-												value={endDate}
-												aria-label="end date"
-												onChange={setEndDate} />
+								<div className='w-1/3 relative'>
+									<label className='block font-medium text-gray-600 mb-2'>Đến (UTC)</label>
+									<DatePicker
+										granularity='day'
+										size='lg'
+										variant='bordered'
+										radius='sm'
+										isInvalid={!validInputs.endDate.isValid}
+										errorMessage={validInputs.endDate.errMsg}
+										value={endDate}
+										aria-label='end date'
+										onChange={setEndDate}
+									/>
 								</div>
 							</div>
 						)}
 
 						{/* Notifications Settings */}
-						<div className="flex gap-6 mb-6">
+						<div className='flex gap-6 mb-6'>
 							<div>
-								<input type="checkbox" className="mr-2" defaultChecked />
-								<label className="font-medium text-gray-600">Nhận thông báo doanh thu</label>
+								<input type='checkbox' className='mr-2' defaultChecked />
+								<label className='font-medium text-gray-600'>Nhận thông báo doanh thu</label>
 							</div>
 							<div>
-								<input type="checkbox" className="mr-2" defaultChecked />
-								<label className="font-medium text-gray-600">Báo cáo, phân tích theo kỳ</label>
+								<input type='checkbox' className='mr-2' defaultChecked />
+								<label className='font-medium text-gray-600'>Báo cáo, phân tích theo kỳ</label>
 							</div>
 						</div>
 
 						{/* Action Buttons */}
-						<div className="flex gap-4 justify-end">
-							<Button type="reset"
-									color="default"
-									size="lg"
-									radius="sm"
-							>
+						<div className='flex gap-4 justify-end'>
+							<Button type='reset' color='default' size='lg' radius='sm'>
 								Hủy
 							</Button>
 							<Button
 								isLoading={updatePriceCourseMutation.isPending}
-								type="submit"
-								color="secondary"
-								size="lg"
-								radius="sm"
-							>
+								type='submit'
+								color='secondary'
+								size='lg'
+								radius='sm'>
 								Xác Nhận
 							</Button>
 						</div>

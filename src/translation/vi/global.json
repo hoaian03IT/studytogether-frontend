@@ -26,6 +26,8 @@
     "NOT_YET_ENROLLMENT": "Bạn chưa đăng ký khóa học này",
     "NOT_LEARN_ANY_WORD": "Bạn chưa học từ vựng trong trong khóa học này!",
     "INCORRECT_ACCOUNT/PASSWORD": "Sai tài khoản hoặc mật khẩu",
+    "LOGIN_FIRST": "Bạn cần đăng nhập",
+    "REGISTER_FIRST": "Bạn cần đăng ký tài khoản",
     "header": {
       "home": "Trang chủ",
       "courses": "Khoá từ vựng",

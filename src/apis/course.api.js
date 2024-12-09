@@ -1,19 +1,10 @@
 import { createHttpAuth, http } from "../config/http";
 import { toast } from "react-toastify";
 
-
 class CourseServiceClass {
 	async createCourse(userState, updateUserState, payload) {
-		const {
-			courseName,
-			sourceLanguageId,
-			courseLevelId,
-			tag,
-			shortDescription,
-			detailedDescription,
-			image,
-		} = payload;
-
+		const { courseName, sourceLanguageId, courseLevelId, tag, shortDescription, detailedDescription, image } =
+			payload;
 
 		const httpAuth = createHttpAuth(userState, updateUserState);
 		const res = await httpAuth.post(`/course/create`, {
@@ -54,7 +45,6 @@ class CourseServiceClass {
 		});
 		return response.data;
 	}
-
 
 	async fetchCourseInformation(courseId) {
 		const res = await http.get(`/course/overview?course-id=${courseId}`);
@@ -100,24 +90,23 @@ class CourseServiceClass {
 
 	async fetchCoursePrices(courseId) {
 		try {
-		  console.log("Fetching course prices for courseId:", courseId);
-		  const res = await http.get(`/course/prices?course-id=${courseId}`);
-		  return res.data;
+			console.log("Fetching course prices for courseId:", courseId);
+			const res = await http.get(`/course/prices?course-id=${courseId}`);
+			return res.data;
 		} catch (error) {
-		  console.error("Error fetching course prices:", error);
-		  if (error.response) {
-			toast.error(`Error: ${error.response.data?.message || "Something went wrong!"}`);
-			return error.response.data;
-		  } else if (error.request) {
-			toast.error("Error: No response from server!");
-		  } else {
-			toast.error(`Error: ${error.message}`);
-		  }
-		  return {};
+			console.error("Error fetching course prices:", error);
+			if (error.response) {
+				toast.error(`Error: ${error.response.data?.message || "Something went wrong!"}`);
+				return error.response.data;
+			} else if (error.request) {
+				toast.error("Error: No response from server!");
+			} else {
+				toast.error(`Error: ${error.message}`);
+			}
+			return {};
 		}
-	  }
-	  
-	
+	}
+
 	async searchCourses(params) {
 		try {
 			const res = await http.get(`/course/search-course`, { params });
@@ -125,42 +114,33 @@ class CourseServiceClass {
 		} catch (error) {
 			toast.error("Error fetching search results");
 			console.error("Error in searchCourses:", error);
-			return { courses: [] }; 
+			return { courses: [] };
 		}
 	}
 
 	async getOwnCourses(userState, updateUserState) {
 		try {
-		  const httpAuth = createHttpAuth(userState, updateUserState);
-		  const res = await httpAuth.get("/course/own-course");
-		  return res.data.courses;
+			const httpAuth = createHttpAuth(userState, updateUserState);
+			const res = await httpAuth.get("/course/own-course");
+			return res.data.courses;
 		} catch (error) {
-		  console.error("Error loading own courses:", error);
-		  throw new Error(error.response?.data?.message || "Unable to fetch own courses");
+			console.error("Error loading own courses:", error);
+			throw new Error(error.response?.data?.message || "Unable to fetch own courses");
 		}
-	  }
-	  async fetchUnfinishedCourses(user) {
+	}
+	async fetchUnfinishedCourses(user, updateUserState) {
 		try {
-		  const httpAuth = createHttpAuth(user, (updatedUser) => {}); 
-		  const res = await httpAuth.get("/course/enrolled-course");
-		  return res.data.incompleteCourses;
+			const httpAuth = createHttpAuth(user, updateUserState);
+			const res = await httpAuth.get("/course/enrolled-course");
+			return res.data;
 		} catch (error) {
-		  console.error("Error fetching unfinished courses:", error);
-		  throw error;
+			console.error("Error fetching unfinished courses:", error);
+			throw error;
 		}
-	  }
-
-
+	}
 
 	async updateCoursePrice(payload, userState, updateState) {
-		const {
-			courseId,
-			newPrice,
-			newDiscount,
-			discountFrom = null,
-			discountTo = null,
-			currency,
-		} = payload;
+		const { courseId, newPrice, newDiscount, discountFrom = null, discountTo = null, currency } = payload;
 		const httpAuth = createHttpAuth(userState, updateState);
 		const res = await httpAuth.post("/course/price-update", {
 			courseId,
@@ -175,23 +155,15 @@ class CourseServiceClass {
 
 	async deleteOwnCourse(courseId, userState, updateUserState) {
 		try {
-		  const httpAuth = createHttpAuth(userState, updateUserState);
-		  const res = await httpAuth.delete(`/course/destroy/${courseId}`);
-		  return res.data; 
+			const httpAuth = createHttpAuth(userState, updateUserState);
+			const res = await httpAuth.delete(`/course/destroy/${courseId}`);
+			return res.data;
 		} catch (error) {
-		  console.error("Error deleting course:", error);
-		  throw error; 
+			console.error("Error deleting course:", error);
+			throw error;
 		}
-	  }
-	
-
-
-	  
-
-	
+	}
 }
-
-
 
 const CourseService = new CourseServiceClass();
 

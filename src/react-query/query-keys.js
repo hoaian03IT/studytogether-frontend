@@ -13,6 +13,9 @@ const queryKeys = {
 	enrollmentInfo: "enrollment-info",
 	level: "level",
 	exercise: "course-exercise",
+	finishedCourses: "finished-course",
+	unfinishedCourses: "unfinished-course",
+	ownCourses: "own-course",
 };
 
 export { queryKeys };

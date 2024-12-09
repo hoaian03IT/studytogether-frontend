@@ -12,6 +12,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GlobalStateProvider } from "./providers/GlobalStateProvider.jsx";
 import { StrictMode } from "react";
 import { SocketClientProvider } from "./providers/socket-client-provider.jsx";
+import "./config/fb.js";
 
 const queryClient = new QueryClient({
 	defaultOptions: {

@@ -41,10 +41,14 @@ class AuthServiceClass {
 
 	async changePassword({ currentPassword, newPassword }, userState, updateUserState) {
 		const httpAuth = createHttpAuth(userState, updateUserState);
-		const res = await httpAuth.post("/auth/change-password", {
-			currentPassword,
-			newPassword,
-		}, { withCredentials: true });
+		const res = await httpAuth.post(
+			"/auth/change-password",
+			{
+				currentPassword,
+				newPassword,
+			},
+			{ withCredentials: true },
+		);
 		return res.data;
 	}
 }

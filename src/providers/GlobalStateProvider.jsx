@@ -11,8 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { pathname } from "../routes/index.js";
 
 const GlobalStateContext = createContext({
-	updateUserState: () => {
-	},
+	updateUserState: () => {},
 });
 
 function GlobalStateProvider({ children }) {
@@ -23,6 +22,7 @@ function GlobalStateProvider({ children }) {
 
 	const updateUserState = (userState) => {
 		if (userState === null) {
+			localStorage.setItem("isLogged", JSON.stringify(false));
 			setUser({
 				info: {
 					phone: null,
@@ -36,7 +36,6 @@ function GlobalStateProvider({ children }) {
 				token: null,
 				isLogged: false,
 			});
-
 		} else {
 			setUser({ ...userState });
 		}
@@ -44,10 +43,11 @@ function GlobalStateProvider({ children }) {
 
 	const logoutMutation = useMutation({
 		mutationFn: async () => {
-			await AuthService.logout(null, updateUserState);
+			// logout & reset user state
+			updateUserState(null);
+			await AuthService.logout(user, updateUserState);
 		},
 		onSuccess: () => {
-			updateUserState(null); // reset user state
 			setShowLogoutModal(false);
 			toast.success("See you again!");
 			navigate(pathname.home); // redirect to home page after logout
@@ -63,7 +63,7 @@ function GlobalStateProvider({ children }) {
 	};
 
 	const handleLogout = () => {
-		if (user.isLogged) {
+		if (user?.isLogged) {
 			logoutMutation.mutate();
 		} else {
 			toast.warn("Bạn chưa đăng nhập trước đó");
@@ -74,11 +74,12 @@ function GlobalStateProvider({ children }) {
 		queryKey: [queryKeys.userState],
 		queryFn: async () => {
 			try {
-				if (!user.isLogged) {
-					const data = await UserService.fetchUserInfo(user, updateUserState);
+				if (user?.isLogged) {
+					const data = await UserService.fetchUserInfo({ ...user, isLogged: true }, updateUserState);
 					if (data) {
-						setUser(prev => ({
-							...prev, info: {
+						setUser((prev) => ({
+							...prev,
+							info: {
 								username: data?.username,
 								phone: data?.phone,
 								firstName: data?.["first name"],
@@ -98,28 +99,29 @@ function GlobalStateProvider({ children }) {
 		},
 	});
 
-	return <GlobalStateContext.Provider
-		value={{ updateUserState, handleShowLogoutModal }}>
-		{children}
-		<Modal isOpen={showLogoutModal} onClose={() => setShowLogoutModal(false)}>
-			<ModalContent>
-				{(onClose) =>
-					<>
-						<ModalHeader>
-							Logout
-						</ModalHeader>
-						<ModalBody>
-							Are you sure you want to logout?
-						</ModalBody>
-						<ModalFooter>
-							<Button color="default" onClick={onClose} radius="sm">Cancel</Button>
-							<Button color="secondary" radius="sm" onClick={handleLogout}>Logout</Button>
-						</ModalFooter>
-					</>
-				}
-			</ModalContent>
-		</Modal>
-	</GlobalStateContext.Provider>;
+	return (
+		<GlobalStateContext.Provider value={{ updateUserState, handleShowLogoutModal }}>
+			{children}
+			<Modal isOpen={showLogoutModal} onClose={() => setShowLogoutModal(false)}>
+				<ModalContent>
+					{(onClose) => (
+						<>
+							<ModalHeader>Logout</ModalHeader>
+							<ModalBody>Are you sure you want to logout?</ModalBody>
+							<ModalFooter>
+								<Button color='default' onClick={onClose} radius='sm'>
+									Cancel
+								</Button>
+								<Button color='secondary' radius='sm' onClick={handleLogout}>
+									Logout
+								</Button>
+							</ModalFooter>
+						</>
+					)}
+				</ModalContent>
+			</Modal>
+		</GlobalStateContext.Provider>
+	);
 }
 
 export { GlobalStateContext, GlobalStateProvider };

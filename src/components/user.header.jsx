@@ -15,64 +15,72 @@ function UserHeader({ userState }) {
 	const { handleShowLogoutModal } = useContext(GlobalStateContext);
 	return (
 		<div>
-			<Dropdown className="rounded-sm">
+			<Dropdown className='rounded-sm'>
 				<DropdownTrigger>
-					<div className="flex items-center select-none cursor-pointer">
-						<Image className="size-10 rounded-full" src={loadImage(userState.info?.avatar)} alt="avatar" />
-						<span className="ml-1 text-base font-medium">
-                            {userState.info?.firstName && userState.info?.lastName ? `${userState.info?.firstName} ${userState.info?.lastName}` : userState.info?.username}
-                        </span>
+					<div className='flex items-center select-none cursor-pointer'>
+						<Image className='size-10' radius='full' src={loadImage(userState.info?.avatar)} alt='avatar' />
+						<span className='ml-1 text-base font-medium'>
+							{userState.info?.firstName && userState.info?.lastName
+								? `${userState.info?.firstName} ${userState.info?.lastName}`
+								: userState.info?.username}
+						</span>
 					</div>
 				</DropdownTrigger>
-				<DropdownMenu aria-label="Static Actions" className="px-0">
+				<DropdownMenu aria-label='Static Actions' className='px-0'>
 					<DropdownItem
 						href={pathname.profile}
 						as={Link}
 						to={pathname.profile}
-						className="rounded-sm py-3"
-						startContent={<FaPencil className="size-4" />}
-						endContent={userState.info?.lastName && userState.info?.firstName && userState.info?.phone && userState.info?.username ? null :
-							<PiWarningCircleFill className="size-6 text-warning shadow-warning rounded-full" />}
-					>
+						className='rounded-sm py-3'
+						startContent={<FaPencil className='size-4' />}
+						endContent={
+							userState.info?.lastName &&
+							userState.info?.firstName &&
+							userState.info?.phone &&
+							userState.info?.username ? null : (
+								<PiWarningCircleFill className='size-6 text-warning shadow-warning rounded-full' />
+							)
+						}>
 						{translation("profile")}
 					</DropdownItem>
 					<DropdownItem
-						href="/"
-						to="/"
+						href='/'
+						to='/'
 						as={Link}
-						className="rounded-sm py-3"
-						startContent={<FaRegBell className="size-4" />}>
+						className='rounded-sm py-3'
+						startContent={<FaRegBell className='size-4' />}>
 						{translation("notification")}
 					</DropdownItem>
 					<DropdownItem
-						href="/"
-						to="/"
+						href='/'
+						to='/'
 						as={Link}
-						className="rounded-sm py-3"
-						startContent={<IoLockOpenOutline className="size-4" />}>
+						className='rounded-sm py-3'
+						startContent={<IoLockOpenOutline className='size-4' />}>
 						{translation("security")}
 					</DropdownItem>
 					<DropdownItem
-						href="/"
-						to="/"
+						href='/'
+						to='/'
 						as={Link}
-						className="rounded-sm py-3"
-						startContent={<IoSettingsOutline className="size-4" />}>
+						className='rounded-sm py-3'
+						startContent={<IoSettingsOutline className='size-4' />}>
 						{translation("setting")}
 					</DropdownItem>
 					<DropdownItem
-						href="/"
-						to="/"
+						href='/'
+						to='/'
 						as={Link}
-						className="rounded-sm py-3"
+						className='rounded-sm py-3'
 						showDivider
-						startContent={<FaRegQuestionCircle className="size-4" />}>
+						startContent={<FaRegQuestionCircle className='size-4' />}>
 						{translation("support")}
 					</DropdownItem>
-					<DropdownItem onClick={handleShowLogoutModal}
-								  className="rounded-sm py-3"
-								  color="secondary"
-								  startContent={<FaArrowRightFromBracket className="size-4" />}>
+					<DropdownItem
+						onClick={handleShowLogoutModal}
+						className='rounded-sm py-3'
+						color='secondary'
+						startContent={<FaArrowRightFromBracket className='size-4' />}>
 						{translation("sign-out")}
 					</DropdownItem>
 				</DropdownMenu>

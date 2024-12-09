@@ -18,7 +18,7 @@ class SocketHandlerClass {
 
 	handleEmitEnrollCourse(enrollmentId) {
 		this.socket.emit("course-enrollment", { enrollmentId });
-	};
+	}
 }
 
 function SocketClientProvider({ children }) {
@@ -37,7 +37,7 @@ function SocketClientProvider({ children }) {
 		onSuccess: (data) => {
 			setNotifications(data?.notifications);
 		},
-		onError: error => {
+		onError: (error) => {
 			console.log(error);
 		},
 	});
@@ -47,7 +47,7 @@ function SocketClientProvider({ children }) {
 			return await NotificationService.getNotification(notificationId, user, updateUserState);
 		},
 		onSuccess: (data) => {
-			setNotifications(prev => ([...prev, data]));
+			setNotifications((prev) => [...prev, data]);
 			toast.info(`${data?.factor} ${data?.message} ${data?.target}`, {
 				position: "top-left",
 				style: {
@@ -55,27 +55,27 @@ function SocketClientProvider({ children }) {
 				},
 			});
 		},
-		onError: error => {
+		onError: (error) => {
 			console.log(error);
 		},
 	});
 
 	useEffect(() => {
-		if (user.isLogged && user.token) {
+		if (user?.isLogged && user?.token) {
 			getNotificationsMutation.mutate();
 		}
-	}, [user.isLogged, user.token]);
-
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [user?.isLogged, user?.token]);
 
 	useEffect(() => {
 		socketRef.current = io(host);
 		if (user?.info?.username) {
-			socketRef.current.emit("register", { username: user.info?.username });
+			socketRef.current.emit("register", { username: user?.info?.username });
 			setConnected(true);
 			setSocketHandler(new SocketHandlerClass(socketRef.current));
 		}
 
-		if (socketRef.current && user.isLogged) {
+		if (socketRef.current && user?.isLogged) {
 			socketRef.current.on("receive-notification", async (notificationId) => {
 				getNewNotificationMutation.mutate(notificationId);
 			});
@@ -84,7 +84,7 @@ function SocketClientProvider({ children }) {
 		return () => {
 			socketRef.current.disconnect();
 		};
-	}, [user?.info?.username, user.isLogged]);
+	}, [user?.info?.username, user?.isLogged]);
 
 	return (
 		<SocketClientContext.Provider
@@ -93,8 +93,7 @@ function SocketClientProvider({ children }) {
 				socket: socketRef.current,
 				connected,
 				SocketHandler: SocketHandler,
-			}}
-		>
+			}}>
 			{children}
 		</SocketClientContext.Provider>
 	);
