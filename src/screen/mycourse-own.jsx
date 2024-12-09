@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CourseService } from "../apis/course.api.js";
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom.js";
@@ -20,6 +20,7 @@ import { BsFillPeopleFill, BsThreeDots } from "react-icons/bs";
 import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
 import { LoadingThreeDot } from "../components/loadings/loading-three-dot";
 import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
+import { TranslationContext } from "../providers/TranslationProvider.jsx";
 import { queryKeys } from "../react-query/query-keys.js";
 
 const OwnCourse = () => {
@@ -29,6 +30,8 @@ const OwnCourse = () => {
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const user = useRecoilValue(userState);
 	const { updateUserState } = useContext(GlobalStateContext);
+	const { translation } = useContext(TranslationContext);
+	const queryClient = useQueryClient();
 
 	const { data, isPending, isLoading, isRefetching } = useQuery({
 		queryKey: [queryKeys.ownCourses, user.info?.username],
@@ -46,10 +49,20 @@ const OwnCourse = () => {
 
 	// Delete course
 	const { mutate: deleteCourse, isLoading: isDeleting } = useMutation({
-		mutationFn: async () => await CourseService.deleteOwnCourse(selectedCourseId, user, updateUserState),
-		onSuccess: () => {
-			toast.success("Course deleted successfully!");
-			fetchOwnCourses(); // Refresh courses list
+		mutationFn: async () => {
+			const data = await CourseService.deleteOwnCourse(selectedCourseId, user, updateUserState);
+			return { ...data, selectedCourseId };
+		},
+		onSuccess: (data) => {
+			toast.success(translation(data?.messageCode));
+			let courses = queryClient.getQueryData([queryKeys.ownCourses, user.info?.username]);
+			const index = courses.findIndex((item) => item?.["course id"] === data?.selectedCourseId);
+			if (index > -1) {
+				courses = courses?.filter((item) => item?.["course id"] !== selectedCourseId);
+				console.log(courses);
+
+				queryClient.setQueryData([queryKeys.ownCourses, user.info?.username], courses);
+			}
 			setIsModalVisible(false);
 		},
 		onError: (error) => {
@@ -58,6 +71,10 @@ const OwnCourse = () => {
 			setIsModalVisible(false);
 		},
 	});
+
+	useEffect(() => {
+		setCourses(data);
+	}, [data]);
 
 	const openDeleteModal = (courseId) => {
 		setSelectedCourseId(courseId);

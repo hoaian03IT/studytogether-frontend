@@ -10,8 +10,9 @@ import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 import { useRecoilValue } from "recoil";
 import { TranslationContext } from "../providers/TranslationProvider.jsx";
 import { toast } from "react-toastify";
-import { parseAbsoluteToLocal } from "@internationalized/date";
 import Revenue from "../screen/course-revenue.jsx";
+import { parseDate, getLocalTimeZone } from "@internationalized/date";
+import { useDateFormatter } from "@react-aria/i18n";
 
 const CourseBusiness = () => {
 	const params = useParams();
@@ -20,9 +21,33 @@ const CourseBusiness = () => {
 	const { updateUserState } = useContext(GlobalStateContext);
 	const { translation } = useContext(TranslationContext);
 
+	const dateFormatter = useDateFormatter({
+		month: "2-digit",
+		day: "2-digit",
+		year: "numeric",
+	});
+
 	const coursePriceQuery = useQuery({
 		queryKey: [queryKeys.coursePrice, params?.courseId],
-		queryFn: async () => await CourseService.fetchCoursePrices(params?.courseId),
+		queryFn: async () => {
+			try {
+				let data = await CourseService.fetchCoursePrices(params?.courseId);
+				if (data?.["price id"] > 0) {
+					setPrice(data?.["price"]);
+					setIsSettingsVisible(data?.["price"] > 0);
+					setIsDiscountEnabled(data?.["discount"] > 0);
+					if (data?.["discount"] > 0) {
+						setDiscount(data?.["discount"]);
+						setStartDate(parseDate(data?.["discount from"]));
+						setEndDate(parseDate(data?.["discount to"]));
+					}
+				}
+				return data;
+			} catch (error) {
+				console.error(error);
+				toast.error(translation(error.response.data?.errorCode));
+			}
+		},
 		initialData: clientQuery.getQueryData([queryKeys.coursePrice, params?.courseId]),
 		enabled: !clientQuery.getQueryData([queryKeys.coursePrice, params?.courseId]),
 	});
@@ -42,25 +67,21 @@ const CourseBusiness = () => {
 	});
 
 	useEffect(() => {
-		if (coursePriceQuery.data?.["price id"] > 0) {
-			setPrice(coursePriceQuery.data?.["price"]);
-			setIsSettingsVisible(coursePriceQuery.data?.["price"] > 0);
-			setIsDiscountEnabled(coursePriceQuery.data?.["discount"] > 0);
-			if (coursePriceQuery.data?.["discount"] > 0) {
-				setDiscount(coursePriceQuery.data?.["discount"]);
-				setStartDate(parseAbsoluteToLocal(coursePriceQuery.data?.["discount from"] || null));
-				setEndDate(parseAbsoluteToLocal(coursePriceQuery.data?.["discount to"] || null));
-			}
-		}
-	}, [coursePriceQuery.data]);
-
-	useEffect(() => {
 		if (!isDiscountEnabled) {
 			setDiscount(0);
 			setStartDate(null);
 			setEndDate(null);
 		}
 	}, [isDiscountEnabled]);
+
+	useEffect(() => {
+		if (price <= 0) {
+			setIsDiscountEnabled(false);
+			setDiscount(0);
+			setStartDate(null);
+			setEndDate(null);
+		}
+	}, [price]);
 
 	// useEffect(() => {
 	// 	if (!isSettingsVisible) {
@@ -93,12 +114,15 @@ const CourseBusiness = () => {
 		if (isSettingsVisible) {
 			setIsSettingsVisible(false);
 			setPrice(0);
+			setDiscount(0);
+			setEndDate(null);
+			setStartDate(null);
 			updatePriceCourseMutation.mutate({
 				courseId: params?.courseId,
-				newPrice: price || 0,
-				newDiscount: discount || 0,
-				discountFrom: startDate ? `${startDate.year}/${startDate.month}/${startDate.day}` : null,
-				discountTo: endDate ? `${endDate.year}/${endDate.month}/${endDate.day}` : null,
+				newPrice: 0,
+				newDiscount: 0,
+				discountFrom: null,
+				discountTo: null,
 				currency: "USD",
 			});
 		} else {
@@ -257,7 +281,13 @@ const CourseBusiness = () => {
 							<input
 								type='checkbox'
 								checked={isDiscountEnabled}
-								onChange={() => setIsDiscountEnabled(!isDiscountEnabled)}
+								onChange={() => {
+									if (!isDiscountEnabled && price <= 0) {
+										toast.warn("set-price");
+									} else {
+										setIsDiscountEnabled(!isDiscountEnabled);
+									}
+								}}
 								className='mr-2'
 							/>
 							<label className='font-medium text-gray-600'>Cài đặt giảm giá</label>

@@ -32,6 +32,8 @@ function GlobalStateProvider({ children }) {
 					avatar: null,
 					username: null,
 					email: null,
+					facebookId: null,
+					googleId: null,
 				},
 				token: null,
 				isLogged: false,
@@ -87,6 +89,8 @@ function GlobalStateProvider({ children }) {
 								avatar: data?.["avatar image"],
 								email: data?.email,
 								role: data?.["role name"],
+								facebookId: data?.["facebook id"],
+								googleId: data?.["google id"],
 							},
 						}));
 						return data;

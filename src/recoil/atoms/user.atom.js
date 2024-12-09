@@ -11,6 +11,8 @@ export const userState = atom({
 			avatar: null,
 			username: null,
 			email: null,
+			googleId: null,
+			facebookId: null,
 		},
 		token: null,
 		isLogged: false || JSON.parse(localStorage.getItem("isLogged")),

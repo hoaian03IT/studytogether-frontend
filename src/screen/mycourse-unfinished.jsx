@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CourseService } from "../apis/course.api.js";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -53,10 +53,12 @@ const UnfinishedCourse = () => {
 
 	// Delete course
 	const { mutate: deleteCourse, isLoading: isDeleting } = useMutation({
-		mutationFn: async () => await CourseService.deleteOwnCourse(selectedCourseId, user, updateUserState),
-		onSuccess: () => {
-			toast.success("Course deleted successfully!");
-			fetchCourses(); // Refresh the course list
+		mutationFn: async () => {
+			const data = await CourseService.deleteOwnCourse(selectedCourseId, user, updateUserState);
+			return { ...data, selectedCourseId };
+		},
+		onSuccess: (data) => {
+			toast.success(translation(data?.messageCode));
 			setIsModalVisible(false);
 		},
 		onError: (error) => {

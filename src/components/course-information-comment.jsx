@@ -17,34 +17,54 @@ function CourseInformationComment({ courseId, authorUsername }) {
 			}
 		},
 	});
-	return <div>
-		<h2 className="text-xl font-bold">Comments({courseCommentQuery.data?.reduce((prev, curr) => prev + curr?.["replies"]?.length + 1, 0) || 0})</h2>
-		{courseCommentQuery.isLoading ?
-			<div className="flex justify-center"><CircularProgress label="LoadingThreeDot..." /></div> :
-			<div className="mt-8">
-				{courseCommentQuery.data?.map(item =>
-					<Feedback
-						name={item["firstName"] && item["lastName"] ? `${item["firstName"]} ${item["lastName"]}` : `@${item["username"]}`}
-						key={item["commentId"]}
-						avatar={item["avatarImage"]}
-						comment={item["comment"]}
-						createdAt={item["createdAt"]}
-						role={item["username"] === authorUsername ? "author" : item["role"]}
-						rate={item["rate"]}
-					>
-						{!item?.["replies"] ? null : item?.["replies"].map(reply => <Feedback
-							name={reply["firstName"] && reply["lastName"] ? `${reply["firstName"]} ${reply["lastName"]}` : `@${reply["username"]}`}
-							key={reply["commentId"]}
-							avatar={reply["avatarImage"]}
-							comment={reply["comment"]}
-							createdAt={reply["createdAt"]}
-							role={reply["role"]}></Feedback>)}
-					</Feedback>,
-				)}
-
-			</div>}
-
-	</div>;
+	return (
+		<div>
+			<h2 className='text-xl font-bold'>
+				Comments({courseCommentQuery.data?.reduce((prev, curr) => prev + curr?.["replies"]?.length + 1, 0) || 0}
+				)
+			</h2>
+			{courseCommentQuery.isLoading ? (
+				<div className='flex justify-center'>
+					<CircularProgress label='LoadingThreeDot...' />
+				</div>
+			) : (
+				<div className='mt-8'>
+					{courseCommentQuery.data?.map((item) => (
+						<Feedback
+							name={
+								item["firstName"] && item["lastName"]
+									? `${item["firstName"]} ${item["lastName"]}`
+									: `@${item["username"]}`
+							}
+							key={item["commentId"]}
+							avatar={item["avatarImage"]}
+							comment={item["comment"]}
+							createdAt={item["createdAt"]}
+							role={item["username"] === authorUsername ? "author" : item["role"]}
+							rate={item["rate"]}>
+							{!item?.["replies"]
+								? null
+								: item?.["replies"].map((reply) => (
+										<Feedback
+											name={
+												reply["firstName"] && reply["lastName"]
+													? `${reply["firstName"]} ${reply["lastName"]}`
+													: `@${reply["username"]}`
+											}
+											key={reply["commentId"]}
+											avatar={reply["avatarImage"]}
+											comment={reply["comment"]}
+											createdAt={reply["createdAt"]}
+											role={
+												reply["username"] === authorUsername ? "author" : reply["role"]
+											}></Feedback>
+								  ))}
+						</Feedback>
+					))}
+				</div>
+			)}
+		</div>
+	);
 }
 
 export { CourseInformationComment };

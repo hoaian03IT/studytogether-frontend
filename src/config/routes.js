@@ -33,6 +33,7 @@ const CourseParticipant = lazy(() => import("../screen/course-participant.jsx"))
 const NotificationComponent = lazy(() => import("../screen/notification-component.jsx"));
 const SpeedReviewPage = lazy(() => import("../screen/speed-review.jsx"));
 const StatisticRevenueOfWebsite = lazy(() => import("../screen/statistic-revenue-of-website.jsx"));
+const NotFound = lazy(() => import("../screen/not-found.jsx"));
 
 // no need to login
 export const publicRoutes = [
@@ -52,6 +53,10 @@ export const publicRoutes = [
 	{
 		path: pathname.notificationComponent,
 		component: NotificationComponent,
+	},
+	{
+		path: pathname.notFound,
+		component: NotFound,
 	},
 ];
 

@@ -87,6 +87,8 @@ const Profile = () => {
 					phone: data?.["updatedInfo"]?.["phone"],
 					username: data?.["updatedInfo"]?.["username"],
 					avatar: data?.["updatedInfo"]?.["avatar image"],
+					googleId: data?.["updatedInfo"]?.["google id"],
+					facebookId: data?.["updatedInfo"]?.["facebook id"],
 				},
 			}));
 			setEditable(false);
@@ -298,11 +300,13 @@ const Profile = () => {
 							size='lg'
 						/>
 					</div>
-					<div className='mb-6'>
-						<Link to={pathname.changePassword} className='text-secondary hover:underline'>
-							Thay đổi mật khẩu
-						</Link>
-					</div>
+					{!user?.info?.facebookId && !user?.info?.googleId ? (
+						<div className='mb-6'>
+							<Link to={pathname.changePassword} className='text-secondary hover:underline'>
+								Thay đổi mật khẩu
+							</Link>
+						</div>
+					) : null}
 				</div>
 				{editable && (
 					<div className='flex gap-x-4 justify-center'>

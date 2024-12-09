@@ -15,14 +15,15 @@ import { CourseLevelService } from "../apis/courseLevel.api.js";
 import defaultUploadImage from "../assets/default-placeholder-upload.png";
 import { queryKeys } from "../react-query/query-keys.js";
 import { base64Converter } from "../utils/base64-convert.js";
+import { TranslationContext } from "../providers/TranslationProvider.jsx";
 
 const MAX_CHAR_COURSE_NAME = 100;
 const MAX_CHAR_TAG = 30;
 const MAX_SHORT_DESCRIPTION = 255;
 
-
 const CreateCourse = () => {
 	const { updateUserState } = useContext(GlobalStateContext);
+	const { translation } = useContext(TranslationContext);
 	const user = useRecoilValue(userState);
 
 	const [formValue, setFormValue] = useState({
@@ -77,7 +78,8 @@ const CreateCourse = () => {
 			});
 		},
 		onSuccess: (data) => {
-			toast.success("Tạo khóa học thành công!");
+			toast.success(translation(data?.messageCode));
+			navigate(pathname.editCourse.split(":")[0] + data?.courseId);
 			setFormValue({
 				targetLanguageId: "",
 				sourceLanguageId: "",
@@ -90,7 +92,7 @@ const CreateCourse = () => {
 			});
 		},
 		onError: (error) => {
-			toast.warn(error.response.data.message);
+			toast.warn(error.response.data?.errorCode);
 		},
 	});
 
@@ -103,7 +105,7 @@ const CreateCourse = () => {
 		let maxSize = 2; // MB
 		if (file.size / (1024 * 1024) <= maxSize) {
 			let { base64 } = await base64Converter(file);
-			setFormValue(prev => ({ ...prev, image: base64 }));
+			setFormValue((prev) => ({ ...prev, image: base64 }));
 		} else {
 			toast.warn("Image must be smaller than 2MB");
 		}
@@ -146,29 +148,30 @@ const CreateCourse = () => {
 	};
 
 	return (
-		<div className="bg-white px-6 rounded w-full flex flex-col items-center">
-			<h1 className="w-full text-gray-700 p-6 mt-4 bg-gradient-to-r from-blue-300 to-red-100 rounded-lg text-center text-3xl">
+		<div className='bg-white px-6 rounded w-full flex flex-col items-center'>
+			<h1 className='w-full text-gray-700 p-6 mt-4 bg-gradient-to-r from-blue-300 to-red-100 rounded-lg text-center text-3xl'>
 				TẠO KHÓA HỌC CHO RIÊNG BẠN
 			</h1>
-			<div className="max-w-screen-lg w-full">
-				<form onSubmit={handleSubmit} className="my-6 w-full grid gap-x-4 gap-y-5 grid-cols-6">
-					<div className="col-span-4 grid grid-cols-2 gap-y-5">
-						<div className="col-span-2 grid grid-cols-2 gap-4">
+			<div className='max-w-screen-lg w-full'>
+				<form onSubmit={handleSubmit} className='my-6 w-full grid gap-x-4 gap-y-5 grid-cols-6'>
+					<div className='col-span-4 grid grid-cols-2 gap-y-5'>
+						<div className='col-span-2 grid grid-cols-2 gap-4'>
 							<Select
-								size="lg"
+								size='lg'
 								label={<Label>Ngôn ngữ gốc</Label>}
-								placeholder="English"
-								labelPlacement="outside"
-								radius="sm"
+								placeholder='English'
+								labelPlacement='outside'
+								radius='sm'
 								isRequired
-								name="sourceLanguageId"
+								name='sourceLanguageId'
 								value={formValue.sourceLanguageId}
 								onChange={handleInputChange}>
 								{languageQuery.data?.languages?.map((language) => (
 									<SelectItem
-										startContent={<img className="size-5 rounded-full" src={language["image"]}
-														   alt="" />}
-										className="py-3"
+										startContent={
+											<img className='size-5 rounded-full' src={language["image"]} alt='' />
+										}
+										className='py-3'
 										key={language["language id"]}
 										value={language["language id"]}>
 										{language["language name"]}
@@ -176,20 +179,21 @@ const CreateCourse = () => {
 								))}
 							</Select>
 							<Select
-								size="lg"
+								size='lg'
 								label={<Label>Ngôn ngữ học</Label>}
-								placeholder="Tiếng Việt"
-								labelPlacement="outside"
-								radius="sm"
+								placeholder='Tiếng Việt'
+								labelPlacement='outside'
+								radius='sm'
 								isRequired
-								name="targetLanguageId"
+								name='targetLanguageId'
 								value={formValue.targetLanguageId}
 								onChange={handleInputChange}>
 								{languageQuery.data?.languages?.map((language) => (
 									<SelectItem
-										startContent={<img className="size-5 rounded-full" src={language["image"]}
-														   alt="" />}
-										className="py-3"
+										startContent={
+											<img className='size-5 rounded-full' src={language["image"]} alt='' />
+										}
+										className='py-3'
 										key={language["language id"]}
 										value={language["language id"]}>
 										{language["language name"]}
@@ -198,19 +202,19 @@ const CreateCourse = () => {
 							</Select>
 						</div>
 						<Select
-							size="lg"
+							size='lg'
 							label={<Label>Cấp độ</Label>}
-							className="col-span-4"
-							placeholder="Cấp độ"
-							labelPlacement="outside"
-							radius="sm"
+							className='col-span-4'
+							placeholder='Cấp độ'
+							labelPlacement='outside'
+							radius='sm'
 							isRequired
 							value={formValue.courseLevelId}
 							onChange={handleInputChange}
-							name="courseLevelId">
+							name='courseLevelId'>
 							{levelCourseQuery.data?.levelCourses?.map((levelCourse) => (
 								<SelectItem
-									className="py-3"
+									className='py-3'
 									key={levelCourse["course level id"]}
 									value={levelCourse["course level id"]}>
 									{levelCourse["course level name"]}
@@ -218,105 +222,122 @@ const CreateCourse = () => {
 							))}
 						</Select>
 						<Input
-							size="lg"
-							name="courseName"
-							type="text"
+							size='lg'
+							name='courseName'
+							type='text'
 							label={<Label>Tên bộ từ vựng</Label>}
-							labelPlacement="outside"
-							radius="sm"
-							placeholder="VD: Tiếng anh lớp 6"
+							labelPlacement='outside'
+							radius='sm'
+							placeholder='VD: Tiếng anh lớp 6'
 							value={formValue.courseName}
-							onChange={e => {
+							onChange={(e) => {
 								if (e.target.value.length <= MAX_CHAR_COURSE_NAME) {
-									setFormValue(prev => ({ ...prev, courseName: e.target.value }));
+									setFormValue((prev) => ({ ...prev, courseName: e.target.value }));
 								}
 							}}
-							className="col-span-4"
+							className='col-span-4'
 							required
 							isRequired
-							endContent={<span
-								className="text-sm text-gray-400">{formValue.courseName.length}/{MAX_CHAR_COURSE_NAME}</span>}
+							endContent={
+								<span className='text-sm text-gray-400'>
+									{formValue.courseName.length}/{MAX_CHAR_COURSE_NAME}
+								</span>
+							}
 						/>
 						<Input
-							size="lg"
-							name="tag"
-							type="text"
+							size='lg'
+							name='tag'
+							type='text'
 							label={<Label>Từ khoá</Label>}
-							placeholder="VD: lớp 6"
-							labelPlacement="outside"
-							radius="sm"
-							className="col-span-4"
+							placeholder='VD: lớp 6'
+							labelPlacement='outside'
+							radius='sm'
+							className='col-span-4'
 							value={formValue.tag}
-							onChange={e => {
+							onChange={(e) => {
 								if (e.target.value.length <= MAX_CHAR_TAG) {
-									setFormValue(prev => ({ ...prev, tag: e.target.value }));
+									setFormValue((prev) => ({ ...prev, tag: e.target.value }));
 								}
 							}}
 							required
 							isRequired
-							endContent={<span
-								className="text-sm text-gray-400">{formValue.tag.length}/{MAX_CHAR_TAG}</span>}
+							endContent={
+								<span className='text-sm text-gray-400'>
+									{formValue.tag.length}/{MAX_CHAR_TAG}
+								</span>
+							}
 						/>
 					</div>
-					<div className="col-span-2 row-span-2 flex flex-col w-full h-full">
-						<div className="-translate-y-1">
+					<div className='col-span-2 row-span-2 flex flex-col w-full h-full'>
+						<div className='-translate-y-1'>
 							<Label>Hình ảnh</Label>
 						</div>
-						<div className="flex flex-col h-full">
+						<div className='flex flex-col h-full'>
 							<img
 								onClick={handleOpenFileSelect}
-								loading="eager"
-								className="flex-1 rounded-md object-cover object-center mb-2 cursor-pointer hover:bg-gray-100 transition-all"
+								loading='eager'
+								className='flex-1 rounded-md object-cover object-center mb-2 cursor-pointer hover:bg-gray-100 transition-all'
 								src={formValue.image || defaultUploadImage}
-								alt=""
+								alt=''
 							/>
-							<Input ref={inputFileRef} type="file" radius="sm" onChange={onChangeImage} multiple={false}
-								   accept="image/*" />
+							<Input
+								ref={inputFileRef}
+								type='file'
+								radius='sm'
+								onChange={onChangeImage}
+								multiple={false}
+								accept='image/*'
+							/>
 						</div>
 					</div>
 
 					<Textarea
-						size="lg"
-						name="shortDescription"
-						type="text"
+						size='lg'
+						name='shortDescription'
+						type='text'
 						label={<Label>Mô tả ngắn</Label>}
-						labelPlacement="outside"
-						radius="sm"
-						placeholder="Viết vào ở đây..."
-						className="col-span-4"
+						labelPlacement='outside'
+						radius='sm'
+						placeholder='Viết vào ở đây...'
+						className='col-span-4'
 						value={formValue.shortDescription}
-						onChange={e => {
+						onChange={(e) => {
 							if (e.target.value.length <= MAX_SHORT_DESCRIPTION) {
-								setFormValue(prev => ({ ...prev, shortDescription: e.target.value }));
+								setFormValue((prev) => ({ ...prev, shortDescription: e.target.value }));
 							}
 						}}
 						rows={3}
 						disableAutosize
-						endContent={<span
-							className="text-sm text-gray-400">{formValue.shortDescription.length}/{MAX_SHORT_DESCRIPTION}</span>}
+						endContent={
+							<span className='text-sm text-gray-400'>
+								{formValue.shortDescription.length}/{MAX_SHORT_DESCRIPTION}
+							</span>
+						}
 					/>
 					<Textarea
-						size="lg"
+						size='lg'
 						disableAutosize
 						label={<Label>Mô tả chi tiết</Label>}
-						labelPlacement="outside"
-						radius="sm"
-						placeholder="Viết vào ở đây..."
-						className="col-span-6"
+						labelPlacement='outside'
+						radius='sm'
+						placeholder='Viết vào ở đây...'
+						className='col-span-6'
 						value={formValue.detailedDescription}
 						onChange={handleInputChange}
 						rows={8}
-						name="detailedDescription"
+						name='detailedDescription'
 					/>
-					<div className="col-span-6 grid grid-cols-12 gap-4">
+					<div className='col-span-6 grid grid-cols-12 gap-4'>
 						<Button
-							type="button"
+							type='button'
 							onClick={handleCancel}
-							className="col-start-6 col-span-1 bg-gray-300 text-gray-700 px-4 py-2 rounded">
+							className='col-start-6 col-span-1 bg-gray-300 text-gray-700 px-4 py-2 rounded'>
 							Hủy
 						</Button>
-						<Button type="submit" className="col-span-1 bg-secondary px-4 py-2 rounded text-white"
-								isLoading={courseMutation.isPending}>
+						<Button
+							type='submit'
+							className='col-span-1 bg-secondary px-4 py-2 rounded text-white'
+							isLoading={courseMutation.isPending}>
 							Tạo ngay
 						</Button>
 					</div>
@@ -329,5 +350,5 @@ const CreateCourse = () => {
 export default CreateCourse;
 
 const Label = ({ children }) => {
-	return <span className="text-sm text-gray-600 select-none">{children}</span>;
+	return <span className='text-sm text-gray-600 select-none'>{children}</span>;
 };
