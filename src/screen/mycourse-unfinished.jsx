@@ -27,8 +27,8 @@ const UnfinishedCourse = () => {
       setCourses(data);
     },
     onError: (error) => {
-      console.error("Error fetching unfinished courses:", error);
-      toast.error("Failed to fetch your unfinished courses.");
+      console.error(error);
+			toast.error(translation(error.response?.data?.errorCode));
     },
   });
 

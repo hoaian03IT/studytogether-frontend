@@ -13,8 +13,8 @@ const FinishedCourse = () => {
   const { mutate, data, isLoading } = useMutation({
     mutationFn: CourseService.fetchUnfinishedCourses, 
     onError: (error) => {
-      console.error("Error fetching completed courses:", error);
-      toast.error("Failed to fetch completed courses.");
+      console.error(error);
+			toast.error(translation(error.response?.data?.errorCode));
     },
   });
 
