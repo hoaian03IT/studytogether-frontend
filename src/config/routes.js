@@ -128,9 +128,9 @@ export const privateRoutes = [
 	{ path: pathname.learn, component: LearnPage, layout: null },
 	{ path: pathname.speedReview, component: SpeedReviewPage, layout: null },
 	{ path: pathname.myCourse, component: MyCourse, layout: PrimaryLayout },
-	{ path: pathname.ownCourse, component: OwnCourse, layout: PrimaryLayout },
-	{ path: pathname.finishedCourse, component: FinishedCourse, layout: PrimaryLayout },
-	{ path: pathname.unfinishedCourse, component: UnfinishedCourse, layout: PrimaryLayout },
+	{ path: pathname.myCourse, component: OwnCourse, layout: PrimaryLayout },
+	{ path: pathname.myCourse, component: FinishedCourse, layout: PrimaryLayout },
+	{ path: pathname.myCourse, component: UnfinishedCourse, layout: PrimaryLayout },
 ];
 
 export const adminRoutes = [

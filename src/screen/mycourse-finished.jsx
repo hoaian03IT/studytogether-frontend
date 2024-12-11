@@ -56,7 +56,7 @@ const FinishedCourse = () => {
 								</div>
 								<div className='flex gap-2 items-center text-gray-500'>
 									<BsFillPeopleFill />
-									<p>0</p>
+									{item["number enrollments"]}
 								</div>
 								<div className='flex gap-2 items-center text-gray-500'>
 									<FaTrophy />

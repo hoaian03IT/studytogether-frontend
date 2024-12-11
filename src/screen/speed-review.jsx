@@ -52,7 +52,7 @@ function SpeedReview() {
 		let handler;
 		if (timeStart > 0) {
 			handler = setTimeout(() => {
-				setTimeStart(prev => Math.max(prev - 1, 0));
+				setTimeStart((prev) => Math.max(prev - 1, 0));
 			}, 1000);
 		}
 
@@ -63,13 +63,12 @@ function SpeedReview() {
 	useEffect(() => {
 		let remaining = timeCount.remaining;
 
-		if (timeStart > 0)
-			return;
+		if (timeStart > 0) return;
 
 		const handleTimeCount = () => {
 			if (remaining > 0 && remainingChances > 0) {
 				remaining--;
-				setTimeCount(prev => ({ ...prev, remaining: remaining }));
+				setTimeCount((prev) => ({ ...prev, remaining: remaining }));
 			} else {
 				clearInterval(handler);
 			}
@@ -90,12 +89,12 @@ function SpeedReview() {
 	useEffect(() => {
 		if (isSubmitted && question) {
 			if (!isCorrect) {
-				setRemainingChances(prev => {
+				setRemainingChances((prev) => {
 					// Giữ giá trị không âm
 					return Math.max(prev - 1, 0);
 				});
 			} else {
-				setCurrentPoints(prev => prev + unitPoint);
+				setCurrentPoints((prev) => prev + unitPoint);
 			}
 		}
 	}, [isSubmitted, isCorrect]);
@@ -103,9 +102,9 @@ function SpeedReview() {
 	// update complete progress
 	useEffect(() => {
 		if (isSubmitted) {
-			setComplete(prev => {
+			setComplete((prev) => {
 				const updatedPrev = [...prev];
-				const idx = updatedPrev.findIndex(item => item?.wordId === question?.wordId);
+				const idx = updatedPrev.findIndex((item) => item?.wordId === question?.wordId);
 				if (idx >= 0) {
 					updatedPrev[idx] = {
 						...updatedPrev[idx],
@@ -186,10 +185,10 @@ function SpeedReview() {
 		mutationFn: async ({ courseId, words, points }) => {
 			return await LearnProcessService.updateLearnProgress({ courseId, words, points }, user, updateUserState);
 		},
-		onSuccess: data => {
+		onSuccess: (data) => {
 			navigate(pathname.courseParticipant);
 		},
-		onError: error => {
+		onError: (error) => {
 			toast.error(translation(error.response.data?.errorCode));
 		},
 	});
@@ -200,45 +199,69 @@ function SpeedReview() {
 		pronunciationRef.current.play();
 	};
 
-	return timeStart > 0 ? <CountDown number={timeStart} /> : <div className="flex flex-col h-screen">
-		<HeaderLearnProgress page="speed-review" title="Speed Review" />
-		{speedReviewSessionQuery.isPending || updateProgressMutation.isPending ? <LoadingWaitAMinute /> :
-			<div className="bg-gray-200 h-full">
-				<div className="container mt-2">
-					<div className="grid grid-cols-1 gap-y-12">
-						<div className="grid-rows-1 col-span-full">
-							<ProgressBarPoint color="danger"
-											  progressMin={0}
-											  progressMax={timeCount.init}
-											  progressValue={timeCount.remaining}
-											  points={currentPoints} />
-						</div>
-						<div className="grid-rows-2 col-span-full">
-							<div className="flex items-center">
-								{Array.from(new Array(INIT_REMAINING_CHANCES)).map((undefined, index) =>
-									<FaBoltLightning
-										key={index}
-										className={clsx(index + 1 <= remainingChances ? "text-warning" : "text-gray-400", "animate-bounce size-6")} />)}
+	return timeStart > 0 ? (
+		<CountDown number={timeStart} />
+	) : (
+		<div className='flex flex-col h-screen'>
+			<HeaderLearnProgress page='speed-review' title='Speed Review' />
+			{speedReviewSessionQuery.isPending || updateProgressMutation.isPending ? (
+				<LoadingWaitAMinute />
+			) : (
+				<div className='bg-gray-200 h-full'>
+					<div className='container mt-2'>
+						<div className='grid grid-cols-1 gap-y-12'>
+							<div className='grid-rows-1 col-span-full'>
+								<ProgressBarPoint
+									color='danger'
+									progressMin={0}
+									progressMax={timeCount.init}
+									progressValue={timeCount.remaining}
+									points={currentPoints}
+								/>
 							</div>
-						</div>
-						<div className="grid-rows-3 col-span-full">
-							{question?.template === "multiple-choice" ?
-								<MultipleChoiceExercise ref={quizRef} question={question?.question}
-														answer={question?.answer}
-														image={question?.image}
-														options={question?.options}
-														handleCheckResult={handleSubmitQuiz} isCorrect={isCorrect} />
-								: question?.template === "text" ?
-									<TextQuiz ref={quizRef} question={question?.question} answer={question?.answer}
-											  handleCheckResult={handleSubmitQuiz}
-											  isCorrect={isCorrect} />
-									: <LoadingWaitAMinute />}
-							<audio ref={pronunciationRef} src={question?.pronunciation} className="hidden" />
+							<div className='grid-rows-2 col-span-full'>
+								<div className='flex items-center'>
+									{Array.from(new Array(INIT_REMAINING_CHANCES)).map((undefined, index) => (
+										<FaBoltLightning
+											key={index}
+											className={clsx(
+												index + 1 <= remainingChances ? "text-warning" : "text-gray-400",
+												"animate-bounce size-6",
+											)}
+										/>
+									))}
+								</div>
+							</div>
+							<div className='grid-rows-3 col-span-full'>
+								{question?.template === "multiple-choice" ? (
+									<MultipleChoiceExercise
+										ref={quizRef}
+										question={question?.question}
+										answer={question?.answer}
+										image={question?.image}
+										options={question?.options}
+										handleCheckResult={handleSubmitQuiz}
+										isCorrect={isCorrect}
+									/>
+								) : question?.template === "text" ? (
+									<TextQuiz
+										ref={quizRef}
+										question={question?.question}
+										answer={question?.answer}
+										handleCheckResult={handleSubmitQuiz}
+										isCorrect={isCorrect}
+									/>
+								) : (
+									<LoadingWaitAMinute />
+								)}
+								<audio ref={pronunciationRef} src={question?.pronunciation} className='hidden' />
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>}
-	</div>;
+			)}
+		</div>
+	);
 }
 
 export default SpeedReview;

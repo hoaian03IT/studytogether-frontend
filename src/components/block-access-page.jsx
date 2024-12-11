@@ -1,12 +1,19 @@
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { pathname } from "../routes";
+import { useEffect } from "react";
 
 const BlockAccessPage = ({ children }) => {
+	const navigate = useNavigate();
 	const user = useRecoilValue(userState);
+	useEffect(() => {
+		if (user?.isLogged) {
+			navigate(pathname.notFound);
+		}
+	}, []);
 
-	return user?.isLogged ? <Navigate to={pathname.notFound} /> : children;
+	return children;
 };
 
 export default BlockAccessPage;

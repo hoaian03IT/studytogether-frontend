@@ -77,7 +77,7 @@ function GlobalStateProvider({ children }) {
 		queryFn: async () => {
 			try {
 				if (user?.isLogged) {
-					const data = await UserService.fetchUserInfo({ ...user, isLogged: true }, updateUserState);
+					const data = await UserService.fetchUserInfo(user, updateUserState);
 					if (data) {
 						setUser((prev) => ({
 							...prev,
@@ -113,10 +113,10 @@ function GlobalStateProvider({ children }) {
 							<ModalHeader>Logout</ModalHeader>
 							<ModalBody>Are you sure you want to logout?</ModalBody>
 							<ModalFooter>
-								<Button color='default' onClick={onClose} radius='sm'>
+								<Button color="default" onClick={onClose} radius="sm">
 									Cancel
 								</Button>
-								<Button color='secondary' radius='sm' onClick={handleLogout}>
+								<Button color="secondary" radius="sm" onClick={handleLogout}>
 									Logout
 								</Button>
 							</ModalFooter>

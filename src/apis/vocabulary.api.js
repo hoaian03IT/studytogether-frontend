@@ -7,10 +7,10 @@ class VocabularyServiceClass {
 		try {
 			const res = await httpAuth.get(`/vocabulary/all/${courseId}`);
 			const { data } = res;
-			if (data?.vocabularyList?.length === 0)
-				return vocabularyList;
+			if (data?.vocabularyList?.length === 0) return vocabularyList;
 			let records = data?.vocabularyList;
-			let count = 0, currentLevelId = records[0]?.["level id"];
+			let count = 0,
+				currentLevelId = records[0]?.["level id"];
 			vocabularyList.push({
 				levelId: records[0]?.["level id"],
 				levelName: records[0]?.["level name"],
@@ -34,6 +34,7 @@ class VocabularyServiceClass {
 						image: record?.["image"],
 						pronunciation: record?.["pronunciation"],
 						type: record?.["type"],
+						transcription: record?.["transcription"],
 					});
 				}
 			}
@@ -44,7 +45,7 @@ class VocabularyServiceClass {
 	}
 
 	async addNewVocabulary(payload, userState, updateUserState) {
-		const { courseId, levelId, word, definition, image, pronunciation, type } = payload;
+		const { courseId, levelId, word, definition, image, pronunciation, type, transcription } = payload;
 		const httpAuth = createHttpAuth(userState, updateUserState);
 		const res = await httpAuth.post("/vocabulary/new", {
 			courseId: Number(courseId),
@@ -54,6 +55,7 @@ class VocabularyServiceClass {
 			image,
 			pronunciation,
 			type,
+			transcription,
 		});
 		return res.data;
 	}
@@ -61,12 +63,14 @@ class VocabularyServiceClass {
 	async removeVocabulary(payload, userState, updateUserState) {
 		const { courseId, levelId, wordId } = payload;
 		const httpAuth = createHttpAuth(userState, updateUserState);
-		const res = await httpAuth.delete(`/vocabulary/delete?course-id=${Number(courseId)}&level-id=${Number(levelId)}&word-id=${Number(wordId)}`);
+		const res = await httpAuth.delete(
+			`/vocabulary/delete?course-id=${Number(courseId)}&level-id=${Number(levelId)}&word-id=${Number(wordId)}`,
+		);
 		return res.data;
 	}
 
 	async updateVocabulary(payload, userState, updateUserState) {
-		const { courseId, levelId, wordId, word, definition, image, pronunciation, type } = payload;
+		const { courseId, levelId, wordId, word, definition, image, pronunciation, type, transcription } = payload;
 		const httpAuth = createHttpAuth(userState, updateUserState);
 		const res = await httpAuth.post(`/vocabulary/edit`, {
 			courseId: Number(courseId),
@@ -77,6 +81,7 @@ class VocabularyServiceClass {
 			image,
 			pronunciation,
 			type,
+			transcription,
 		});
 		return res.data;
 	}

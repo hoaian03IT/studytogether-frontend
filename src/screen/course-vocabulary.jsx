@@ -1,12 +1,12 @@
-import React, { Fragment, useContext, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { FaMicrophone } from "react-icons/fa";
 import { TbTextPlus } from "react-icons/tb";
 import { CgAttachment } from "react-icons/cg";
 import { LuPlus } from "react-icons/lu";
-import { AiOutlinePicture } from "react-icons/ai";
 import { VocabularyService } from "../apis/vocabulary.api.js";
 import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
+import { TranslationContext } from "../providers/TranslationProvider.jsx";
 import { userState } from "../recoil/atoms/user.atom.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRecoilValue } from "recoil";
@@ -30,23 +30,24 @@ import { toast } from "react-toastify";
 import { base64Converter } from "../utils/base64-convert.js";
 import { queryKeys } from "../react-query/query-keys.js";
 import { WordListEdit } from "../components/word-list-edit.jsx";
+import { useDebounce } from "../hooks/useDebounce.jsx";
+import { GrokAIService } from "../apis/grokai.api.js";
 
-
-function AddLevels() {
+function CourseVocabulary() {
 	const params = useParams();
 
 	const { updateUserState } = useContext(GlobalStateContext);
+	const { translation } = useContext(TranslationContext);
 	const user = useRecoilValue(userState);
 
 	const queryClient = useQueryClient();
-
 
 	const [vocabulary, setVocabulary] = useState("");
 	const [definition, setDefinition] = useState("");
 	const [typeWord, setTypeWord] = useState("");
 	const [audio, setAudio] = useState(null);
-	const [currentAudio, setCurrentAudio] = useState(null);
 	const [image, setImage] = useState(null);
+	const [transcription, setTranscription] = useState("");
 	const [groupName, setGroupName] = useState("");
 	const [selectedGroup, setSelectedGroup] = useState("");
 	const [showGroupInput, setShowGroupInput] = useState(false);
@@ -63,9 +64,18 @@ function AddLevels() {
 		wordId: null,
 	});
 
+	const wordDebounced = useDebounce(vocabulary, 800);
+
 	const vocabularyQuery = useQuery({
 		queryKey: [queryKeys.courseVocabulary, params?.courseId],
-		queryFn: async ({ queryKey }) => await VocabularyService.fetchVocabulary(queryKey[1], user, updateUserState),
+		queryFn: async ({ queryKey }) => {
+			try {
+				return await VocabularyService.fetchVocabulary(queryKey[1], user, updateUserState);
+			} catch (error) {
+				console.error(error);
+				toast.error(translation(error.response.data?.errorCode));
+			}
+		},
 	});
 	const courseLanguagesQuery = useQuery({
 		queryKey: [queryKeys.courseLanguages, params?.courseId],
@@ -74,7 +84,7 @@ function AddLevels() {
 				return await CourseService.fetchCourseLanguages(queryKey[1]);
 			} catch (error) {
 				console.error(error);
-				return {};
+				toast.error(translation(error.response.data?.errorCode));
 			}
 		},
 	});
@@ -94,6 +104,7 @@ function AddLevels() {
 		},
 		onError: (error) => {
 			console.error(error);
+			toast.error(translation(error.response.data?.errorCode));
 		},
 	});
 	const removeLevelMutation = useMutation({
@@ -102,15 +113,23 @@ function AddLevels() {
 			return levelId;
 		},
 		onSuccess: (levelId) => {
-			const newLevels = vocabularyQuery.data.filter(item => item.levelId !== levelId);
+			const newLevels = vocabularyQuery.data.filter((item) => item.levelId !== levelId);
 			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], newLevels);
-		}, onError: (error) => {
+		},
+		onError: (error) => {
 			console.error(error);
+			toast.error(error.response?.data?.errorCode);
 		},
 	});
 	const updateLevelNameMutation = useMutation({
 		mutationFn: async () => {
-			return await CourseService.updateLevelNameCourse(params?.courseId, renameLevel?.levelId, renameLevel?.levelName, user, updateUserState);
+			return await CourseService.updateLevelNameCourse(
+				params?.courseId,
+				renameLevel?.levelId,
+				renameLevel?.levelName,
+				user,
+				updateUserState,
+			);
 		},
 		onSuccess: ({ updatedLevel }) => {
 			const newVocabularyList = vocabularyQuery.data;
@@ -124,8 +143,8 @@ function AddLevels() {
 		},
 		onError: (error) => {
 			console.error(error);
+			toast.error(error.response?.data?.errorCode);
 		},
-
 	});
 	const addWordMutation = useMutation({
 		mutationFn: async (payload) => await VocabularyService.addNewVocabulary(payload, user, updateUserState),
@@ -141,6 +160,7 @@ function AddLevels() {
 						image: newWord?.["image"],
 						pronunciation: newWord?.["pronunciation"],
 						type: newWord?.["type"],
+						transcription: newWord?.["transcription"],
 					});
 					break;
 				}
@@ -149,16 +169,21 @@ function AddLevels() {
 		},
 		onError: (error) => {
 			console.error(error);
+			toast.error(translation(error?.response?.data?.errorCode));
 		},
 	});
 	const removeWordMutation = useMutation({
 		mutationFn: async (payload) => {
 			const { wordId, levelId } = payload;
-			await VocabularyService.removeVocabulary({
-				courseId: params?.courseId,
-				wordId,
-				levelId,
-			}, user, updateUserState);
+			await VocabularyService.removeVocabulary(
+				{
+					courseId: params?.courseId,
+					wordId,
+					levelId,
+				},
+				user,
+				updateUserState,
+			);
 			return payload;
 		},
 		onSuccess: (data) => {
@@ -167,7 +192,7 @@ function AddLevels() {
 			for (let i = 0; i < newVocabularyList?.length; i++) {
 				if (newVocabularyList[i].levelId === levelId) {
 					let wordList = newVocabularyList[i].words;
-					wordList = wordList.filter(word => wordId !== word?.wordId);
+					wordList = wordList.filter((word) => wordId !== word?.wordId);
 					newVocabularyList[i].words = wordList;
 					break;
 				}
@@ -176,46 +201,50 @@ function AddLevels() {
 		},
 		onError: (error) => {
 			console.error(error);
+			toast.error(translation(error.response.data?.errorCode));
 		},
 	});
 	const updateWordMutation = useMutation({
 		mutationFn: async (payload) => {
-			return await VocabularyService.updateVocabulary({
-				courseId: payload?.courseId,
-				levelId: payload?.levelId,
-				wordId: payload?.wordId,
-				word: payload?.word,
-				definition: payload?.definition,
-				image: payload?.image,
-				pronunciation: payload?.pronunciation,
-				type: payload?.type,
-			}, user, updateUserState);
+			return await VocabularyService.updateVocabulary(
+				{
+					courseId: payload?.courseId,
+					levelId: payload?.levelId,
+					wordId: payload?.wordId,
+					word: payload?.word,
+					definition: payload?.definition,
+					image: payload?.image,
+					pronunciation: payload?.pronunciation,
+					type: payload?.type,
+					transcription: payload?.transcription,
+				},
+				user,
+				updateUserState,
+			);
 		},
 		onSuccess: (data) => {
 			const updatedWord = data?.updatedWord;
 			let newVocabularyList = vocabularyQuery.data;
-			if (!newVocabularyList || !updatedWord)
-				return;
+			if (!newVocabularyList || !updatedWord) return;
 			// Trường hợp cập nhật từ trong cùng level
 			if (updatedWord["level id"].toString() === wordEditing.oldLevelId) {
-				const levelIndex = newVocabularyList.findIndex(
-					level => level.levelId === updatedWord["level id"],
-				);
+				const levelIndex = newVocabularyList.findIndex((level) => level.levelId === updatedWord["level id"]);
 
 				if (levelIndex !== -1) {
 					const wordIndex = newVocabularyList[levelIndex].words.findIndex(
-						word => word.wordId === updatedWord["word id"],
+						(word) => word.wordId === updatedWord?.["word id"],
 					);
 
 					if (wordIndex !== -1) {
 						// Cập nhật thông tin từ
 						newVocabularyList[levelIndex].words[wordIndex] = {
-							wordId: updatedWord["word id"],
-							word: updatedWord["word"],
-							definition: updatedWord["definition"],
-							image: updatedWord["image"],
-							pronunciation: updatedWord["pronunciation"],
-							type: updatedWord["type"],
+							wordId: updatedWord?.["word id"],
+							word: updatedWord?.["word"],
+							definition: updatedWord?.["definition"],
+							image: updatedWord?.["image"],
+							pronunciation: updatedWord?.["pronunciation"],
+							type: updatedWord?.["type"],
+							transcription: updatedWord?.["transcription"],
 						};
 					}
 				}
@@ -224,27 +253,29 @@ function AddLevels() {
 			else {
 				// Xóa từ khỏi level cũ
 				const oldLevelIndex = newVocabularyList.findIndex(
-					level => level.levelId.toString() === wordEditing.oldLevelId,
+					(level) => level.levelId.toString() === wordEditing.oldLevelId,
 				);
 
 				if (oldLevelIndex !== -1) {
-					newVocabularyList[oldLevelIndex].words = newVocabularyList[oldLevelIndex].words
-						.filter(word => word.wordId !== updatedWord["word id"]);
+					newVocabularyList[oldLevelIndex].words = newVocabularyList[oldLevelIndex].words.filter(
+						(word) => word.wordId !== updatedWord?.["word id"],
+					);
 				}
 
 				// Thêm từ vào level mới
 				const newLevelIndex = newVocabularyList.findIndex(
-					level => level.levelId === updatedWord["level id"],
+					(level) => level.levelId === updatedWord?.["level id"],
 				);
 
 				if (newLevelIndex !== -1) {
 					newVocabularyList[newLevelIndex].words.push({
-						wordId: updatedWord["word id"],
-						word: updatedWord["word"],
-						definition: updatedWord["definition"],
-						image: updatedWord["image"],
-						pronunciation: updatedWord["pronunciation"],
-						type: updatedWord["type"],
+						wordId: updatedWord?.["word id"],
+						word: updatedWord?.["word"],
+						definition: updatedWord?.["definition"],
+						image: updatedWord?.["image"],
+						pronunciation: updatedWord?.["pronunciation"],
+						type: updatedWord?.["type"],
+						transcription: updatedWord?.["transcription"],
 					});
 				}
 			}
@@ -257,6 +288,22 @@ function AddLevels() {
 			console.error(error);
 		},
 	});
+	// call api AI
+	useEffect(() => {
+		if (wordDebounced) {
+			GrokAIService.translateWord(
+				courseLanguagesQuery.data?.["source language name"],
+				courseLanguagesQuery.data?.["target language name"],
+				wordDebounced,
+			)
+				.then((response) => {
+					console.log(JSON.parse(response));
+				})
+				.catch((error) => {
+					console.error(error);
+				});
+		}
+	}, [courseLanguagesQuery.data, wordDebounced]);
 
 	const handleFileChange = (event) => {
 		setSelectedFile(event.target.files[0]);
@@ -266,7 +313,6 @@ function AddLevels() {
 		setShowRenameModal(true);
 		setRenameLevel({ levelId, levelName });
 	};
-
 
 	const handleAdd = (e) => {
 		e.preventDefault();
@@ -279,6 +325,7 @@ function AddLevels() {
 				image: image?.value,
 				pronunciation: audio?.value,
 				type: typeWord,
+				transcription: transcription,
 			});
 			setVocabulary("");
 			setDefinition("");
@@ -288,52 +335,33 @@ function AddLevels() {
 		}
 	};
 
-
 	const handleAudioChange = async (event) => {
 		const file = event.target.files[0];
 		if (file) {
 			base64Converter(file)
-				.then(response => {
+				.then((response) => {
 					let { fileName, base64 } = response;
 					setAudio({ value: base64, name: fileName });
-				}).catch(error => {
-				console.error(error);
-			});
+				})
+				.catch((error) => {
+					console.error(error);
+				});
 		}
-	};
-
-	const toggleAudio = (audioFile) => {
-		// Stop and reset the current audio if it exists
-		if (currentAudio) {
-			currentAudio.pause();
-			currentAudio.currentTime = 0;
-			setCurrentAudio(null);
-		}
-
-		// Create a new Audio instance and play it if different
-		const newAudio = new Audio(URL.createObjectURL(audioFile));
-		newAudio.play();
-		setCurrentAudio(newAudio);
-
-		// Stop playback when the audio ends
-		newAudio.onended = () => {
-			setCurrentAudio(null);
-		};
 	};
 
 	const handleImageChange = (event) => {
 		const file = event.target.files[0];
 		if (file) {
 			base64Converter(file)
-				.then(response => {
+				.then((response) => {
 					let { fileName, base64 } = response;
 					setImage({ name: fileName, value: base64 });
-				}).catch(error => {
-				console.error(error);
-			});
+				})
+				.catch((error) => {
+					console.error(error);
+				});
 		}
 	};
-
 
 	// Delete vocabulary
 	const showDeleteConfirmation = (context) => {
@@ -351,6 +379,7 @@ function AddLevels() {
 		setShowDeleteModal(false);
 		setDeleteContext(null);
 	};
+	// --------------
 
 	const handleUpdateLevelName = async (e) => {
 		e.preventDefault();
@@ -362,7 +391,7 @@ function AddLevels() {
 		toast.warn("Tên không được để trống");
 	};
 
-	const handleEditWord = ({ levelId, wordId, word, definition, type, image, pronunciation }) => {
+	const handleEditWord = ({ levelId, wordId, word, definition, type, image, pronunciation, transcription }) => {
 		setWordEditing({ oldLevelId: levelId.toString(), wordId, isEditing: true });
 		setSelectedGroup(levelId.toString());
 		setVocabulary(word);
@@ -370,6 +399,7 @@ function AddLevels() {
 		setTypeWord(type);
 		setImage(image ? { name: image, value: image } : null);
 		setAudio(pronunciation ? { name: pronunciation, value: pronunciation } : null);
+		setTranscription(transcription);
 	};
 
 	const handleUpdateWord = (e) => {
@@ -383,6 +413,7 @@ function AddLevels() {
 			image: image?.value,
 			pronunciation: audio?.value,
 			type: typeWord,
+			transcription: transcription,
 		});
 	};
 
@@ -401,6 +432,7 @@ function AddLevels() {
 		setVocabulary("");
 		setDefinition("");
 		setTypeWord("");
+		setTranscription("");
 	};
 
 	const handleChangeGroup = (e) => {
@@ -416,35 +448,45 @@ function AddLevels() {
 			</div>
 
 			<div className="flex mb-4">
-				<button onClick={() => setShowTextModal(true)}
-						className="flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2"><TbTextPlus
-					className="size-6 mr-1" />
-					<span> Thêm từ văn bản</span></button>
-				<button onClick={() => setShowFileModal(true)}
-						className="flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2"><CgAttachment
-					className="size-6 mr-1" />
-					<span> Thêm từ tệp</span></button>
-				<button onClick={() => setShowGroupInput(!showGroupInput)}
-						className="flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2"><LuPlus
-					className="size-6 mr-1" />
-					<span> Thêm nhóm/cấp độ</span></button>
+				<button
+					onClick={() => setShowTextModal(true)}
+					className="flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2">
+					<TbTextPlus className="size-6 mr-1" />
+					<span> Thêm từ văn bản</span>
+				</button>
+				<button
+					onClick={() => setShowFileModal(true)}
+					className="flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2">
+					<CgAttachment className="size-6 mr-1" />
+					<span> Thêm từ tệp</span>
+				</button>
+				<button
+					onClick={() => setShowGroupInput(!showGroupInput)}
+					className="flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2">
+					<LuPlus className="size-6 mr-1" />
+					<span> Thêm nhóm/cấp độ</span>
+				</button>
 			</div>
 			<div className="bg-white p-6 rounded-lg shadow-md mb-6 flex items-start gap-6">
 				{/* Left Section - Inputs */}
-				<form className="w-1/3 bg-gray-50 rounded-lg shadow p-6 border-r"
-					  onSubmit={wordEditing.isEditing ? handleUpdateWord : handleAdd}>
-
+				<form
+					className="w-1/4 bg-gray-50 rounded-lg shadow p-2 border-r space-y-4"
+					onSubmit={wordEditing.isEditing ? handleUpdateWord : handleAdd}>
 					{/* Vocabulary and Definition Inputs */}
 					<div className="flex-col space-y-4">
-						<div className="flex items-center">
-							<div className="flex items-center gap-2">
-								<Image radius="full" height={20} width={20}
-									   src={courseLanguagesQuery.data?.["target language image"]}
-									   alt={courseLanguagesQuery.data?.["target language name"]} />
-								<span
-									className="uppercase">{courseLanguagesQuery.data?.["target language abbreviation"]}</span>
+						<div className="flex items-end">
+							<div className="flex items-center gap-2 -translate-y-2">
+								<Image
+									radius="full"
+									src={courseLanguagesQuery.data?.["target language image"]}
+									alt={courseLanguagesQuery.data?.["target language name"]}
+									className="size-5 flex-1"
+								/>
+								<span className="uppercase">
+									{courseLanguagesQuery.data?.["target language abbreviation"]}
+								</span>
 							</div>
-							<div className="ml-5">
+							<div className="ml-2 flex-1">
 								<Input
 									required
 									isRequired
@@ -455,23 +497,28 @@ function AddLevels() {
 									value={vocabulary}
 									onValueChange={setVocabulary}
 									placeholder="Nhập từ vựng"
-									label={<label>Từ
-										vựng ({courseLanguagesQuery.data?.["target language name"]})</label>}
+									label={
+										<label>Từ vựng ({courseLanguagesQuery.data?.["target language name"]})</label>
+									}
 									labelPlacement="outside"
 									className="bg-white rounded-small"
 								/>
 							</div>
 						</div>
 
-						<div className="flex items-center">
-							<div className="flex items-center gap-2">
-								<Image radius="full" height={20} width={20}
-									   src={courseLanguagesQuery.data?.["source language image"]}
-									   alt={courseLanguagesQuery.data?.["source language name"]} />
-								<span
-									className="uppercase">{courseLanguagesQuery.data?.["source language abbreviation"]}</span>
+						<div className="flex items-end">
+							<div className="flex items-center gap-2 -translate-y-2">
+								<Image
+									radius="full"
+									src={courseLanguagesQuery.data?.["source language image"]}
+									alt={courseLanguagesQuery.data?.["source language name"]}
+									className="size-5 flex-1"
+								/>
+								<span className="uppercase">
+									{courseLanguagesQuery.data?.["source language abbreviation"]}
+								</span>
 							</div>
-							<div className="ml-5">
+							<div className="ml-2 flex-1">
 								<Input
 									required
 									isRequired
@@ -482,16 +529,18 @@ function AddLevels() {
 									value={definition}
 									onValueChange={setDefinition}
 									placeholder="Nhập định nghĩa"
-									label={<label className="-translate-y-2">Định nghĩa
-										({courseLanguagesQuery.data?.["source language name"]})</label>}
+									label={
+										<label className="-translate-y-2">
+											Định nghĩa ({courseLanguagesQuery.data?.["source language name"]})
+										</label>
+									}
 									labelPlacement="outside"
 									className="bg-white rounded-small"
 								/>
 							</div>
 						</div>
-
 						<div className="flex items-center">
-							<div className="ml-16">
+							<div className="flex-1">
 								<Input
 									variant="bordered"
 									size="md"
@@ -506,52 +555,90 @@ function AddLevels() {
 								/>
 							</div>
 						</div>
-
+						<div className="flex items-center">
+							<div className="flex-1">
+								<Input
+									variant="bordered"
+									size="md"
+									type="text"
+									radius="sm"
+									value={transcription}
+									onValueChange={setTranscription}
+									placeholder="Bản ghi (cách phát âm)"
+									label={<label className="-translate-y-2">Bản ghi</label>}
+									labelPlacement="outside"
+									className="bg-white rounded-small"
+								/>
+							</div>
+						</div>
 					</div>
 
 					{/* Add audio */}
-					<div className="flex gap-10 mt-6 ">
-						<div className="mt-4">
-							<button
-								type="button"
-								onClick={() => document.getElementById("audioInput").click()}
-								className="flex items-center gap-2 text-sm font-medium cursor-pointer bg-white border border-gray-300 p-2 rounded-md hover:bg-gray-100  transition"
-							>
-								<FaMicrophone />
-								<span>Thêm âm thanh</span>
-							</button>
-
+					<div>
+						<div className="space-y-2">
+							<label className="text-sm">Audio/Pronunciation</label>
+							{!audio && (
+								<div className="flex items-center gap-2">
+									<button
+										type="button"
+										onClick={() => document.getElementById("audioInput").click()}
+										className="flex items-center gap-2 text-sm font-medium cursor-pointer bg-white border border-gray-300 p-2 rounded-md hover:bg-gray-100  transition">
+										<FaMicrophone />
+										<span>Thêm tệp âm thanh</span>
+									</button>
+									<button
+										type="button"
+										className="flex items-center gap-2 text-sm font-medium cursor-pointer bg-white border border-gray-300 p-2 rounded-md hover:bg-gray-100  transition">
+										<FaMicrophone />
+										<span>Ghi âm</span>
+									</button>
+								</div>
+							)}
 							<input
-								type="file" accept=".mp3" onChange={handleAudioChange} id="audioInput"
+								type="file"
+								accept=".mp3"
+								onChange={handleAudioChange}
+								id="audioInput"
 								className="hidden"
+								multiple={false}
 							/>
 							{audio && (
 								<Fragment>
-									<p className="mt-2 text-sm text-gray-600 max-w-60 break-all overflow-hidden">{audio?.name}</p>
+									<p className="mt-2 text-sm text-gray-600 max-w-60 break-all overflow-hidden">
+										{audio?.name}
+									</p>
 									<span
 										className="text-sm text-secondary cursor-pointer active:opacity-70 transition-all"
-										onClick={() => setAudio(null)}>Remove</span>
+										onClick={() => setAudio(null)}>
+										Remove
+									</span>
 								</Fragment>
 							)}
 						</div>
 
 						{/*add image */}
-						<div className="mt-4">
-							<button
-								type="button"
-								onClick={() => document.getElementById("imageInput").click()}
-								className="relative flex items-center gap-2 p-7 text-4xl cursor-pointer bg-white border-2 border-dashed border-gray-300 rounded-md hover:bg-gray-100  transition"
-								style={{ width: "100px", height: "100px" }}
-							>
-								{image ? (
-									<img
-										src={image?.value} alt="Preview"
-										className="absolute inset-0 h-full w-full object-contain rounded-md"
+						<div className="mt-4 space-y-2">
+							<label className="text-sm">Image/Demonstration</label>
+							<div>
+								<button type="button" className="border-1 rounded-sm border-dashed border-gray-300">
+									<Image
+										onClick={() => document.getElementById("imageInput").click()}
+										src={
+											image?.value ||
+											"https://www.shutterstock.com/image-vector/image-icon-600nw-211642900.jpg"
+										}
+										alt="Preview"
+										className="inset-0 size-28 object-contain rounded-md"
 									/>
-								) : (
-									<AiOutlinePicture />
-								)}
-							</button>
+								</button>
+							</div>
+							{image && (
+								<span
+									className="text-sm text-secondary cursor-pointer active:opacity-70 transition-all"
+									onClick={() => setImage(null)}>
+									Remove
+								</span>
+							)}
 							<input
 								type="file"
 								accept=".jpg, .png"
@@ -564,111 +651,142 @@ function AddLevels() {
 					</div>
 
 					{/* Group/Level Dropdown */}
-					<div className="relative mt-4">
-						<label className="block text-sm font-medium">Nhóm/Cấp độ</label>
+					<div>
 						<Select
 							isRequired
-							aria-label="level course" variant="bordered"
+							aria-label="level course"
+							label={<label>Nhóm/Cấp độ</label>}
+							labelPlacement="outside"
+							placeholder="Select levels"
+							variant="bordered"
 							onChange={handleChangeGroup}
 							radius="sm"
 							className="bg-white rounded-small"
 							selectedKeys={[selectedGroup]}
-							items={vocabularyQuery?.data}
-						>
-							{vocabularyQuery?.data?.map(item => <SelectItem value={item?.levelId.toString()}
-																			key={item?.levelId.toString()}>{item?.levelName}
-							</SelectItem>)}
+							items={vocabularyQuery?.data}>
+							{vocabularyQuery?.data?.map((item) => (
+								<SelectItem value={item?.levelId.toString()} key={item?.levelId.toString()}>
+									{item?.levelName}
+								</SelectItem>
+							))}
 						</Select>
 					</div>
 
 					{/* Add Button */}
-					{!wordEditing.isEditing ? <Button
-						isLoading={addWordMutation.isPending}
-						type="submit"
-						radius="sm"
-						className="mt-4 bg-secondary text-secondary-foreground">
-						Thêm
-					</Button> : <div className="flex space-x-2">
+					{!wordEditing.isEditing ? (
 						<Button
-							type="reset"
-							color="default"
-							radius="sm"
-							onClick={clearFormWord}
-							className="mt-4">
-							Hủy
-						</Button>
-						<Button
-							isLoading={updateWordMutation.isPending}
+							isLoading={addWordMutation.isPending}
 							type="submit"
 							radius="sm"
 							className="mt-4 bg-secondary text-secondary-foreground">
-							Lưu
+							Thêm
 						</Button>
-					</div>}
-
+					) : (
+						<div className="flex space-x-2">
+							<Button type="reset" color="default" radius="sm" onClick={clearFormWord} className="mt-4">
+								Hủy
+							</Button>
+							<Button
+								isLoading={updateWordMutation.isPending}
+								type="submit"
+								radius="sm"
+								className="mt-4 bg-secondary text-secondary-foreground">
+								Lưu
+							</Button>
+						</div>
+					)}
 				</form>
 
-
-				<div className="w-2/3 border rounded-lg overflow-hidden">
-					<div className="grid grid-cols-7 bg-blue-100 p-2 gap-x-1">
-						<span className="font-bold text-blue-400 col-span-2 ">Từ vựng</span>
-						<span className="font-bold text-blue-400 col-span-2 ml-4">Định nghĩa</span>
-						<span className="font-bold text-blue-400 justify-self-end">Audio</span>
-						<span className="font-bold text-blue-400 justify-self-end">Hình ảnh</span>
-						<span className="font-bold text-blue-400 justify-self-end">Action</span>
+				<div className="w-3/4 border rounded-lg overflow-hidden">
+					<div className="grid grid-cols-12 bg-blue-100 p-2 gap-x-1">
+						<span className="font-bold text-blue-400 col-span-3 ">Từ vựng</span>
+						<span className="font-bold text-blue-400 col-span-3 ml-4">Định nghĩa</span>
+						<span className="font-bold text-blue-400 col-span-1 justify-self-center">Audio</span>
+						<span className="font-bold text-blue-400 col-span-1 justify-self-center">Hình ảnh</span>
+						<span className="font-bold text-blue-400 col-span-2 justify-self-start">Transcript</span>
+						<span className="font-bold text-blue-400 col-span-2 justify-self-end">Action</span>
 					</div>
 					<Accordion className="bg-blue-100" selectionMode="multiple">
-						{vocabularyQuery.data?.map(item => {
-							return <AccordionItem
-								key={item?.levelId} title={item?.levelName}
-								disableIndicatorAnimation={true}
-								indicator={({ isOpen }) => (isOpen ?
-									<div className="flex items-center text-blue-400 font-bold gap-4">
-										<span>Ẩn</span>
-										<span className="hover:underline"
-											  onClick={() => handleRenameLevel(item?.levelId, item?.levelName)}
-										>Sửa tên</span>
-										<span className="hover:underline"
-											  onClick={() => showDeleteConfirmation({
-												  type: "group",
-												  groupId: item?.levelId,
-											  })}>Xoá
-														  </span>
-									</div> :
-									<div className="flex items-center text-blue-400 font-bold gap-4">
-										<span>Hiện</span>
-										<span className="hover:underline"
-											  onClick={() => handleRenameLevel(item?.levelId, item?.levelName)}>Sửa tên</span>
-										<span className="hover:underline"
-											  onClick={() => showDeleteConfirmation({
-												  type: "group",
-												  groupId: item?.levelId,
-											  })}>Xoá
-														  </span>
-									</div>)}>
-								<ul>
-									{item?.words?.map((word, index) => {
-										const handleEdit = () => handleEditWord({
-											levelId: item?.levelId,
-											wordId: word?.wordId,
-											word: word?.word,
-											pronunciation: word?.pronunciation,
-											type: word?.type,
-											image: word?.image,
-											definition: word?.definition,
-										});
+						{vocabularyQuery.data?.map((item) => {
+							return (
+								<AccordionItem
+									key={item?.levelId}
+									title={<span className="underline">{item?.levelName}</span>}
+									disableIndicatorAnimation={true}
+									indicator={({ isOpen }) =>
+										isOpen ? (
+											<div className="flex items-center text-blue-400 font-bold gap-4">
+												<span>Ẩn</span>
+												<span
+													className="hover:underline"
+													onClick={() => handleRenameLevel(item?.levelId, item?.levelName)}>
+													Sửa tên
+												</span>
+												<span
+													className="hover:underline"
+													onClick={() =>
+														showDeleteConfirmation({
+															type: "group",
+															groupId: item?.levelId,
+														})
+													}>
+													Xoá
+												</span>
+											</div>
+										) : (
+											<div className="flex items-center text-blue-400 font-bold gap-4">
+												<span>Hiện</span>
+												<span
+													className="hover:underline"
+													onClick={() => handleRenameLevel(item?.levelId, item?.levelName)}>
+													Sửa tên
+												</span>
+												<span
+													className="hover:underline"
+													onClick={() =>
+														showDeleteConfirmation({
+															type: "group",
+															groupId: item?.levelId,
+														})
+													}>
+													Xoá
+												</span>
+											</div>
+										)
+									}>
+									<ul>
+										{item?.words?.map((word, index) => {
+											const handleEdit = () =>
+												handleEditWord({
+													levelId: item?.levelId,
+													wordId: word?.wordId,
+													word: word?.word,
+													pronunciation: word?.pronunciation,
+													type: word?.type,
+													image: word?.image,
+													definition: word?.definition,
+													transcription: word?.transcription,
+												});
 
-										const handleShowConfirmDeletion = () => showDeleteConfirmation({
-											type: "vocab",
-											levelId: item?.levelId,
-											wordId: word?.wordId,
-										});
-										return <WordListEdit key={index} index={index} word={word}
-															 handleEdit={handleEdit}
-															 handleDeleteConfirmation={handleShowConfirmDeletion} />;
-									})}
-								</ul>
-							</AccordionItem>;
+											const handleShowConfirmDeletion = () =>
+												showDeleteConfirmation({
+													type: "vocab",
+													levelId: item?.levelId,
+													wordId: word?.wordId,
+												});
+											return (
+												<WordListEdit
+													key={index}
+													index={index}
+													word={word}
+													handleEdit={handleEdit}
+													handleDeleteConfirmation={handleShowConfirmDeletion}
+												/>
+											);
+										})}
+									</ul>
+								</AccordionItem>
+							);
 						})}
 					</Accordion>
 
@@ -689,8 +807,7 @@ function AddLevels() {
 								className="bg-third text-third-foreground"
 								radius="sm"
 								size="lg"
-								isLoading={addLevelMutation.isPending}
-							>
+								isLoading={addLevelMutation.isPending}>
 								Lưu
 							</Button>
 						</form>
@@ -710,13 +827,11 @@ function AddLevels() {
 						<p className="text-gray-500 mb-4">Những từ quan trọng sẽ được thêm vào bộ từ vựng</p>
 						<textarea
 							className="w-full p-4 h-40 border border-gray-300 rounded-md mb-4"
-							placeholder="Nhập hoặc dán ở đây..."
-						></textarea>
+							placeholder="Nhập hoặc dán ở đây..."></textarea>
 						<div className="flex justify-end">
 							<button
 								onClick={() => setShowTextModal(false)}
-								className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2"
-							>
+								className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">
 								Hủy
 							</button>
 							<button className="px-4 py-2 bg-gray-500 text-white rounded-md">Thêm</button>
@@ -748,8 +863,7 @@ function AddLevels() {
 						<div className="border border-gray-300 bg-gray-200 rounded-md p-12 mb-4 text-center">
 							<button
 								className="bg-white text-gray-700 py-2 px-6 rounded-md mb-4"
-								onClick={() => document.getElementById("fileInput").click()}
-							>
+								onClick={() => document.getElementById("fileInput").click()}>
 								Chọn
 							</button>
 							{selectedFile && <p className="mt-4">Đã chọn: {selectedFile.name}</p>}
@@ -761,8 +875,9 @@ function AddLevels() {
 						</div>
 
 						<div className="flex justify-end">
-							<button onClick={() => setShowFileModal(false)}
-									className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">
+							<button
+								onClick={() => setShowFileModal(false)}
+								className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">
 								Hủy
 							</button>
 							<button className="px-4 py-2 bg-gray-500 text-white rounded-md">Thêm</button>
@@ -779,18 +894,25 @@ function AddLevels() {
 							<ModalHeader className="flex flex-col gap-1">Xác nhận xóa</ModalHeader>
 							<ModalBody>
 								<p className="text-gray-500 mb-4">
-									Bạn có chắc chắn muốn
-									xóa {deleteContext?.type === "group" ? "nhóm này" : "từ vựng này"} không?
+									Bạn có chắc chắn muốn xóa{" "}
+									{deleteContext?.type === "group" ? "nhóm này" : "từ vựng này"} không?
 								</p>
-
 							</ModalBody>
 							<ModalFooter>
-								<Button color="default" variant="light" onPress={onClose} radius="sm"
-										className="bg-gray-200">
+								<Button
+									color="default"
+									variant="light"
+									onPress={onClose}
+									radius="sm"
+									className="bg-gray-200">
 									Hủy
 								</Button>
-								<Button color="danger" variant="solid" onPress={handleConfirmDelete} radius="sm"
-										isLoading={removeLevelMutation.isPending}>
+								<Button
+									color="danger"
+									variant="solid"
+									onPress={handleConfirmDelete}
+									radius="sm"
+									isLoading={removeLevelMutation.isPending}>
 									Xóa
 								</Button>
 							</ModalFooter>
@@ -806,20 +928,32 @@ function AddLevels() {
 							<form onSubmit={handleUpdateLevelName}>
 								<ModalHeader className="flex flex-col gap-1">Đổi tên nhóm từ vựng</ModalHeader>
 								<ModalBody>
-									<Input type="text" value={renameLevel.levelName}
-										   onChange={e => setRenameLevel(prev => ({
-											   ...prev,
-											   levelName: e.target.value,
-										   }))} />
+									<Input
+										type="text"
+										value={renameLevel.levelName}
+										onChange={(e) =>
+											setRenameLevel((prev) => ({
+												...prev,
+												levelName: e.target.value,
+											}))
+										}
+									/>
 								</ModalBody>
 								<ModalFooter>
-									<Button color="default" variant="light" onPress={onClose} radius="sm"
-											className="bg-gray-200">
+									<Button
+										color="default"
+										variant="light"
+										onPress={onClose}
+										radius="sm"
+										className="bg-gray-200">
 										Hủy
 									</Button>
-									<Button type="button" color="danger" variant="solid"
-											radius="sm"
-											isLoading={updateLevelNameMutation.isPending}>
+									<Button
+										type="submit"
+										color="danger"
+										variant="solid"
+										radius="sm"
+										isLoading={updateLevelNameMutation.isPending}>
 										Lưu
 									</Button>
 								</ModalFooter>
@@ -832,4 +966,4 @@ function AddLevels() {
 	);
 }
 
-export default AddLevels;
+export default CourseVocabulary;

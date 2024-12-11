@@ -16,6 +16,8 @@
     "RESET_PW_SUCCESS": "Reset password successfully",
     "EMAIL_NOT_FOUND": "Email not existed",
     "USER_NOT_FOUND": "User not existed",
+    "COURSE_REGISTRATION": "have just enrolled your course",
+    "DELETE_COURSE_SUCCESS":"Delete course successfully",
     "INCORRECT_PASSWORD": "Incorrect password",
     "INTERNAL_SERVER_ERROR": "Internal server error. Please try again later",
     "CHANGE_PASSWORD_SUCCESS": "Your password was changed",

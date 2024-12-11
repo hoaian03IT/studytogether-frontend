@@ -24,7 +24,8 @@ export const ExerciseContext = createContext({});
 const difficulties = [
 	{ key: "easy", title: "Easy", color: "success" },
 	{ key: "medium", title: "Medium", color: "warning" },
-	{ key: "hard", title: "Hard", color: "danger" }];
+	{ key: "hard", title: "Hard", color: "danger" },
+];
 
 const typeQuestions = [
 	{ key: "multiple-choices", title: "Multiple choices" },
@@ -53,7 +54,8 @@ const ListExercise = () => {
 		queryFn: async ({ queryKey }) => {
 			if (!queryKey[1]) return [];
 			try {
-				const data = await CourseLevelService.fetchCourseLevelByCourse(queryKey[1], user, updateUserState) || [];
+				const data =
+					(await CourseLevelService.fetchCourseLevelByCourse(queryKey[1], user, updateUserState)) || [];
 				return data?.levels;
 			} catch (error) {
 				console.error(error);
@@ -66,10 +68,14 @@ const ListExercise = () => {
 		queryKey: [queryKeys.exercise, params?.courseId?.toString(), selectedLevel?.toString()],
 		queryFn: async ({ queryKey }) => {
 			try {
-				const data = await ExerciseService.getExerciseByCourse({
-					courseId: queryKey[1],
-					levelId: queryKey[2],
-				}, user, updateUserState);
+				const data = await ExerciseService.getExerciseByCourse(
+					{
+						courseId: queryKey[1],
+						levelId: queryKey[2],
+					},
+					user,
+					updateUserState,
+				);
 				return data?.exercises;
 			} catch (error) {
 				console.error(error);
@@ -83,11 +89,20 @@ const ListExercise = () => {
 			return await ExerciseService.addNewExercise(payload, user, updateUserState);
 		},
 		onSuccess: (data) => {
-			let exercises = clientQuery.getQueryData([queryKeys.exercise, params?.courseId?.toString(), selectedLevel?.toString()]) || [];
+			let exercises =
+				clientQuery.getQueryData([
+					queryKeys.exercise,
+					params?.courseId?.toString(),
+					selectedLevel?.toString(),
+				]) || [];
 			exercises.push(data?.["newExercise"]);
 
-			clientQuery.setQueryData([queryKeys.exercise, params?.courseId?.toString(), selectedLevel?.toString()], exercises);
+			clientQuery.setQueryData(
+				[queryKeys.exercise, params?.courseId?.toString(), selectedLevel?.toString()],
+				exercises,
+			);
 			setShowInsertModal(false);
+			insertModalRef.current.resetFormValue();
 		},
 		onError: (error) => {
 			console.error(error);
@@ -98,13 +113,19 @@ const ListExercise = () => {
 	// cap nhat exercises state khi query co du lieu moi
 	useEffect(() => {
 		// filter exercises theo search
-		let filters = search || difficulty || filterTypeQuestion ? exerciseQuery.data?.filter(item => {
-			console.log(difficulty);
-			const filter1 = filterTypeQuestion ? item?.["exercise type"] === filterTypeQuestion : true;
-			const filter2 = difficulty ? item?.["difficult_level"] === difficulty : true;
-			const filter3 = search ? item?.["title"]?.toUpperCase()?.includes(search?.toUpperCase()) || item?.["question"]?.toUpperCase()?.includes(search?.toUpperCase()) : true;
-			return filter1 && filter2 && filter3;
-		}) : exerciseQuery.data;
+		let filters =
+			search || difficulty || filterTypeQuestion
+				? exerciseQuery.data?.filter((item) => {
+						console.log(difficulty);
+						const filter1 = filterTypeQuestion ? item?.["exercise type"] === filterTypeQuestion : true;
+						const filter2 = difficulty ? item?.["difficult_level"] === difficulty : true;
+						const filter3 = search
+							? item?.["title"]?.toUpperCase()?.includes(search?.toUpperCase()) ||
+							  item?.["question"]?.toUpperCase()?.includes(search?.toUpperCase())
+							: true;
+						return filter1 && filter2 && filter3;
+				  })
+				: exerciseQuery.data;
 		setExercises(filters);
 	}, [difficulty, exerciseQuery.data, filterTypeQuestion, search]);
 
@@ -155,90 +176,110 @@ const ListExercise = () => {
 	return (
 		<ExerciseContext.Provider
 			value={{ courseIdKey: params?.courseId?.toString(), levelIdKey: selectedLevel?.toString() }}>
-			<div className="grid grid-cols-12 gap-4 h-full">
-				<div className="flex flex-col col-span-10">
-					<div className="flex gap-4">
-						<Button className="px-8" color="primary" radius="sm" onClick={handleOpenInsertModal}>
+			<div className='grid grid-cols-12 gap-4 h-full'>
+				<div className='flex flex-col col-span-10'>
+					<div className='flex gap-4'>
+						<Button className='px-8' color='primary' radius='sm' onClick={handleOpenInsertModal}>
 							Thêm mới
 						</Button>
 						<Input
-							type="text"
-							radius="sm"
-							placeholder="Tìm kiếm theo tiêu đề bài tập"
-							className="col-span-2 row-start-2 border-spacing-2"
+							type='text'
+							radius='sm'
+							placeholder='Tìm kiếm theo tiêu đề bài tập'
+							className='col-span-2 row-start-2 border-spacing-2'
 							startContent={
-								<RxMagnifyingGlass
-									className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0 size-6" />
+								<RxMagnifyingGlass className='text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0 size-6' />
 							}
 							value={search}
 							onValueChange={setSearch}
 						/>
 						<Select
-							aria-label="difficulty"
-							type="text"
-							radius="sm"
-							placeholder="Difficulty"
-							className="col-span-2 row-start-2 border-spacing-2 min-w-40 w-40"
+							aria-label='difficulty'
+							type='text'
+							radius='sm'
+							placeholder='Difficulty'
+							className='col-span-2 row-start-2 border-spacing-2 min-w-40 w-40'
 							selectedKeys={[difficulty?.toString()]}
 							value={difficulty}
-							onChange={e => setDifficulty(e.target.value)}
-						>
-							{difficulties?.map(difficulty => <SelectItem color={difficulty?.color}
-																		 key={difficulty?.key}>{difficulty?.title}</SelectItem>)}
+							onChange={(e) => setDifficulty(e.target.value)}>
+							{difficulties?.map((difficulty) => (
+								<SelectItem color={difficulty?.color} key={difficulty?.key}>
+									{difficulty?.title}
+								</SelectItem>
+							))}
 						</Select>
 						<Select
-							aria-label="type-question"
-							type="text"
-							radius="sm"
-							placeholder="Type question"
-							className="col-span-2 row-start-2 border-spacing-2 min-w-40 w-40"
+							aria-label='type-question'
+							type='text'
+							radius='sm'
+							placeholder='Type question'
+							className='col-span-2 row-start-2 border-spacing-2 min-w-40 w-40'
 							selectedKeys={[filterTypeQuestion?.toString()]}
 							value={filterTypeQuestion}
-							onChange={e => setFilterTypeQuestion(e.target.value)}
-						>
-							{typeQuestions?.map(type => <SelectItem key={type?.key}>{type?.title}</SelectItem>)}
+							onChange={(e) => setFilterTypeQuestion(e.target.value)}>
+							{typeQuestions?.map((type) => (
+								<SelectItem key={type?.key}>{type?.title}</SelectItem>
+							))}
 						</Select>
 					</div>
 					<div
-						className={clsx("py-4", exercises?.length > 0 ? "grid gap-4 lg:grid-cols-2 sm:grid-cols-1" : "")}>
-						{exercises?.length > 0 ? exercises?.map(item => {
-							let options = item?.["option text"]?.split(item?.["split char"]);
-							let optionA, optionB, optionC, optionD;
-							if (options?.length > 0) {
-								optionA = options[0];
-								optionB = options[1];
-								optionC = options[2];
-								optionD = options[3];
-							}
-							return <ItemExercise
-								key={item?.["exercise id"]}
-								type={item?.["exercise type"]}
-								question={item?.["question"]}
-								answer={item?.["answer text"]}
-								optionA={optionA}
-								optionB={optionB}
-								optionC={optionC}
-								optionD={optionD}
-								audio={item?.["audio"]}
-								image={item?.["image"]}
-								explanation={item?.["explanation"]}
-								title={item?.["title"]}
-								levelName={item?.["level name"]}
-								difficulty={item?.["difficult_level"]}
-								courseId={item?.["course id"]}
-								levelId={item?.["level id"]}
-								exerciseId={item?.["exercise id"]}
-							/>;
-						}) : <div className="italic text-center font-light">(Empty)</div>}
+						className={clsx(
+							"py-4",
+							exercises?.length > 0 ? "grid gap-4 lg:grid-cols-2 sm:grid-cols-1" : "",
+						)}>
+						{exercises?.length > 0 ? (
+							exercises?.map((item) => {
+								let options = item?.["option text"]?.split(item?.["split char"]);
+								let optionA, optionB, optionC, optionD;
+								if (options?.length > 0) {
+									optionA = options[0];
+									optionB = options[1];
+									optionC = options[2];
+									optionD = options[3];
+								}
+								return (
+									<ItemExercise
+										key={item?.["exercise id"]}
+										type={item?.["exercise type"]}
+										question={item?.["question"]}
+										answer={item?.["answer text"]}
+										optionA={optionA}
+										optionB={optionB}
+										optionC={optionC}
+										optionD={optionD}
+										audio={item?.["audio"]}
+										image={item?.["image"]}
+										explanation={item?.["explanation"]}
+										title={item?.["title"]}
+										levelName={item?.["level name"]}
+										difficulty={item?.["difficult_level"]}
+										courseId={item?.["course id"]}
+										levelId={item?.["level id"]}
+										exerciseId={item?.["exercise id"]}
+									/>
+								);
+							})
+						) : (
+							<div className='italic text-center font-light'>(Empty)</div>
+						)}
 					</div>
 				</div>
-				<div className="col-span-2 h-full">
-					<SidebarListExercise levels={levelQuery.data} selectedLevels={selectedLevel}
-										 setSelectedLevels={setSelectedLevel} />
+				<div className='col-span-2 h-full'>
+					<SidebarListExercise
+						levels={levelQuery.data}
+						selectedLevels={selectedLevel}
+						setSelectedLevels={setSelectedLevel}
+					/>
 				</div>
-				<ExerciseManager ref={insertModalRef} isOpen={showInsertModal} onClose={() => {
-					setShowInsertModal(false);
-				}} handleSubmit={handleInsertQuestion} isLoading={addNewExerciseMutation.isPending} />
+				<ExerciseManager
+					ref={insertModalRef}
+					isOpen={showInsertModal}
+					onClose={() => {
+						setShowInsertModal(false);
+					}}
+					handleSubmit={handleInsertQuestion}
+					isLoading={addNewExerciseMutation.isPending}
+				/>
 			</div>
 		</ExerciseContext.Provider>
 	);

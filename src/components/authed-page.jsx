@@ -7,5 +7,9 @@ export const AuthedPage = ({ children }) => {
 	const user = useRecoilValue(userState);
 	const { pathname: pathnameRedirect, search } = useLocation();
 
-	return user?.isLogged ? children : <Navigate to={`${pathname.signIn}?redirect=${pathnameRedirect}${search}`} />;
+	return user?.isLogged ? (
+		children
+	) : (
+		<Navigate to={`${pathname.signIn}${pathnameRedirect ? `?redirect=${pathnameRedirect}${search}` : ""} `} />
+	);
 };

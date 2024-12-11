@@ -14,7 +14,6 @@ import { pathname } from "../routes";
 import { GoPlus } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 
-
 const priceOptions = [
 	{ label: "All", key: "all", min: 0, max: 99999 },
 	{ label: "Free", key: "free", min: 0, max: 0 },
@@ -23,7 +22,6 @@ const priceOptions = [
 ];
 
 export default function Filter({ onFilter }) {
-
 	const navigate = useNavigate();
 
 	const [formValue, setFormValue] = useState({
@@ -33,9 +31,11 @@ export default function Filter({ onFilter }) {
 		searchTerm: "",
 		price: "all",
 		nPage: 1,
-		nLimit: 15,
+		nLimit: 9,
 		t: "normal",
 	});
+
+	const [totalPages, setTotalPages] = useState(0);
 
 	const searchTextDebounced = useDebounce(formValue.searchTerm, 800);
 	const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
@@ -73,7 +73,7 @@ export default function Filter({ onFilter }) {
 	// Fetch courses
 	const courseQuery = useMutation({
 		mutationFn: async (formValue) => {
-			let selectedPriceOption = priceOptions.find(item => item.key === formValue?.price.anchorKey);
+			let selectedPriceOption = priceOptions.find((item) => item.key === formValue?.price.anchorKey);
 
 			const response = await CourseService.searchCourses({
 				ts: formValue.searchTerm,
@@ -87,10 +87,11 @@ export default function Filter({ onFilter }) {
 				np: formValue.nPage,
 			});
 
-			return response.courses;
+			return response;
 		},
 		onSuccess: (data) => {
-			onFilter(data || []);
+			onFilter(data?.courses || []);
+			setTotalPages(data?.totalPages || 0);
 		},
 		onError: (error) => {
 			console.error("Error in searchCourses:", error);
@@ -100,7 +101,16 @@ export default function Filter({ onFilter }) {
 
 	useEffect(() => {
 		courseQuery.mutate({ ...formValue, searchTerm: searchTextDebounced });
-	}, [formValue.levels, formValue.nLimit, formValue.nPage, formValue.price, formValue.sourceLanguageId, formValue.targetLanguageId, searchTextDebounced]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [
+		formValue.levels,
+		formValue.nLimit,
+		formValue.nPage,
+		formValue.price,
+		formValue.sourceLanguageId,
+		formValue.targetLanguageId,
+		searchTextDebounced,
+	]);
 
 	const handleInputChange = (name, value) => {
 		setFormValue((prev) => ({
@@ -124,34 +134,28 @@ export default function Filter({ onFilter }) {
 	return (
 		<div>
 			{/* Search Bar */}
-			<div className="flex py-3 gap-2 my-8 justify-end ml-auto">
+			<div className='flex py-3 gap-2 my-8 justify-end ml-auto'>
 				<Button
-					className="px-2 py-1 flex justify-end mr-auto bg-green-500 text-white text-sm font-bold rounded-lg shadow-md hover:bg-blue-600"
-					onClick={() => navigate(pathname.createCourse)}
-				>
-					<GoPlus className="text-xl" />
+					className='px-2 py-1 flex justify-end mr-auto bg-green-500 text-white text-sm font-bold rounded-lg shadow-md hover:bg-blue-600'
+					onClick={() => navigate(pathname.createCourse)}>
+					<GoPlus className='text-xl' />
 					Create
 				</Button>
 
-				<Button
-					color="primary"
-					disabled={!formValue.searchTerm.trim()}
-					onClick={toggleAdvancedFilters}
-				>
-					<CgSortAz className="text-2xl font-bold" />
+				<Button color='primary' disabled={!formValue.searchTerm.trim()} onClick={toggleAdvancedFilters}>
+					<CgSortAz className='text-2xl font-bold' />
 					{showAdvancedFilters ? "Advanced filtering off" : "Advanced filtering"}
 				</Button>
-				<div className="flex items-center bg-white border-1 rounded-[80%]">
+				<div className='flex items-center bg-white border-1 rounded-[80%]'>
 					<Input
-						type="text"
-						radius="sm"
-						placeholder="Search"
+						type='text'
+						radius='sm'
+						placeholder='Search'
 						value={formValue.searchTerm}
 						onChange={(e) => handleInputChange("searchTerm", e.target.value)}
-						className="col-span-2 row-start-2 border-spacing-2"
+						className='col-span-2 row-start-2 border-spacing-2'
 						endContent={
-							<RxMagnifyingGlass
-								className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0 size-6" />
+							<RxMagnifyingGlass className='text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0 size-6' />
 						}
 					/>
 				</div>
@@ -159,17 +163,16 @@ export default function Filter({ onFilter }) {
 
 			{/* Filters */}
 			{showAdvancedFilters && (
-				<div className="flex gap-3 my-8 justify-items-center items-center">
+				<div className='flex gap-3 my-8 justify-items-center items-center'>
 					{/* Price Filter */}
 					<div>
 						<Select
 							items={priceOptions}
-							label="Price"
-							placeholder=""
-							className="min-w-[150px]"
+							label='Price'
+							placeholder=''
+							className='min-w-[150px]'
 							selectedKey={formValue.price}
-							onSelectionChange={(key) => handleInputChange("price", key)}
-						>
+							onSelectionChange={(key) => handleInputChange("price", key)}>
 							{(item) => <SelectItem key={item.key}>{item.label}</SelectItem>}
 						</Select>
 					</div>
@@ -177,12 +180,11 @@ export default function Filter({ onFilter }) {
 					{/* Source Language */}
 					<div>
 						<Select
-							label="Ngôn ngữ gốc"
-							placeholder="Chọn ngôn ngữ"
-							className="min-w-[200px]"
+							label='Ngôn ngữ gốc'
+							placeholder='Chọn ngôn ngữ'
+							className='min-w-[200px]'
 							selectedKey={formValue.sourceLanguageId}
-							onSelectionChange={(key) => handleInputChange("sourceLanguageId", key)}
-						>
+							onSelectionChange={(key) => handleInputChange("sourceLanguageId", key)}>
 							{languageQuery.data?.map((lang) => (
 								<SelectItem key={lang["language id"]} value={lang["language id"]}>
 									{lang["language name"]}
@@ -193,12 +195,11 @@ export default function Filter({ onFilter }) {
 
 					<div>
 						<Select
-							label="Ngôn ngữ học"
-							placeholder="Chọn ngôn ngữ cần học"
-							className="min-w-[200px]"
+							label='Ngôn ngữ học'
+							placeholder='Chọn ngôn ngữ cần học'
+							className='min-w-[200px]'
 							selectedKey={formValue.targetLanguageId}
-							onSelectionChange={(key) => handleInputChange("targetLanguageId", key)}
-						>
+							onSelectionChange={(key) => handleInputChange("targetLanguageId", key)}>
 							{languageQuery.data?.map((lang) => (
 								<SelectItem key={lang["language id"]} value={lang["language id"]}>
 									{lang["language name"]}
@@ -209,12 +210,11 @@ export default function Filter({ onFilter }) {
 
 					<div>
 						<Select
-							label="Cấp độ"
-							placeholder="Chọn cấp độ"
-							className="min-w-[200px]"
+							label='Cấp độ'
+							placeholder='Chọn cấp độ'
+							className='min-w-[200px]'
 							selectedKeys={formValue.levels}
-							onSelectionChange={(keys) => handleInputChange("levels", Array.from(keys))}
-						>
+							onSelectionChange={(keys) => handleInputChange("levels", Array.from(keys))}>
 							{levelQuery.data?.map((level) => (
 								<SelectItem key={level["course level id"]} value={level["course level id"]}>
 									{level["course level name"]}
@@ -225,15 +225,14 @@ export default function Filter({ onFilter }) {
 				</div>
 			)}
 
-
 			{/* Pagination */}
-			<div className="flex justify-center my-4">
+			<div className='flex justify-center my-4'>
 				<Pagination
-					total={Math.ceil(courseQuery?.data?.length / formValue.nLimit) || 10}
-					initialPage={formValue.nPage}
+					total={totalPages}
+					initialPage={formValue.nPage || 1}
 					onChange={(page) => handleInputChange("nPage", page)}
 				/>
 			</div>
 		</div>
 	);
-} 
+}

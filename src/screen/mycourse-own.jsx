@@ -98,7 +98,7 @@ const OwnCourse = () => {
 				<LoadingThreeDot />
 			) : (
 				<div className='py-4 grid xl:grid-cols-3 gap-4 lg:grid-cols-2 sm:grid-cols-1'>
-					{courses.length > 0 ? (
+					{courses?.length > 0 ? (
 						courses.map((item) => {
 							const formattedCourse = {
 								id: item["course id"],

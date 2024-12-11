@@ -141,7 +141,7 @@ function CourseInformation() {
 										radius='sm'
 										onClick={handleLearnOrBuy}
 										isLoading={enrollMutation.isPending}>
-										Buy now -
+										Buy now -&nbsp;
 										{coursePriceQuery.data?.["currency"] === "USD"
 											? USDollar.format(handledPrice)
 											: VNDong.format(handledPrice)}

@@ -6,6 +6,7 @@ import { NotificationService } from "../apis/notification.api.js";
 import { GlobalStateContext } from "./GlobalStateProvider.jsx";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { TranslationContext } from "./TranslationProvider.jsx";
 
 const host = "http://localhost:3000";
 
@@ -27,6 +28,7 @@ function SocketClientProvider({ children }) {
 	const [SocketHandler, setSocketHandler] = useState(null);
 	const [notifications, setNotifications] = useState([]);
 	const { updateUserState } = useContext(GlobalStateContext);
+	const { translation } = useContext(TranslationContext);
 
 	const user = useRecoilValue(userState);
 
@@ -48,7 +50,7 @@ function SocketClientProvider({ children }) {
 		},
 		onSuccess: (data) => {
 			setNotifications((prev) => [...prev, data]);
-			toast.info(`${data?.factor} ${data?.message} ${data?.target}`, {
+			toast.info(`${data?.factor} ${translation(data?.message)} ${data?.target}`, {
 				position: "top-left",
 				style: {
 					fontSize: "12px",
@@ -56,7 +58,8 @@ function SocketClientProvider({ children }) {
 			});
 		},
 		onError: (error) => {
-			console.log(error);
+			console.error(error);
+			toast.error(translation(error.response?.data?.errorCode));
 		},
 	});
 

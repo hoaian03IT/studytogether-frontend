@@ -25,8 +25,10 @@
     "WARNING_UPDATE_PROFILE": "Vui lòng bổ sung thông tin để sử dụng đầy đủ các tính năng.",
     "NOT_YET_ENROLLMENT": "Bạn chưa đăng ký khóa học này",
     "NOT_LEARN_ANY_WORD": "Bạn chưa học từ vựng trong trong khóa học này!",
+    "DELETE_COURSE_SUCCESS":"Delete course successfully",
     "INCORRECT_ACCOUNT/PASSWORD": "Sai tài khoản hoặc mật khẩu",
     "LOGIN_FIRST": "Bạn cần đăng nhập",
+    "COURSE_REGISTRATION": "vừa đăng ký khóa học của bạn",
     "REGISTER_FIRST": "Bạn cần đăng ký tài khoản",
     "header": {
       "home": "Trang chủ",

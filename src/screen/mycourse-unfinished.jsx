@@ -135,6 +135,7 @@ const UnfinishedCourse = () => {
 										</div>
 										<div className='flex items-center mr-4'>
 											<BsFillPeopleFill className='mr-2' />
+											{item["number enrollments"]}
 										</div>
 										<div className='flex items-center'>
 											<FaTrophy className='mr-2' />
