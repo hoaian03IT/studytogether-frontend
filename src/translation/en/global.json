@@ -26,10 +26,11 @@
     "UPDATE_SUCCESS": "Update successfully",
     "WARNING_UPDATE_PROFILE": "Please complete your profile information to access all features.",
     "NOT_YET_ENROLLMENT": "You have not enrolled this course yet",
-    "NOT_LEARN_ANY_WORD": "\"You have not learnt any words of thís course yet!\"",
+    "NOT_LEARN_ANY_WORD": "\"You have not learnt any words of this course yet!\"",
     "INCORRECT_ACCOUNT/PASSWORD": "Incorrect account or password",
     "LOGIN_FIRST": "You must sign in first",
     "REGISTER_FIRST": "You must sign up first",
+    "OOPS":"Oops! Something went wrong",
     "header": {
       "home": "Home",
       "courses": "Courses",

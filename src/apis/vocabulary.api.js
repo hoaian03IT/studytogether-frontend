@@ -4,6 +4,7 @@ class VocabularyServiceClass {
 	async fetchVocabulary(courseId, userState, updateUserState) {
 		const httpAuth = createHttpAuth(userState, updateUserState);
 		let vocabularyList = [];
+		let targetLanguage, sourceLanguage;
 		try {
 			const res = await httpAuth.get(`/vocabulary/all/${courseId}`);
 			const { data } = res;
@@ -16,6 +17,8 @@ class VocabularyServiceClass {
 				levelName: records[0]?.["level name"],
 				words: [],
 			});
+			targetLanguage = data?.["targetLanguage"];
+			sourceLanguage = data?.["sourceLanguage"];
 			for (let record of records) {
 				if (currentLevelId !== record?.["level id"]) {
 					currentLevelId = record?.["level id"];
@@ -41,7 +44,7 @@ class VocabularyServiceClass {
 		} catch (error) {
 			console.error(error);
 		}
-		return vocabularyList;
+		return { vocabularyList, targetLanguage, sourceLanguage };
 	}
 
 	async addNewVocabulary(payload, userState, updateUserState) {

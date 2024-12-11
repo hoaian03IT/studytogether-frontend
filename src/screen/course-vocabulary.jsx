@@ -24,9 +24,6 @@ import {
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
-	Popover,
-	PopoverContent,
-	PopoverTrigger,
 	Select,
 } from "@nextui-org/react";
 import { SelectItem } from "@nextui-org/select";
@@ -38,7 +35,6 @@ import { base64Converter } from "../utils/base64-convert.js";
 import { queryKeys } from "../react-query/query-keys.js";
 import { WordListEdit } from "../components/word-list-edit.jsx";
 import { useDebounce } from "../hooks/useDebounce.jsx";
-import { GrokAIService } from "../apis/grokai.api.js";
 import { useGenerateWordInformation } from "../hooks/useAIGeneration.jsx";
 
 function CourseVocabulary() {
@@ -50,7 +46,6 @@ function CourseVocabulary() {
 
 	const queryClient = useQueryClient();
 
-	const [showSuggestDefinition, setShowSuggestDefinition] = useState(false);
 	const [vocabulary, setVocabulary] = useState("");
 	const [definition, setDefinition] = useState("");
 	const [typeWord, setTypeWord] = useState("");
@@ -117,7 +112,7 @@ function CourseVocabulary() {
 			return await CourseService.addNewLevelCourse(courseId, groupName, user, updateUserState);
 		},
 		onSuccess: ({ newLevel }) => {
-			const newVocabularyList = vocabularyQuery.data.concat({
+			const newVocabularyList = vocabularyQuery.data.vocabularyList.concat({
 				levelId: newLevel["level id"].toString(),
 				levelName: newLevel["level name"],
 				words: [],
@@ -137,7 +132,7 @@ function CourseVocabulary() {
 			return levelId;
 		},
 		onSuccess: (levelId) => {
-			const newLevels = vocabularyQuery.data.filter((item) => item.levelId !== levelId);
+			const newLevels = vocabularyQuery.data.vocabularyList.filter((item) => item.levelId !== levelId);
 			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], newLevels);
 		},
 		onError: (error) => {
@@ -156,7 +151,7 @@ function CourseVocabulary() {
 			);
 		},
 		onSuccess: ({ updatedLevel }) => {
-			const newVocabularyList = vocabularyQuery.data;
+			const newVocabularyList = vocabularyQuery.data.vocabularyList;
 			for (let i = 0; i < newVocabularyList.length; i++) {
 				if (newVocabularyList[i].levelId === updatedLevel["level id"]) {
 					newVocabularyList[i].levelName = updatedLevel["level name"];
@@ -174,7 +169,7 @@ function CourseVocabulary() {
 		mutationFn: async (payload) => await VocabularyService.addNewVocabulary(payload, user, updateUserState),
 		onSuccess: (data) => {
 			const newWord = data?.newWord;
-			let newVocabularyList = vocabularyQuery.data;
+			let newVocabularyList = vocabularyQuery.data.vocabularyList;
 			for (let i = 0; i < newVocabularyList?.length; i++) {
 				if (newVocabularyList[i].levelId === newWord["level id"]) {
 					newVocabularyList[i]["words"].push({
@@ -212,7 +207,7 @@ function CourseVocabulary() {
 		},
 		onSuccess: (data) => {
 			const { wordId, levelId } = data;
-			let newVocabularyList = vocabularyQuery.data;
+			let newVocabularyList = vocabularyQuery.data.vocabularyList;
 			for (let i = 0; i < newVocabularyList?.length; i++) {
 				if (newVocabularyList[i].levelId === levelId) {
 					let wordList = newVocabularyList[i].words;
@@ -248,7 +243,7 @@ function CourseVocabulary() {
 		},
 		onSuccess: (data) => {
 			const updatedWord = data?.updatedWord;
-			let newVocabularyList = vocabularyQuery.data;
+			let newVocabularyList = vocabularyQuery.data.vocabularyList;
 			if (!newVocabularyList || !updatedWord) return;
 			// Trường hợp cập nhật từ trong cùng level
 			if (updatedWord["level id"].toString() === wordEditing.oldLevelId) {
@@ -785,7 +780,7 @@ function CourseVocabulary() {
 							className="bg-white rounded-small"
 							selectedKeys={[selectedGroup]}
 							items={vocabularyQuery?.data}>
-							{vocabularyQuery?.data?.map((item) => (
+							{vocabularyQuery?.data?.vocabularyList.map((item) => (
 								<SelectItem value={item?.levelId.toString()} key={item?.levelId.toString()}>
 									{item?.levelName}
 								</SelectItem>
@@ -828,7 +823,7 @@ function CourseVocabulary() {
 						<span className="font-bold text-blue-400 col-span-2 justify-self-end">Action</span>
 					</div>
 					<Accordion className="bg-blue-100" selectionMode="multiple">
-						{vocabularyQuery.data?.map((item) => {
+						{vocabularyQuery.data?.vocabularyList?.map((item) => {
 							return (
 								<AccordionItem
 									key={item?.levelId}

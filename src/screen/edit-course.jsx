@@ -77,7 +77,7 @@ const EditCourseInfor = () => {
 			return await CourseService.updateCourseInformation(payload, user, updateUserState);
 		},
 		onSuccess: (data) => {
-			toast.success("Cập nhật khóa học thành công!");
+			toast.success(translation(data.messageCode));
 		},
 		onError: (error) => {
 			toast.error(translation(error.response.data?.errorCode));

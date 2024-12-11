@@ -26,7 +26,7 @@ const data = {
 };
 
 class GrokAIService {
-	static async getRelatedInformationWord(sourceLanguage, targetLanguage, word) {
+	static async getRelatedInformationWord({ sourceLanguage, targetLanguage, word }) {
 		const data = {
 			messages: [
 				{
@@ -43,6 +43,44 @@ class GrokAIService {
                             "target language": "${targetLanguage}}",
                             "word": "${word}"
                             }.`,
+				},
+			],
+			model: "grok-beta",
+			stream: false,
+			temperature: 0,
+		};
+
+		const response = await axios.post(`https://api.x.ai/v1/chat/completions`, data, {
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${xaiApiKey}`,
+			},
+		});
+		return JSON.parse(response?.data?.choices[0]?.message?.content);
+	}
+
+	static async getExampleByWord({ sourceLanguage, targetLanguage, word, definition, typeWord }) {
+		const data = {
+			messages: [
+				{
+					role: "user",
+					content: `You only answer by json and there is no new line, just pure json, and json is about examples of one word and the examples is different scenarios. JSON format is 
+                    {"source language": "_my_provide_",
+                    "target language": "_my_provide_",
+                    "word": "_my_provide_with_target_language_",
+                    "definition": _my_provide_with_source_language_, 
+                    "type word": "_my_provide_with_target_language_", 
+                    "title example" "_your_generation_target_language_", // title by target language
+                    "example sentence" "_your_generation_target_language_", // generate explanation by target language
+                    "explanation" "_your_generation_with_source_language_" // explain the example and give more information by source language
+                    }.
+                    Now do your work, my input: {
+                    "source language": "${sourceLanguage}",
+                    "target language": "${targetLanguage}",
+                    "word": "${word}",
+                    "definition": "${definition}",
+                    "type word": "${typeWord}"
+                    }`,
 				},
 			],
 			model: "grok-beta",
