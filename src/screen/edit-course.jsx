@@ -68,7 +68,7 @@ const EditCourseInfor = () => {
 			shortDescription: courseInfo?.["short description"],
 			detailedDescription: courseInfo?.["detailed description"],
 			image: courseInfo?.["image"],
-			isPrivate: courseInfo?.["is private"].toString(), // Select Component của NextUI chỉ chấp nhận string
+			isPrivate: courseInfo?.["is private"]?.toString(), // Select Component của NextUI chỉ chấp nhận string
 		});
 	};
 
@@ -165,58 +165,58 @@ const EditCourseInfor = () => {
 	};
 
 	return (
-		<div className='bg-white px-6 rounded w-full flex flex-col items-center'>
-			<div className='max-w-screen-lg w-full'>
+		<div className="bg-white px-6 rounded w-full flex flex-col items-center">
+			<div className="max-w-screen-lg w-full">
 				<div>
 					<button
-						className='flex items-center text-secondary text-xl hover:underline transition-all'
+						className="flex items-center text-secondary text-xl hover:underline transition-all"
 						onClick={() => setEditable(!editable)}>
 						Chỉnh sửa ngay
-						<TbEdit className='size-6' />
+						<TbEdit className="size-6" />
 					</button>
 				</div>
 				<form
 					onSubmit={handleSubmit}
 					onReset={handleCancel}
-					className='my-6 w-full grid gap-x-4 gap-y-5 grid-cols-6'>
-					<div className='col-span-4 grid grid-cols-2 gap-y-5'>
-						<div className='col-span-2 grid grid-cols-3 gap-4'>
+					className="my-6 w-full grid gap-x-4 gap-y-5 grid-cols-6">
+					<div className="col-span-4 grid grid-cols-2 gap-y-5">
+						<div className="col-span-2 grid grid-cols-3 gap-4">
 							<Select
 								isDisabled={!editable}
 								selectedKeys={[formValue.isPrivate]}
-								size='lg'
+								size="lg"
 								label={<Label>Quyền truy cập</Label>}
-								labelPlacement='outside'
-								radius='sm'
+								labelPlacement="outside"
+								radius="sm"
 								isRequired
-								name='isPrivate'
+								name="isPrivate"
 								value={formValue.isPrivate}
 								onChange={handleInputChange}>
-								<SelectItem value='0' key='0'>
+								<SelectItem value="0" key="0">
 									Public
 								</SelectItem>
-								<SelectItem value='1' key='1'>
+								<SelectItem value="1" key="1">
 									Private
 								</SelectItem>
 							</Select>
 							<Select
 								isDisabled={!editable}
 								selectedKeys={[formValue.sourceLanguageId]}
-								size='lg'
+								size="lg"
 								label={<Label>Ngôn ngữ gốc</Label>}
-								placeholder='English'
-								labelPlacement='outside'
-								radius='sm'
+								placeholder="English"
+								labelPlacement="outside"
+								radius="sm"
 								isRequired
-								name='sourceLanguageId'
+								name="sourceLanguageId"
 								value={formValue.sourceLanguageId}
 								onChange={handleInputChange}>
 								{languageQuery.data?.languages?.map((language) => (
 									<SelectItem
 										startContent={
-											<img className='size-5 rounded-full' src={language["image"]} alt='' />
+											<img className="size-5 rounded-full" src={language["image"]} alt="" />
 										}
-										className='py-3'
+										className="py-3"
 										key={language["language id"]}
 										value={language["language id"]}>
 										{language["language name"]}
@@ -226,21 +226,21 @@ const EditCourseInfor = () => {
 							<Select
 								isDisabled={!editable}
 								selectedKeys={[formValue.targetLanguageId]}
-								size='lg'
+								size="lg"
 								label={<Label>Ngôn ngữ học</Label>}
-								placeholder='Tiếng Việt'
-								labelPlacement='outside'
-								radius='sm'
+								placeholder="Tiếng Việt"
+								labelPlacement="outside"
+								radius="sm"
 								isRequired
-								name='targetLanguageId'
+								name="targetLanguageId"
 								value={formValue.targetLanguageId}
 								onChange={handleInputChange}>
 								{languageQuery.data?.languages?.map((language) => (
 									<SelectItem
 										startContent={
-											<img className='size-5 rounded-full' src={language["image"]} alt='' />
+											<img className="size-5 rounded-full" src={language["image"]} alt="" />
 										}
-										className='py-3'
+										className="py-3"
 										key={language["language id"]}
 										value={language["language id"]}>
 										{language["language name"]}
@@ -251,19 +251,19 @@ const EditCourseInfor = () => {
 						<Select
 							isDisabled={!editable}
 							selectedKeys={[formValue.courseLevelId]}
-							size='lg'
+							size="lg"
 							label={<Label>Cấp độ</Label>}
-							className='col-span-4'
-							placeholder='Cấp độ'
-							labelPlacement='outside'
-							radius='sm'
+							className="col-span-4"
+							placeholder="Cấp độ"
+							labelPlacement="outside"
+							radius="sm"
 							isRequired
 							value={formValue.courseLevelId}
 							onChange={handleInputChange}
-							name='courseLevelId'>
+							name="courseLevelId">
 							{levelCourseQuery.data?.levelCourses?.map((levelCourse) => (
 								<SelectItem
-									className='py-3'
+									className="py-3"
 									key={levelCourse["course level id"]}
 									value={levelCourse["course level id"]}>
 									{levelCourse["course level name"]}
@@ -272,38 +272,38 @@ const EditCourseInfor = () => {
 						</Select>
 						<Input
 							isDisabled={!editable}
-							size='lg'
-							name='courseName'
-							type='text'
+							size="lg"
+							name="courseName"
+							type="text"
 							label={<Label>Tên bộ từ vựng</Label>}
-							labelPlacement='outside'
-							radius='sm'
-							placeholder='VD: Tiếng anh lớp 6'
+							labelPlacement="outside"
+							radius="sm"
+							placeholder="VD: Tiếng anh lớp 6"
 							value={formValue.courseName}
 							onChange={(e) => {
 								if (e.target.value?.length <= MAX_CHAR_COURSE_NAME) {
 									setFormValue((prev) => ({ ...prev, courseName: e.target.value }));
 								}
 							}}
-							className='col-span-4'
+							className="col-span-4"
 							required
 							isRequired
 							endContent={
-								<span className='text-sm text-gray-400'>
+								<span className="text-sm text-gray-400">
 									{formValue.courseName?.length}/{MAX_CHAR_COURSE_NAME}
 								</span>
 							}
 						/>
 						<Input
 							isDisabled={!editable}
-							size='lg'
-							name='tag'
-							type='text'
+							size="lg"
+							name="tag"
+							type="text"
 							label={<Label>Từ khoá</Label>}
-							placeholder='VD: lớp 6'
-							labelPlacement='outside'
-							radius='sm'
-							className='col-span-4'
+							placeholder="VD: lớp 6"
+							labelPlacement="outside"
+							radius="sm"
+							className="col-span-4"
 							value={formValue.tag}
 							onChange={(e) => {
 								if (e.target.value?.length <= MAX_CHAR_TAG) {
@@ -313,46 +313,46 @@ const EditCourseInfor = () => {
 							required
 							isRequired
 							endContent={
-								<span className='text-sm text-gray-400'>
+								<span className="text-sm text-gray-400">
 									{formValue.tag?.length}/{MAX_CHAR_TAG}
 								</span>
 							}
 						/>
 					</div>
-					<div className='col-span-2 row-span-2 flex flex-col w-full h-full'>
-						<div className='-translate-y-1'>
+					<div className="col-span-2 row-span-2 flex flex-col w-full h-full">
+						<div className="-translate-y-1">
 							<Label>Hình ảnh</Label>
 						</div>
-						<div className='flex flex-col justify-center h-full'>
+						<div className="flex flex-col justify-center h-full">
 							<img
 								onClick={handleOpenFileSelect}
-								loading='eager'
-								className='flex-1 rounded-md object-cover object-center mb-2 cursor-pointer hover:bg-gray-100 transition-all'
+								loading="eager"
+								className="flex-1 rounded-md object-cover object-center mb-2 cursor-pointer hover:bg-gray-100 transition-all"
 								src={formValue.image || defaultUploadImage}
-								alt=''
+								alt=""
 							/>
 							<Input
 								isDisabled={!editable}
 								ref={inputFileRef}
-								type='file'
-								radius='sm'
+								type="file"
+								radius="sm"
 								onChange={onChangeImage}
 								multiple={false}
-								accept='image/*'
-								className='hidden'
+								accept="image/*"
+								className="hidden"
 							/>
-							<div className='flex items-center justify-center gap-4'>
+							<div className="flex items-center justify-center gap-4">
 								<button
 									disabled={!editable}
-									type='button'
-									className='text-sm underline select-none active:opacity-80'
+									type="button"
+									className="text-sm underline select-none active:opacity-80"
 									onClick={() => setFormValue((prev) => ({ ...prev, image: null }))}>
 									Remove
 								</button>
 								<button
 									disabled={!editable}
-									type='button'
-									className='text-sm underline select-none active:opacity-80'
+									type="button"
+									className="text-sm underline select-none active:opacity-80"
 									onClick={() =>
 										setFormValue((prev) => ({
 											...prev,
@@ -367,14 +367,14 @@ const EditCourseInfor = () => {
 
 					<Textarea
 						isDisabled={!editable}
-						size='lg'
-						name='shortDescription'
-						type='text'
+						size="lg"
+						name="shortDescription"
+						type="text"
 						label={<Label>Mô tả ngắn</Label>}
-						labelPlacement='outside'
-						radius='sm'
-						placeholder='Viết vào ở đây...'
-						className='col-span-4'
+						labelPlacement="outside"
+						radius="sm"
+						placeholder="Viết vào ở đây..."
+						className="col-span-4"
 						value={formValue.shortDescription}
 						onChange={(e) => {
 							if (e.target.value?.length <= MAX_SHORT_DESCRIPTION) {
@@ -384,35 +384,35 @@ const EditCourseInfor = () => {
 						rows={3}
 						disableAutosize
 						endContent={
-							<span className='text-sm text-gray-400'>
+							<span className="text-sm text-gray-400">
 								{formValue.shortDescription?.length}/{MAX_SHORT_DESCRIPTION}
 							</span>
 						}
 					/>
 					<Textarea
 						isDisabled={!editable}
-						size='lg'
+						size="lg"
 						disableAutosize
 						label={<Label>Mô tả chi tiết</Label>}
-						labelPlacement='outside'
-						radius='sm'
-						placeholder='Viết vào ở đây...'
-						className='col-span-6'
+						labelPlacement="outside"
+						radius="sm"
+						placeholder="Viết vào ở đây..."
+						className="col-span-6"
 						value={formValue.detailedDescription}
 						onChange={handleInputChange}
 						rows={8}
-						name='detailedDescription'
+						name="detailedDescription"
 					/>
 					{editable && (
-						<div className='col-span-6 grid grid-cols-12 gap-4'>
+						<div className="col-span-6 grid grid-cols-12 gap-4">
 							<Button
-								type='reset'
-								className='col-start-6 col-span-1 bg-gray-300 text-gray-700 px-4 py-2 rounded'>
+								type="reset"
+								className="col-start-6 col-span-1 bg-gray-300 text-gray-700 px-4 py-2 rounded">
 								Hủy
 							</Button>
 							<Button
-								type='submit'
-								className='col-span-1 bg-secondary px-4 py-2 rounded text-white'
+								type="submit"
+								className="col-span-1 bg-secondary px-4 py-2 rounded text-white"
 								isLoading={updateCourseMutation.isPending}>
 								Lưu
 							</Button>
@@ -427,5 +427,5 @@ const EditCourseInfor = () => {
 export default EditCourseInfor;
 
 const Label = ({ children }) => {
-	return <span className='text-sm text-gray-600 select-none'>{children}</span>;
+	return <span className="text-sm text-gray-600 select-none">{children}</span>;
 };

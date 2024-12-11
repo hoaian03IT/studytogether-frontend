@@ -26,7 +26,7 @@ const data = {
 };
 
 class GrokAIService {
-	static async translateWord(sourceLanguage, targetLanguage, word) {
+	static async getRelatedInformationWord(sourceLanguage, targetLanguage, word) {
 		const data = {
 			messages: [
 				{
@@ -35,8 +35,8 @@ class GrokAIService {
 				},
 				{
 					role: "user",
-					content: `You only answer by json and there is no new line, just pure json. JSON format is {"source language": "_my_provide_","target language": "_my_provide_","word": "_my_provide_with_target_language_","translation": ["_your_generation_with_source_language_"], "type word": ["_your_generation_with_target_language_"], // 3-4 translation an type word if has
-                            "transcript" ["_your_generation_"], // how to pronounce the word by target language with standard phonetic transcription and 3-4 transcripts,
+					content: `You only answer by json and there is no new line, just pure json. JSON format is {"source language": "_my_provide_","target language": "_my_provide_","word": "_my_provide_with_target_language_","translation": ["_your_generation_with_source_language_"], "type word": ["_your_generation_with_target_language_"], // 4-5 translation an type word if has
+                            "transcript" ["_your_generation_"], // how to pronounce the word by target language with standard phonetic transcription and 4-5 transcripts,
                             }.
                             Now do your work, my input: {
                             "source language": "${sourceLanguage}",
@@ -56,7 +56,7 @@ class GrokAIService {
 				Authorization: `Bearer ${xaiApiKey}`,
 			},
 		});
-		return response?.data?.choices[0]?.message?.content;
+		return JSON.parse(response?.data?.choices[0]?.message?.content);
 	}
 }
 

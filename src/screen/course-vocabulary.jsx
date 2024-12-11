@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { FaMicrophone } from "react-icons/fa";
 import { TbTextPlus } from "react-icons/tb";
@@ -14,12 +14,19 @@ import {
 	Accordion,
 	AccordionItem,
 	Button,
+	Dropdown,
+	DropdownItem,
+	DropdownMenu,
+	DropdownTrigger,
 	Input,
 	Modal,
 	ModalBody,
 	ModalContent,
 	ModalFooter,
 	ModalHeader,
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
 	Select,
 } from "@nextui-org/react";
 import { SelectItem } from "@nextui-org/select";
@@ -32,6 +39,7 @@ import { queryKeys } from "../react-query/query-keys.js";
 import { WordListEdit } from "../components/word-list-edit.jsx";
 import { useDebounce } from "../hooks/useDebounce.jsx";
 import { GrokAIService } from "../apis/grokai.api.js";
+import { useGenerateWordInformation } from "../hooks/useAIGeneration.jsx";
 
 function CourseVocabulary() {
 	const params = useParams();
@@ -42,6 +50,7 @@ function CourseVocabulary() {
 
 	const queryClient = useQueryClient();
 
+	const [showSuggestDefinition, setShowSuggestDefinition] = useState(false);
 	const [vocabulary, setVocabulary] = useState("");
 	const [definition, setDefinition] = useState("");
 	const [typeWord, setTypeWord] = useState("");
@@ -63,6 +72,10 @@ function CourseVocabulary() {
 		oldLevelId: null,
 		wordId: null,
 	});
+
+	const triggerDefinitionSuggestion = useRef(null);
+	const triggerTypeWordSuggestion = useRef(null);
+	const triggerTranscriptSuggestion = useRef(null);
 
 	const wordDebounced = useDebounce(vocabulary, 800);
 
@@ -88,6 +101,17 @@ function CourseVocabulary() {
 			}
 		},
 	});
+
+	const {
+		translation: wordTranslation,
+		type,
+		transcript,
+	} = useGenerateWordInformation({
+		sourceLanguage: courseLanguagesQuery.data?.["source language name"],
+		targetLanguage: courseLanguagesQuery.data?.["target language name"],
+		word: wordDebounced,
+	});
+
 	const addLevelMutation = useMutation({
 		mutationFn: async ({ courseId, groupName }) => {
 			return await CourseService.addNewLevelCourse(courseId, groupName, user, updateUserState);
@@ -288,22 +312,6 @@ function CourseVocabulary() {
 			console.error(error);
 		},
 	});
-	// call api AI
-	useEffect(() => {
-		if (wordDebounced) {
-			GrokAIService.translateWord(
-				courseLanguagesQuery.data?.["source language name"],
-				courseLanguagesQuery.data?.["target language name"],
-				wordDebounced,
-			)
-				.then((response) => {
-					console.log(JSON.parse(response));
-				})
-				.catch((error) => {
-					console.error(error);
-				});
-		}
-	}, [courseLanguagesQuery.data, wordDebounced]);
 
 	const handleFileChange = (event) => {
 		setSelectedFile(event.target.files[0]);
@@ -528,6 +536,9 @@ function CourseVocabulary() {
 									radius="sm"
 									value={definition}
 									onValueChange={setDefinition}
+									onPointerDown={() => {
+										wordTranslation.length > 0 && triggerDefinitionSuggestion.current.click();
+									}}
 									placeholder="Nhập định nghĩa"
 									label={
 										<label className="-translate-y-2">
@@ -536,7 +547,48 @@ function CourseVocabulary() {
 									}
 									labelPlacement="outside"
 									className="bg-white rounded-small"
+									autoFocus
 								/>
+								<Dropdown className="w-72" radius="sm">
+									<DropdownTrigger>
+										<div ref={triggerDefinitionSuggestion} className="w-full"></div>
+									</DropdownTrigger>
+									<DropdownMenu>
+										{wordTranslation.map((item, index) => (
+											<DropdownItem
+												radius="sm"
+												color="light"
+												key={item}
+												onClick={() => {
+													setDefinition((prev) =>
+														!prev.includes(item)
+															? prev
+																? `${prev}, ${item}`
+																: item
+															: prev,
+													);
+													// add appropriate type based on definition
+													setTypeWord((prev) =>
+														!prev.includes(type[index])
+															? prev
+																? `${prev}, ${type[index]}`
+																: type[index]
+															: prev,
+													);
+													//  add appropriate transcript based on type word
+													setTranscription((prev) =>
+														!prev.includes(transcript[index])
+															? prev
+																? `${prev}, \\${transcript[index]}\\`
+																: `\\${transcript[index]}\\`
+															: prev,
+													);
+												}}>
+												{item}
+											</DropdownItem>
+										))}
+									</DropdownMenu>
+								</Dropdown>
 							</div>
 						</div>
 						<div className="flex items-center">
@@ -548,11 +600,51 @@ function CourseVocabulary() {
 									radius="sm"
 									value={typeWord}
 									onValueChange={setTypeWord}
+									onPointerDown={() => {
+										type.length > 0 && triggerTypeWordSuggestion.current.click();
+									}}
 									placeholder="Loại từ"
 									label={<label className="-translate-y-2">Loại từ </label>}
 									labelPlacement="outside"
 									className="bg-white rounded-small"
 								/>
+								<Dropdown className="w-80" radius="sm">
+									<DropdownTrigger>
+										<div ref={triggerTypeWordSuggestion} className="w-full"></div>
+									</DropdownTrigger>
+									<DropdownMenu>
+										{type
+											.filter((e, i, self) => i === self.indexOf(e))
+											.map((item, index) => (
+												<DropdownItem
+													radius="sm"
+													color="light"
+													key={item}
+													onClick={() => {
+														setTypeWord((prev) =>
+															!prev.includes(item)
+																? prev
+																	? `${prev}, ${item}`
+																	: item
+																: prev,
+														);
+														//  add appropriate transcript based on type word
+														let indexOfAppropriateTranscript = type.findIndex(
+															(i) => i === item,
+														);
+														setTranscription((prev) =>
+															!prev.includes(transcript[indexOfAppropriateTranscript])
+																? prev
+																	? `${prev}, \\${transcript[indexOfAppropriateTranscript]}\\`
+																	: `\\${transcript[indexOfAppropriateTranscript]}\\`
+																: prev,
+														);
+													}}>
+													{item}
+												</DropdownItem>
+											))}
+									</DropdownMenu>
+								</Dropdown>
 							</div>
 						</div>
 						<div className="flex items-center">
@@ -564,11 +656,40 @@ function CourseVocabulary() {
 									radius="sm"
 									value={transcription}
 									onValueChange={setTranscription}
+									onPointerDown={() => {
+										transcript.length > 0 && triggerTranscriptSuggestion.current.click();
+									}}
 									placeholder="Bản ghi (cách phát âm)"
 									label={<label className="-translate-y-2">Bản ghi</label>}
 									labelPlacement="outside"
 									className="bg-white rounded-small"
 								/>
+								<Dropdown className="w-80" radius="sm">
+									<DropdownTrigger>
+										<div ref={triggerTranscriptSuggestion} className="w-full"></div>
+									</DropdownTrigger>
+									<DropdownMenu>
+										{transcript
+											.filter((e, i, self) => i === self.indexOf(e))
+											.map((item) => (
+												<DropdownItem
+													radius="sm"
+													color="light"
+													key={item}
+													onClick={() => {
+														setTranscription((prev) =>
+															!prev.includes(item)
+																? prev
+																	? `${prev}, ${item}`
+																	: item
+																: prev,
+														);
+													}}>
+													{item}
+												</DropdownItem>
+											))}
+									</DropdownMenu>
+								</Dropdown>
 							</div>
 						</div>
 					</div>
