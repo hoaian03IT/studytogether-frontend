@@ -3,13 +3,20 @@ import { useQuery } from "@tanstack/react-query";
 import { CourseService } from "../apis/course.api.js";
 import { CircularProgress } from "@nextui-org/react";
 import { queryKeys } from "../react-query/query-keys.js";
+import { useRecoilValue } from "recoil";
+import { userState } from "../recoil/atoms/user.atom.js";
+import { useContext } from "react";
+import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 
 function CourseInformationComment({ courseId, authorUsername }) {
+	const user = useRecoilValue(userState);
+	const { updateUserState } = useContext(GlobalStateContext);
+
 	const courseCommentQuery = useQuery({
 		queryKey: [queryKeys.courseComment, courseId],
 		queryFn: async ({ queryKey }) => {
 			try {
-				let data = await CourseService.fetchCourseComment(queryKey[1]);
+				let data = await CourseService.fetchCourseComment(queryKey[1], user, updateUserState);
 				data = Object.values(data);
 				return data;
 			} catch (error) {
@@ -19,16 +26,16 @@ function CourseInformationComment({ courseId, authorUsername }) {
 	});
 	return (
 		<div>
-			<h2 className='text-xl font-bold'>
+			<h2 className="text-xl font-bold">
 				Comments({courseCommentQuery.data?.reduce((prev, curr) => prev + curr?.["replies"]?.length + 1, 0) || 0}
 				)
 			</h2>
 			{courseCommentQuery.isLoading ? (
-				<div className='flex justify-center'>
-					<CircularProgress label='LoadingThreeDot...' />
+				<div className="flex justify-center">
+					<CircularProgress label="LoadingThreeDot..." />
 				</div>
 			) : (
-				<div className='mt-8'>
+				<div className="mt-8">
 					{courseCommentQuery.data?.map((item) => (
 						<Feedback
 							name={

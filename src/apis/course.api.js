@@ -19,7 +19,7 @@ class CourseServiceClass {
 		return res.data;
 	}
 
-	async updateCourseInformation(payload, user, updateUserState) {
+	async updateCourseInformation(payload, userState, updateUserState) {
 		const {
 			courseId,
 			courseName,
@@ -31,7 +31,7 @@ class CourseServiceClass {
 			image,
 			isPrivate = 0,
 		} = payload;
-		const httpAuth = createHttpAuth(user, updateUserState);
+		const httpAuth = createHttpAuth(userState, updateUserState);
 		const response = await httpAuth.post(`/course/update`, {
 			courseId,
 			courseName,
@@ -46,18 +46,21 @@ class CourseServiceClass {
 		return response.data;
 	}
 
-	async fetchCourseInformation(courseId) {
-		const res = await http.get(`/course/overview?course-id=${courseId}`);
+	async fetchCourseInformation(courseId, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.get(`/course/overview?course-id=${courseId}`);
 		return res.data;
 	}
 
-	async fetchCourseContent(courseId) {
-		const res = await http.get(`/course/content?course-id=${courseId}`);
+	async fetchCourseContent(courseId, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.get(`/course/content?course-id=${courseId}`);
 		return res.data;
 	}
 
-	async fetchCourseComment(courseId) {
-		const res = await http.get(`/course/comment?course-id=${courseId}`);
+	async fetchCourseComment(courseId, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await http.httpAuth(`/course/comment?course-id=${courseId}`);
 		return res.data;
 	}
 
@@ -88,23 +91,10 @@ class CourseServiceClass {
 		return res.data;
 	}
 
-	async fetchCoursePrices(courseId) {
-		try {
-			console.log("Fetching course prices for courseId:", courseId);
-			const res = await http.get(`/course/prices?course-id=${courseId}`);
-			return res.data;
-		} catch (error) {
-			console.error("Error fetching course prices:", error);
-			if (error.response) {
-				toast.error(`Error: ${error.response.data?.message || "Something went wrong!"}`);
-				return error.response.data;
-			} else if (error.request) {
-				toast.error("Error: No response from server!");
-			} else {
-				toast.error(`Error: ${error.message}`);
-			}
-			return {};
-		}
+	async fetchCoursePrices(courseId, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.get(`/course/prices?course-id=${courseId}`);
+		return res.data;
 	}
 
 	async searchCourses(params) {

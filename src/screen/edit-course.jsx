@@ -23,19 +23,20 @@ const MAX_SHORT_DESCRIPTION = 255;
 
 const EditCourseInfor = () => {
 	const params = useParams();
+	let user = useRecoilValue(userState);
+	let { updateUserState } = useContext(GlobalStateContext);
+	let { translation } = useContext(TranslationContext);
+
 	const courseInfoQuery = useQuery({
 		queryKey: [queryKeys.courseInfo, params?.courseId],
 		queryFn: async ({ queryKey }) => {
 			try {
-				return await CourseService.fetchCourseInformation(queryKey[1]);
+				return await CourseService.fetchCourseInformation(queryKey[1], user, updateUserState);
 			} catch (error) {
-				console.error(error);
+				toast.error(translation(error.response.data?.errorCode));
 			}
 		},
 	});
-	let user = useRecoilValue(userState);
-	let { updateUserState } = useContext(GlobalStateContext);
-	let { translation } = useContext(TranslationContext);
 
 	const [formValue, setFormValue] = useState({
 		targetLanguageId: "",
@@ -81,6 +82,7 @@ const EditCourseInfor = () => {
 		},
 		onError: (error) => {
 			toast.error(translation(error.response.data?.errorCode));
+			handleFormValueInitial(courseInfoQuery.data);
 			console.error(error);
 		},
 	});

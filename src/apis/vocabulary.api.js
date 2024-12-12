@@ -5,45 +5,43 @@ class VocabularyServiceClass {
 		const httpAuth = createHttpAuth(userState, updateUserState);
 		let vocabularyList = [];
 		let targetLanguage, sourceLanguage;
-		try {
-			const res = await httpAuth.get(`/vocabulary/all/${courseId}`);
-			const { data } = res;
-			if (data?.vocabularyList?.length === 0) return vocabularyList;
-			let records = data?.vocabularyList;
-			let count = 0,
-				currentLevelId = records[0]?.["level id"];
-			vocabularyList.push({
-				levelId: records[0]?.["level id"],
-				levelName: records[0]?.["level name"],
-				words: [],
-			});
-			targetLanguage = data?.["targetLanguage"];
-			sourceLanguage = data?.["sourceLanguage"];
-			for (let record of records) {
-				if (currentLevelId !== record?.["level id"]) {
-					currentLevelId = record?.["level id"];
-					vocabularyList.push({
-						levelId: record?.["level id"],
-						levelName: record?.["level name"],
-						words: [],
-					});
-					count++;
-				}
-				if (record?.["word id"]) {
-					vocabularyList[count].words.push({
-						wordId: record?.["word id"],
-						word: record?.["word"],
-						definition: record?.["definition"],
-						image: record?.["image"],
-						pronunciation: record?.["pronunciation"],
-						type: record?.["type"],
-						transcription: record?.["transcription"],
-					});
-				}
+
+		const res = await httpAuth.get(`/vocabulary/all/${courseId}`);
+		const { data } = res;
+		if (data?.vocabularyList?.length === 0) return vocabularyList;
+		let records = data?.vocabularyList;
+		let count = 0,
+			currentLevelId = records[0]?.["level id"];
+		vocabularyList.push({
+			levelId: records[0]?.["level id"],
+			levelName: records[0]?.["level name"],
+			words: [],
+		});
+		targetLanguage = data?.["targetLanguage"];
+		sourceLanguage = data?.["sourceLanguage"];
+		for (let record of records) {
+			if (currentLevelId !== record?.["level id"]) {
+				currentLevelId = record?.["level id"];
+				vocabularyList.push({
+					levelId: record?.["level id"],
+					levelName: record?.["level name"],
+					words: [],
+				});
+				count++;
 			}
-		} catch (error) {
-			console.error(error);
+			if (record?.["word id"]) {
+				vocabularyList[count].words.push({
+					wordId: record?.["word id"],
+					word: record?.["word"],
+					definition: record?.["definition"],
+					image: record?.["image"],
+					pronunciation: record?.["pronunciation"],
+					type: record?.["type"],
+					transcription: record?.["transcription"],
+				});
+			}
 		}
+
 		return { vocabularyList, targetLanguage, sourceLanguage };
 	}
 

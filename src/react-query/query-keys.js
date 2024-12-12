@@ -16,6 +16,7 @@ const queryKeys = {
 	finishedCourses: "finished-course",
 	unfinishedCourses: "unfinished-course",
 	ownCourses: "own-course",
+	checkOwnCourse: "check-own-course",
 };
 
 export { queryKeys };

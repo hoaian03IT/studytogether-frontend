@@ -29,13 +29,14 @@ import {
 import { SelectItem } from "@nextui-org/select";
 import { CourseService } from "../apis/course.api.js";
 import { Image } from "@nextui-org/image";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { base64Converter } from "../utils/base64-convert.js";
 import { queryKeys } from "../react-query/query-keys.js";
 import { WordListEdit } from "../components/word-list-edit.jsx";
 import { useDebounce } from "../hooks/useDebounce.jsx";
 import { useGenerateWordInformation } from "../hooks/useAIGeneration.jsx";
+import { pathname } from "../routes/index.js";
 
 function CourseVocabulary() {
 	const params = useParams();
@@ -780,7 +781,7 @@ function CourseVocabulary() {
 							className="bg-white rounded-small"
 							selectedKeys={[selectedGroup]}
 							items={vocabularyQuery?.data}>
-							{vocabularyQuery?.data?.vocabularyList.map((item) => (
+							{vocabularyQuery?.data?.vocabularyList?.map((item) => (
 								<SelectItem value={item?.levelId.toString()} key={item?.levelId.toString()}>
 									{item?.levelName}
 								</SelectItem>
