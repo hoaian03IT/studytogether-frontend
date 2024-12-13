@@ -16,6 +16,7 @@ import { userState } from "../recoil/atoms/user.atom.js";
 import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 import { TbEdit } from "react-icons/tb";
 import { TranslationContext } from "../providers/TranslationProvider.jsx";
+import clsx from "clsx";
 
 const MAX_CHAR_COURSE_NAME = 100;
 const MAX_CHAR_TAG = 30;
@@ -50,6 +51,8 @@ const EditCourseInfor = () => {
 		isPrivate: null,
 	});
 
+	const toastId = React.useRef(null);
+
 	const [editable, setEditable] = useState(false);
 
 	const navigate = useNavigate();
@@ -75,12 +78,15 @@ const EditCourseInfor = () => {
 
 	const updateCourseMutation = useMutation({
 		mutationFn: async (payload) => {
+			toastId.current = toast.loading("LOADING");
 			return await CourseService.updateCourseInformation(payload, user, updateUserState);
 		},
 		onSuccess: (data) => {
+			toast.dismiss(toastId.current);
 			toast.success(translation(data.messageCode));
 		},
 		onError: (error) => {
+			toast.dismiss(toastId.current);
 			toast.error(translation(error.response.data?.errorCode));
 			handleFormValueInitial(courseInfoQuery.data);
 			console.error(error);
@@ -156,7 +162,7 @@ const EditCourseInfor = () => {
 			shortDescription: formValue.shortDescription,
 			detailedDescription: formValue.detailedDescription,
 			image: formValue.image === courseInfoQuery.data?.["image"] ? null : formValue.image,
-			isPrivate: formValue.isPrivate,
+			isPrivate: Number(formValue.isPrivate),
 		});
 		setEditable(false);
 	};
@@ -327,9 +333,12 @@ const EditCourseInfor = () => {
 						</div>
 						<div className="flex flex-col justify-center h-full">
 							<img
+								loading="lazy"
 								onClick={handleOpenFileSelect}
-								loading="eager"
-								className="flex-1 rounded-md object-cover object-center mb-2 cursor-pointer hover:bg-gray-100 transition-all"
+								className={clsx(
+									"flex-1 rounded-md object-cover object-center mb-2 hover:bg-gray-100 transition-all",
+									editable ? "cursor-pointer" : "",
+								)}
 								src={formValue.image || defaultUploadImage}
 								alt=""
 							/>
@@ -343,27 +352,29 @@ const EditCourseInfor = () => {
 								accept="image/*"
 								className="hidden"
 							/>
-							<div className="flex items-center justify-center gap-4">
-								<button
-									disabled={!editable}
-									type="button"
-									className="text-sm underline select-none active:opacity-80"
-									onClick={() => setFormValue((prev) => ({ ...prev, image: null }))}>
-									Remove
-								</button>
-								<button
-									disabled={!editable}
-									type="button"
-									className="text-sm underline select-none active:opacity-80"
-									onClick={() =>
-										setFormValue((prev) => ({
-											...prev,
-											image: courseInfoQuery.data?.["image"],
-										}))
-									}>
-									Reset
-								</button>
-							</div>
+							{editable && (
+								<div className="flex items-center justify-center gap-4">
+									<button
+										disabled={!editable}
+										type="button"
+										className="text-sm underline select-none active:opacity-80"
+										onClick={() => setFormValue((prev) => ({ ...prev, image: null }))}>
+										Remove
+									</button>
+									<button
+										disabled={!editable}
+										type="button"
+										className="text-sm underline select-none active:opacity-80"
+										onClick={() =>
+											setFormValue((prev) => ({
+												...prev,
+												image: courseInfoQuery.data?.["image"],
+											}))
+										}>
+										Reset
+									</button>
+								</div>
+							)}
 						</div>
 					</div>
 

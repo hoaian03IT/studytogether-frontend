@@ -23,6 +23,7 @@ function GlobalStateProvider({ children }) {
 	const updateUserState = (userState) => {
 		if (userState === null) {
 			localStorage.setItem("isLogged", JSON.stringify(false));
+
 			setUser({
 				info: {
 					phone: null,
@@ -36,7 +37,7 @@ function GlobalStateProvider({ children }) {
 					googleId: null,
 				},
 				token: null,
-				isLogged: false,
+				// isLogged: false,
 			});
 		} else {
 			setUser({ ...userState });

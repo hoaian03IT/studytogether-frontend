@@ -208,7 +208,7 @@ export const ExerciseManager = forwardRef(({ isOpen, onClose, isLoading, action 
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={onClose} size='xl'>
+		<Modal isOpen={isOpen} onClose={onClose} size="xl">
 			<ModalContent>
 				<form onSubmit={handleSubmit}>
 					<ModalHeader>
@@ -216,19 +216,19 @@ export const ExerciseManager = forwardRef(({ isOpen, onClose, isLoading, action 
 					</ModalHeader>
 					<ModalBody>
 						<Tabs
-							aria-label='Options'
-							variant='light'
+							aria-label="Options"
+							variant="light"
 							selectedKey={typeQuestion}
 							onSelectionChange={action === "insert" ? setTypeQuestion : null}>
-							<Tab key='multiple-choices' title='Mutiple choices'>
-								<div className='space-y-2'>
+							<Tab key="multiple-choices" title="Mutiple choices">
+								<div className="space-y-2">
 									<div>
-										<label className='text-black'>Difficulty:</label>
+										<label className="text-black">Difficulty:</label>
 										<Select
-											variant='bordered'
-											radius='sm'
-											color='primary'
-											aria-label='difficulty'
+											variant="bordered"
+											radius="sm"
+											color="primary"
+											aria-label="difficulty"
 											selectedKeys={[difficulty?.toString()]}
 											value={difficulty}
 											onChange={(e) => {
@@ -242,128 +242,128 @@ export const ExerciseManager = forwardRef(({ isOpen, onClose, isLoading, action 
 										</Select>
 									</div>
 									<div>
-										<label className='text-black'>Title:</label>
+										<label className="text-black">Title:</label>
 										<Input
-											name='title'
-											color='primary'
-											variant='bordered'
-											placeholder='Title text'
-											radius='sm'
+											name="title"
+											color="primary"
+											variant="bordered"
+											placeholder="Title text"
+											radius="sm"
 											value={formValueMultipleChoices.title}
 											onChange={handleOnChangeMultipleChoicesForm}
-											size='md'
+											size="md"
 											required
 											isRequired
 										/>
 									</div>
 									<div>
-										<label className='text-black'>Question:</label>
+										<label className="text-black">Question:</label>
 										<Textarea
-											name='question'
-											color='primary'
-											variant='bordered'
-											placeholder='Question text'
-											radius='sm'
+											name="question"
+											color="primary"
+											variant="bordered"
+											placeholder="Question text"
+											radius="sm"
 											value={formValueMultipleChoices.question}
 											onChange={handleOnChangeMultipleChoicesForm}
-											size='md'
+											size="md"
 											rows={3}
 											disableAutosize
-											className='resize-none'
+											className="resize-none"
 											required
 											isRequired
 										/>
 									</div>
 									<div>
 										<label>Answer:</label>
-										<div className='grid grid-cols-2 gap-y-2 gap-x-6'>
-											<div className='col-span-1 flex items-center gap-2'>
+										<div className="grid grid-cols-2 gap-y-2 gap-x-6">
+											<div className="col-span-1 flex items-center gap-2">
 												<Input
-													name='optionA'
-													variant='bordered'
-													placeholder='Option A'
-													radius='sm'
+													name="optionA"
+													variant="bordered"
+													placeholder="Option A"
+													radius="sm"
 													value={formValueMultipleChoices.optionA}
 													onChange={handleOnChangeMultipleChoicesForm}
-													color='primary'
-													size='md'
+													color="primary"
+													size="md"
 													required
 													isRequired
 												/>
 												<input
-													type='radio'
-													className='flex-1 cursor-pointer'
-													name='answer'
-													value='A'
+													type="radio"
+													className="flex-1 cursor-pointer"
+													name="answer"
+													value="A"
 													checked={formValueMultipleChoices.answer === "A"}
 													onChange={handleOnChangeMultipleChoicesForm}
 													required
 												/>
 											</div>
-											<div className='col-span-1 flex items-center gap-2'>
+											<div className="col-span-1 flex items-center gap-2">
 												<Input
-													name='optionB'
-													variant='bordered'
-													placeholder='Option B'
-													radius='sm'
+													name="optionB"
+													variant="bordered"
+													placeholder="Option B"
+													radius="sm"
 													value={formValueMultipleChoices.optionB}
 													onChange={handleOnChangeMultipleChoicesForm}
-													color='primary'
-													size='md'
+													color="primary"
+													size="md"
 													required
 													isRequired
 												/>
 												<input
-													type='radio'
-													className='flex-1 cursor-pointer'
-													name='answer'
-													value='B'
+													type="radio"
+													className="flex-1 cursor-pointer"
+													name="answer"
+													value="B"
 													checked={formValueMultipleChoices.answer === "B"}
 													onChange={handleOnChangeMultipleChoicesForm}
 													required
 												/>
 											</div>
-											<div className='col-span-1 flex items-center gap-2'>
+											<div className="col-span-1 flex items-center gap-2">
 												<Input
-													name='optionC'
-													variant='bordered'
-													placeholder='Option C'
-													radius='sm'
+													name="optionC"
+													variant="bordered"
+													placeholder="Option C"
+													radius="sm"
 													value={formValueMultipleChoices.optionC}
 													onChange={handleOnChangeMultipleChoicesForm}
-													color='primary'
-													size='md'
+													color="primary"
+													size="md"
 													required
 													isRequired
 												/>
 												<input
-													type='radio'
-													className='flex-1 cursor-pointer'
-													name='answer'
-													value='C'
+													type="radio"
+													className="flex-1 cursor-pointer"
+													name="answer"
+													value="C"
 													checked={formValueMultipleChoices.answer === "C"}
 													onChange={handleOnChangeMultipleChoicesForm}
 													required
 												/>
 											</div>
-											<div className='col-span-1 flex items-center gap-2'>
+											<div className="col-span-1 flex items-center gap-2">
 												<Input
-													name='optionD'
-													variant='bordered'
-													placeholder='Option D'
-													radius='sm'
+													name="optionD"
+													variant="bordered"
+													placeholder="Option D"
+													radius="sm"
 													value={formValueMultipleChoices.optionD}
 													onChange={handleOnChangeMultipleChoicesForm}
-													color='primary'
-													size='md'
+													color="primary"
+													size="md"
 													required
 													isRequired
 												/>
 												<input
-													type='radio'
-													className='flex-1 cursor-pointer'
-													name='answer'
-													value='D'
+													type="radio"
+													className="flex-1 cursor-pointer"
+													name="answer"
+													value="D"
 													checked={formValueMultipleChoices.answer === "D"}
 													onChange={handleOnChangeMultipleChoicesForm}
 													required
@@ -374,63 +374,63 @@ export const ExerciseManager = forwardRef(({ isOpen, onClose, isLoading, action 
 									<div>
 										<label>Explanation:</label>
 										<Textarea
-											name='explanation'
-											variant='bordered'
-											placeholder='Explanation text'
-											radius='sm'
+											name="explanation"
+											variant="bordered"
+											placeholder="Explanation text"
+											radius="sm"
 											value={formValueMultipleChoices.explanation}
 											onChange={handleOnChangeMultipleChoicesForm}
-											color='primary'
-											size='md'
+											color="primary"
+											size="md"
 											rows={3}
 											disableAutosize
-											className='resize-none'
+											className="resize-none"
 										/>
 									</div>
 									<div>
 										<Button
-											size='sm'
-											color='default'
-											aria-label='multipleChoices'
+											size="sm"
+											color="default"
+											aria-label="multipleChoices"
 											onClick={(e) => {
 												handleShowMore(e, "multipleChoices");
 											}}>
 											{showMore?.multipleChoices ? (
 												<Fragment>
-													<FaMinus className='size-3' radius='sm' />
+													<FaMinus className="size-3" radius="sm" />
 													<span>Hide</span>
 												</Fragment>
 											) : (
 												<Fragment>
-													<FaPlus className='size-3' radius='sm' />
+													<FaPlus className="size-3" radius="sm" />
 													<span>More</span>
 												</Fragment>
 											)}
 										</Button>
 										{showMore.multipleChoices && (
-											<div className='w-full mt-2'>
+											<div className="w-full mt-2">
 												<ImageAndAudio
 													audioSrc={formValueMultipleChoices?.audio}
 													handleSelectAudio={handleSelectFileMedia}
 													imageSrc={formValueMultipleChoices?.image}
 													handleSelectImage={handleSelectFileMedia}
 													handleRemoveMedia={handleRemoveFileMediaMultipleChoices}
-													typeExercise='multiple-choices'
+													typeExercise="multiple-choices"
 												/>
 											</div>
 										)}
 									</div>
 								</div>
 							</Tab>
-							<Tab key='fill-in-blank' title='Fill in blank'>
-								<div className='space-y-2'>
+							<Tab key="fill-in-blank" title="Fill in blank">
+								<div className="space-y-2">
 									<div>
-										<label className='text-black'>Difficulty:</label>
+										<label className="text-black">Difficulty:</label>
 										<Select
-											variant='bordered'
-											radius='sm'
-											color='primary'
-											aria-label='difficulty'
+											variant="bordered"
+											radius="sm"
+											color="primary"
+											aria-label="difficulty"
 											selectedKeys={[difficulty?.toString()]}
 											value={difficulty}
 											onChange={(e) => {
@@ -444,47 +444,47 @@ export const ExerciseManager = forwardRef(({ isOpen, onClose, isLoading, action 
 										</Select>
 									</div>
 									<div>
-										<label className='text-black'>Title:</label>
+										<label className="text-black">Title:</label>
 										<Input
-											name='title'
-											color='primary'
-											variant='bordered'
-											placeholder='Title text'
-											radius='sm'
+											name="title"
+											color="primary"
+											variant="bordered"
+											placeholder="Title text"
+											radius="sm"
 											value={formValueFillInBlank.title}
 											onChange={handleOnChangeFillInBlankForm}
-											size='md'
+											size="md"
 											required
 											isRequired
 										/>
 									</div>
 									<div>
-										<label className='text-black'>Question:</label>
+										<label className="text-black">Question:</label>
 										<Textarea
-											name='question'
-											color='primary'
-											variant='bordered'
-											placeholder='Question text with blank (use ___)'
-											radius='sm'
+											name="question"
+											color="primary"
+											variant="bordered"
+											placeholder="Question text with blank (use ___)"
+											radius="sm"
 											value={formValueFillInBlank.question}
 											onChange={handleOnChangeFillInBlankForm}
 											required
 											isRequired
-											size='md'
+											size="md"
 											rows={3}
 											disableAutosize
-											className='resize-none'
+											className="resize-none"
 										/>
 									</div>
 									<div>
 										<label>Answer:</label>
 										<Input
-											name='answer'
-											variant='bordered'
-											placeholder='Answer text'
-											radius='sm'
-											size='md'
-											color='primary'
+											name="answer"
+											variant="bordered"
+											placeholder="Answer text"
+											radius="sm"
+											size="md"
+											color="primary"
 											value={formValueFillInBlank.answer}
 											onChange={handleOnChangeFillInBlankForm}
 											required
@@ -494,48 +494,48 @@ export const ExerciseManager = forwardRef(({ isOpen, onClose, isLoading, action 
 									<div>
 										<label>Explanation:</label>
 										<Textarea
-											name='explanation'
-											variant='bordered'
-											placeholder='Explanation text'
-											color='primary'
-											radius='sm'
+											name="explanation"
+											variant="bordered"
+											placeholder="Explanation text"
+											color="primary"
+											radius="sm"
 											value={formValueFillInBlank.explanation}
 											onChange={handleOnChangeFillInBlankForm}
-											size='md'
+											size="md"
 											rows={3}
 											disableAutosize
-											className='resize-none'
+											className="resize-none"
 										/>
 									</div>
 									<div>
 										<Button
-											size='sm'
-											color='default'
-											aria-label='multipleChoices'
+											size="sm"
+											color="default"
+											aria-label="multipleChoices"
 											onClick={(e) => {
 												handleShowMore(e, "fillInBlank");
 											}}>
 											{showMore?.fillInBlank ? (
 												<Fragment>
-													<FaMinus className='size-3' radius='sm' />
+													<FaMinus className="size-3" radius="sm" />
 													<span>Hide</span>
 												</Fragment>
 											) : (
 												<Fragment>
-													<FaPlus className='size-3' radius='sm' />
+													<FaPlus className="size-3" radius="sm" />
 													<span>More</span>
 												</Fragment>
 											)}
 										</Button>
 										{showMore.fillInBlank && (
-											<div className='w-full mt-2'>
+											<div className="w-full mt-2">
 												<ImageAndAudio
 													audioSrc={formValueFillInBlank?.audio}
 													handleSelectAudio={handleSelectFileMedia}
 													imageSrc={formValueFillInBlank?.image}
 													handleSelectImage={handleSelectFileMedia}
 													handleRemoveMedia={handleRemoveFileMediaFillInBlank}
-													typeExercise='fill-in-blank'
+													typeExercise="fill-in-blank"
 												/>
 											</div>
 										)}
@@ -545,7 +545,7 @@ export const ExerciseManager = forwardRef(({ isOpen, onClose, isLoading, action 
 						</Tabs>
 					</ModalBody>
 					<ModalFooter>
-						<Button variant='shadow' color='primary' radius='sm' type='submit' isLoading={isLoading}>
+						<Button variant="shadow" color="primary" radius="sm" type="submit" isLoading={isLoading}>
 							{action === "insert" ? (
 								<Fragment>
 									<FaPlus />

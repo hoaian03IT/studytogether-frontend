@@ -60,7 +60,7 @@ class CourseServiceClass {
 
 	async fetchCourseComment(courseId, userState, updateUserState) {
 		const httpAuth = createHttpAuth(userState, updateUserState);
-		const res = await http.httpAuth(`/course/comment?course-id=${courseId}`);
+		const res = await httpAuth(`/course/comment?course-id=${courseId}`);
 		return res.data;
 	}
 

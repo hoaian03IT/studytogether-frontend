@@ -346,6 +346,7 @@ function CourseInformation() {
 							<CourseInformationComment
 								courseId={params?.courseId}
 								authorUsername={courseInfoQuery.data?.["username"]}
+								enrolled={enrolled}
 							/>
 						)}
 					</div>

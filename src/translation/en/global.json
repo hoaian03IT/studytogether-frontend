@@ -31,6 +31,9 @@
     "LOGIN_FIRST": "You must sign in first",
     "REGISTER_FIRST": "You must sign up first",
     "OOPS":"Oops! Something went wrong",
+    "HAD_ENROLLMENTS": "Cannot change to private. People enrolled this course",
+    "FEEDBACK_SUCCESS": "Your feedback was submitted",
+    "LOADING": "Loading...",
     "header": {
       "home": "Home",
       "courses": "Courses",
@@ -88,6 +91,11 @@
     },
     "list-exercise": {
       "select-level-before": "Please select levels before inserting"
+    },
+    "feedback-modal": {
+      "title": "Feedback to course",
+      "textarea-placeholder": "Enter your feedback",
+      "submit": "Submit"
     }
   }
 }

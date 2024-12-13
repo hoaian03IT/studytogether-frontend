@@ -33,7 +33,7 @@ class Http {
 						currentToken = data.token;
 						updateUserState({ ...userState, token: currentToken, isLogged: true });
 					} catch (error) {
-						updateUserState(null);
+						// updateUserState({...userState, isLogged: false});
 						console.warn("Token refresh failed:", error);
 						return Promise.reject(error);
 					}

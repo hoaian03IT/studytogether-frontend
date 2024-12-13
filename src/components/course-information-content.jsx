@@ -11,6 +11,7 @@ import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 function CourseInformationContent({ courseId }) {
 	const user = useRecoilValue(userState);
 	const { updateUserState } = useContext(GlobalStateContext);
+
 	const courseContentQuery = useQuery({
 		queryKey: [queryKeys.courseContent, courseId],
 		queryFn: async ({ queryKey }) => {
@@ -75,6 +76,7 @@ function CourseInformationContent({ courseId }) {
 					</Accordion>
 				</div>
 			)}
+			<p className="ml-2 italic font-light">Buy or enroll to learn all words</p>
 		</div>
 	);
 }

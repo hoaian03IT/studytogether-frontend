@@ -31,6 +31,9 @@
     "COURSE_REGISTRATION": "vừa đăng ký khóa học của bạn",
     "REGISTER_FIRST": "Bạn cần đăng ký tài khoản",
     "OOPS":"Ôi! Hỏng rồi",
+    "HAD_ENROLLMENTS": "Không thể đổi sang riêng tư. Đã có người đăng ký khóa học này",
+    "FEEDBACK_SUCCESS": "Đánh giá của bạn đã được gửi",
+    "LOADING": "Đang tải...",
     "header": {
       "home": "Trang chủ",
       "courses": "Khoá từ vựng",
