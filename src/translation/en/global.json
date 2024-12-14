@@ -96,6 +96,15 @@
       "title": "Feedback to course",
       "textarea-placeholder": "Enter your feedback",
       "submit": "Submit"
+    },
+    "course-management": {
+      "title-quit-course": "Quit Course",
+      "description-quit-course": "This course will not be appeared in the next times util you rejoin",
+      "title-restart-course": "Restart Course",
+      "description-restart-course": "All achievements will be recorded and you have to learn all words in this course again",
+      "cancel": "Cancel",
+      "quit": "Quit",
+      "restart": "Restart"
     }
   }
 }

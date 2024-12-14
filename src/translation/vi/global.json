@@ -91,6 +91,15 @@
     },
     "list-exercise": {
       "select-level-before": "Vui lòng chọn cấp độ trước khi thêm"
+    },
+    "course-management": {
+      "title-quit-course": "Dừng khóa học",
+      "description-quit-course": "Khóa học này sẽ không xuất hiện trong những lần tiếp theo cho đến khi bạn tham gia lại",
+      "title-restart-course": "Bắt đầu lại khóa họchọc",
+      "description-restart-course": "Mọi thành tích sẽ được ghi lại và bạn phải học lại tất cả các từ trong khóa học này",
+      "cancel": "HủyHủy",
+      "quit": "Dừng",
+      "restart": "Bắt đầu lại"
     }
   }
 }

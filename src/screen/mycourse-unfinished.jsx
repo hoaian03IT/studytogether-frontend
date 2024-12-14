@@ -14,6 +14,11 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 	Progress,
+	Dropdown,
+	DropdownTrigger,
+	DropdownMenu,
+	DropdownItem,
+	ModalBody,
 } from "@nextui-org/react";
 import { FaBookBookmark, FaTrophy } from "react-icons/fa6";
 import { BsFillPeopleFill, BsThreeDots } from "react-icons/bs";
@@ -25,6 +30,7 @@ import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 import { TranslationContext } from "../providers/TranslationProvider.jsx";
 import { queryKeys } from "../react-query/query-keys.js";
 import { pathname } from "../routes/index.js";
+import { EnrollmentService } from "../apis/enrollment.api.js";
 
 const UnfinishedCourse = () => {
 	const { translation } = useContext(TranslationContext);
@@ -32,12 +38,19 @@ const UnfinishedCourse = () => {
 	const [courses, setCourses] = useState([]);
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [selectedCourseId, setSelectedCourseId] = useState(null);
+	const [actionModal, setActionModal] = useState(null);
 
 	const user = useRecoilValue(userState);
 
 	const navigate = useNavigate();
 
-	const { data, isPending, isLoading, isRefetching } = useQuery({
+	const {
+		data,
+		isPending,
+		isLoading,
+		isRefetching,
+		refetch: refreshCourses,
+	} = useQuery({
 		queryKey: [queryKeys.unfinishedCourses, user.info?.username],
 		queryFn: async () => {
 			try {
@@ -51,11 +64,9 @@ const UnfinishedCourse = () => {
 		},
 	});
 
-	// Delete course
-	const { mutate: deleteCourse, isLoading: isDeleting } = useMutation({
-		mutationFn: async () => {
-			const data = await CourseService.deleteOwnCourse(selectedCourseId, user, updateUserState);
-			return { ...data, selectedCourseId };
+	const quitCourseMutation = useMutation({
+		mutationFn: async (courseId) => {
+			return await EnrollmentService.quitEnrollment(courseId, user, updateUserState);
 		},
 		onSuccess: (data) => {
 			toast.success(translation(data?.messageCode));
@@ -68,13 +79,39 @@ const UnfinishedCourse = () => {
 		},
 	});
 
-	const openDeleteModal = (courseId) => {
+	const restartCourseMutation = useMutation({
+		mutationFn: async (courseId) => {
+			return await EnrollmentService.restartEnrollment(courseId, user, updateUserState);
+		},
+		onSuccess: (data) => {
+			toast.success(translation(data?.messageCode));
+			setIsModalVisible(false);
+		},
+		onError: (error) => {
+			console.error(error);
+			toast.error(translation(error.response?.data?.errorCode));
+			setIsModalVisible(false);
+		},
+	});
+
+	const openDeleteModal = (courseId, action) => {
+		setActionModal(action);
 		setSelectedCourseId(courseId);
 		setIsModalVisible(true);
 	};
 
-	const confirmDelete = () => {
-		deleteCourse();
+	const handleQuit = async () => {
+		quitCourseMutation.mutateAsync(selectedCourseId).then(async () => {
+			await refreshCourses();
+		});
+		// refreshCourses();
+	};
+
+	const handleRestart = () => {
+		restartCourseMutation.mutateAsync(selectedCourseId).then(async () => {
+			await refreshCourses();
+		});
+		// refreshCourses();s
 	};
 
 	const cancelDelete = () => {
@@ -97,38 +134,40 @@ const UnfinishedCourse = () => {
 										<Image
 											alt="course thumbnail"
 											src={item["image"]}
-											className="w-40 h-40 rounded-lg object-cover"
+											className="size-48 rounded-lg object-cover object-center"
 										/>
 									</Link>
 								</div>
 
 								{/* Right Section: Content */}
 								<div className="flex-grow pl-6">
-									<div className="flex mt-4">
+									<div className="flex items-center justify-between my-4">
 										<Link to={pathname.courseInformation.split(":")[0] + item?.["course id"]}>
-											<h3 className="text-lg font-semibold text-gray-800 mb-2">{item["name"]}</h3>
+											<h3 className="text-lg font-semibold text-gray-800">{item["name"]}</h3>
 										</Link>
 										<div>
-											<Popover>
-												<PopoverTrigger>
+											<Dropdown radius="sm">
+												<DropdownTrigger>
 													<Button
 														isIconOnly
 														className="bg-white border-0"
 														aria-label="Options">
 														<BsThreeDots className="text-large ml-4" />
 													</Button>
-												</PopoverTrigger>
+												</DropdownTrigger>
 
-												<PopoverContent>
-													<div className="flex flex-col py-2">
-														<button
-															onClick={() => openDeleteModal(item["course id"])}
-															className="px-4 py-2 text-left hover:bg-gray-100 text-gray-700">
-															Quit
-														</button>
-													</div>
-												</PopoverContent>
-											</Popover>
+												<DropdownMenu>
+													<DropdownItem
+														onClick={() => openDeleteModal(item["course id"], "quit")}
+														className="rounded-small">
+														Quit
+													</DropdownItem>
+													<DropdownItem
+														onClick={() => openDeleteModal(item["course id"], "restart")}>
+														Restart
+													</DropdownItem>
+												</DropdownMenu>
+											</Dropdown>
 										</div>
 									</div>
 
@@ -193,22 +232,35 @@ const UnfinishedCourse = () => {
 			</div>
 
 			{/* Modal for deletion confirmation */}
-			<Modal isOpen={isModalVisible} onClose={cancelDelete}>
-				<ModalContent>
-					<ModalHeader>Confirm Deletion</ModalHeader>
-					<div className="p-4 text-gray-700">
-						Are you sure you want to quit this course? This action cannot be undone.
-					</div>
-					<ModalFooter>
-						<Button className="bg-gray-500 text-white" onClick={cancelDelete}>
-							Cancel
-						</Button>
-						<Button className="bg-red-500 text-white" onClick={confirmDelete} isLoading={isDeleting}>
-							Quit
-						</Button>
-					</ModalFooter>
-				</ModalContent>
-			</Modal>
+			{actionModal && (
+				<Modal isOpen={isModalVisible} onClose={cancelDelete} radius="sm">
+					<ModalContent>
+						<ModalHeader>{translation(`course-management.title-${actionModal}-course`)}t</ModalHeader>
+						<ModalBody>
+							<div className="text-gray-700">
+								{translation(`course-management.description-${actionModal}-course`)}
+							</div>
+						</ModalBody>
+						<ModalFooter>
+							<Button radius="sm" className="bg-gray-500 text-white" onClick={cancelDelete}>
+								{translation("course-management.cancel")}
+							</Button>
+							<Button
+								radius="sm"
+								className="bg-red-500 text-white"
+								onClick={
+									actionModal === "quit"
+										? handleQuit
+										: actionModal === "restart"
+										? handleRestart
+										: () => {}
+								}>
+								{translation(`course-management.${actionModal}`)}
+							</Button>
+						</ModalFooter>
+					</ModalContent>
+				</Modal>
+			)}
 		</div>
 	);
 };
