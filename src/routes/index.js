@@ -21,7 +21,7 @@ export const pathname = {
 	personalStatics: "/personal-statics",
 	learn: "/learn",
 	myCourse: "/my-course",
-	courseParticipant: "/course-participant",
+	courseParticipant: "/course-participant/:courseId",
 	notification: "/notification",
 	speedReview: "/speed-review",
 	statisticRevenueOfWebsite: "/statistic-revenue-of-website",

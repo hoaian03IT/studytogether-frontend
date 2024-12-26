@@ -22,6 +22,17 @@ class EnrollmentServiceClass {
 		const res = await httpAuth.post("/enrollment/quit", { courseId });
 		return res.data;
 	}
+
+	async fetchCompetitorPoints(courseId, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.get(`/enrollment/enrollment-points-competitor/${courseId}`);
+		return res.data;
+	}
+	async fetchEnrollmentProgress(courseId, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.get(`/enrollment/enrollment-progress/${courseId}`);
+		return res.data;
+	}
 }
 
 const EnrollmentService = new EnrollmentServiceClass();

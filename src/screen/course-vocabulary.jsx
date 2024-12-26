@@ -113,12 +113,18 @@ function CourseVocabulary() {
 			return await CourseService.addNewLevelCourse(courseId, groupName, user, updateUserState);
 		},
 		onSuccess: ({ newLevel }) => {
-			const newVocabularyList = vocabularyQuery.data.vocabularyList.concat({
+			const oldData = queryClient.getQueryData([queryKeys.courseVocabulary, params?.courseId]);
+
+			const newVocabularyList = oldData.vocabularyList.concat({
 				levelId: newLevel["level id"].toString(),
 				levelName: newLevel["level name"],
 				words: [],
 			});
-			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], newVocabularyList);
+
+			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], {
+				vocabularyList: newVocabularyList,
+				oldData,
+			});
 			setGroupName("");
 			setShowGroupInput(false); // Hide the input after saving
 		},
@@ -133,8 +139,13 @@ function CourseVocabulary() {
 			return levelId;
 		},
 		onSuccess: (levelId) => {
-			const newLevels = vocabularyQuery.data.vocabularyList.filter((item) => item.levelId !== levelId);
-			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], newLevels);
+			const oldData = queryClient.getQueryData([queryKeys.courseVocabulary, params?.courseId]);
+
+			const newLevels = oldData.vocabularyList.filter((item) => item.levelId !== levelId);
+			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], {
+				...oldData,
+				vocabularyList: newLevels,
+			});
 		},
 		onError: (error) => {
 			console.error(error);
@@ -152,14 +163,18 @@ function CourseVocabulary() {
 			);
 		},
 		onSuccess: ({ updatedLevel }) => {
-			const newVocabularyList = vocabularyQuery.data.vocabularyList;
+			const oldData = queryClient.getQueryData([queryKeys.courseVocabulary, params?.courseId]);
+			const newVocabularyList = oldData.vocabularyList;
 			for (let i = 0; i < newVocabularyList.length; i++) {
 				if (newVocabularyList[i].levelId === updatedLevel["level id"]) {
 					newVocabularyList[i].levelName = updatedLevel["level name"];
 					break;
 				}
 			}
-			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], newVocabularyList);
+			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], {
+				...oldData,
+				vocabularyList: newVocabularyList,
+			});
 		},
 		onError: (error) => {
 			console.error(error);
@@ -185,7 +200,10 @@ function CourseVocabulary() {
 					break;
 				}
 			}
-			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], newVocabularyList);
+			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], {
+				...vocabularyQuery.data,
+				vocabularyList: newVocabularyList,
+			});
 		},
 		onError: (error) => {
 			console.error(error);
@@ -217,7 +235,10 @@ function CourseVocabulary() {
 					break;
 				}
 			}
-			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], newVocabularyList);
+			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], {
+				...vocabularyQuery.data,
+				vocabularyList: newVocabularyList,
+			});
 		},
 		onError: (error) => {
 			console.error(error);
@@ -301,7 +322,10 @@ function CourseVocabulary() {
 			}
 
 			// Cập nhật cache và clear form
-			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], newVocabularyList);
+			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], {
+				...vocabularyQuery.data,
+				vocabularyList: newVocabularyList,
+			});
 			clearFormWord();
 		},
 		onError: (error) => {

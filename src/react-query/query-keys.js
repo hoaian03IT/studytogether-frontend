@@ -17,6 +17,8 @@ const queryKeys = {
 	unfinishedCourses: "unfinished-course",
 	ownCourses: "own-course",
 	checkOwnCourse: "check-own-course",
+	competitorPoints: "competitor-points",
+	enrollmentProgress: "enrollment-progress",
 };
 
 export { queryKeys };
