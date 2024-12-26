@@ -31,6 +31,7 @@ class EnrollmentServiceClass {
 	async fetchEnrollmentProgress(courseId, userState, updateUserState) {
 		const httpAuth = createHttpAuth(userState, updateUserState);
 		const res = await httpAuth.get(`/enrollment/enrollment-progress/${courseId}`);
+		console.log(res.data);
 		return res.data;
 	}
 }

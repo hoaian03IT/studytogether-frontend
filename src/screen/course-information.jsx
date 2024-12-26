@@ -84,7 +84,7 @@ function CourseInformation() {
 		},
 		onSuccess: (res) => {
 			SocketHandler.handleEmitEnrollCourse(res.data?.["enrollment id"]);
-			navigate(pathname.courseParticipant);
+			navigate(pathname.courseParticipant.split(":")[0] + params?.courseId);
 		},
 		onError: (error) => {
 			toast.error(translation(error.response.data?.errorCode));

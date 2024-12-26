@@ -154,7 +154,7 @@ function SpeedReview() {
 			try {
 				let data = await LearnProcessService.fetchSpeedReviewSession(queryKey[1], user, updateUserState);
 				if (data?.returns?.length === 0) {
-					navigate(pathname.courseParticipant);
+					navigate(pathname.courseParticipant.split(":")[0] + queries.get("ci"));
 					toast.info(translation("NOT_LEARN_ANY_WORD"));
 					return [];
 				}
@@ -186,7 +186,7 @@ function SpeedReview() {
 			return await LearnProcessService.updateLearnProgress({ courseId, words, points }, user, updateUserState);
 		},
 		onSuccess: (data) => {
-			navigate(pathname.courseParticipant);
+			navigate(pathname.courseParticipant.split(":")[0] + queries.get("ci"));
 		},
 		onError: (error) => {
 			toast.error(translation(error.response.data?.errorCode));
@@ -202,25 +202,25 @@ function SpeedReview() {
 	return timeStart > 0 ? (
 		<CountDown number={timeStart} />
 	) : (
-		<div className='flex flex-col h-screen'>
-			<HeaderLearnProgress page='speed-review' title='Speed Review' />
+		<div className="flex flex-col h-screen">
+			<HeaderLearnProgress page="speed-review" title="Speed Review" />
 			{speedReviewSessionQuery.isPending || updateProgressMutation.isPending ? (
 				<LoadingWaitAMinute />
 			) : (
-				<div className='bg-gray-200 h-full'>
-					<div className='container mt-2'>
-						<div className='grid grid-cols-1 gap-y-12'>
-							<div className='grid-rows-1 col-span-full'>
+				<div className="bg-gray-200 h-full">
+					<div className="container mt-2">
+						<div className="grid grid-cols-1 gap-y-12">
+							<div className="grid-rows-1 col-span-full">
 								<ProgressBarPoint
-									color='danger'
+									color="danger"
 									progressMin={0}
 									progressMax={timeCount.init}
 									progressValue={timeCount.remaining}
 									points={currentPoints}
 								/>
 							</div>
-							<div className='grid-rows-2 col-span-full'>
-								<div className='flex items-center'>
+							<div className="grid-rows-2 col-span-full">
+								<div className="flex items-center">
 									{Array.from(new Array(INIT_REMAINING_CHANCES)).map((undefined, index) => (
 										<FaBoltLightning
 											key={index}
@@ -232,7 +232,7 @@ function SpeedReview() {
 									))}
 								</div>
 							</div>
-							<div className='grid-rows-3 col-span-full'>
+							<div className="grid-rows-3 col-span-full">
 								{question?.template === "multiple-choice" ? (
 									<MultipleChoiceExercise
 										ref={quizRef}
@@ -254,7 +254,7 @@ function SpeedReview() {
 								) : (
 									<LoadingWaitAMinute />
 								)}
-								<audio ref={pronunciationRef} src={question?.pronunciation} className='hidden' />
+								<audio ref={pronunciationRef} src={question?.pronunciation} className="hidden" />
 							</div>
 						</div>
 					</div>

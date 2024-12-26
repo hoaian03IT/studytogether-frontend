@@ -77,7 +77,7 @@ function LearnPage() {
 		},
 		onSuccess: (data) => {
 			console.log(data);
-			navigate(pathname.courseParticipant);
+			navigate(pathname.courseParticipant.split(":")[0] + queries.get("ci"));
 		},
 		onError: (error) => {
 			console.error(error);
@@ -184,16 +184,16 @@ function LearnPage() {
 	};
 
 	return (
-		<div className='flex flex-col h-screen'>
-			<HeaderLearnProgress page='learn' title={`Learning level: ${learningLevelNames}`} />
-			<div className='bg-gray-200 h-full'>
+		<div className="flex flex-col h-screen">
+			<HeaderLearnProgress page="learn" title={`Learning level: ${learningLevelNames}`} />
+			<div className="bg-gray-200 h-full">
 				{learnNewWordSessionQuery?.isPending || updateLearnNewWordProgressMutation.isPending ? (
 					<LoadingWaitAMinute />
 				) : (
-					<div className='container'>
-						<div className='py-2'>
-							<div className='grid grid-cols-1 gap-x-4 gap-y-12'>
-								<div className='grid-rows-1 col-span-full'>
+					<div className="container">
+						<div className="py-2">
+							<div className="grid grid-cols-1 gap-x-4 gap-y-12">
+								<div className="grid-rows-1 col-span-full">
 									<ProgressBarPoint
 										points={currentPoints}
 										progressValue={progress.current}
@@ -201,9 +201,9 @@ function LearnPage() {
 										progressMin={0}
 									/>
 								</div>
-								<div className='grid-rows-2 col-span-full'>
-									<div className='grid grid-cols-12 gap-4'>
-										<div className='sm:col-span-10 lg:col-span-11'>
+								<div className="grid-rows-2 col-span-full">
+									<div className="grid grid-cols-12 gap-4">
+										<div className="sm:col-span-10 lg:col-span-11">
 											{question?.template === "definition" ? (
 												<WordDefinition
 													word={question?.word}
@@ -240,35 +240,35 @@ function LearnPage() {
 												<div>Other</div>
 											)}
 										</div>
-										<div className='sm:col-span-2 lg:col-span-1 flex flex-col items-center'>
+										<div className="sm:col-span-2 lg:col-span-1 flex flex-col items-center">
 											{nextable ? (
 												<Button
-													className='flex flex-col max-h-none h-max w-full py-4 px-2'
-													radius='sm'
+													className="flex flex-col max-h-none h-max w-full py-4 px-2"
+													radius="sm"
 													onClick={handleNext}
-													color='secondary'
-													variant='shadow'>
-													<IoIosArrowForward className='size-12' />
-													<span className='font-semibold text-xl'>Next</span>
+													color="secondary"
+													variant="shadow">
+													<IoIosArrowForward className="size-12" />
+													<span className="font-semibold text-xl">Next</span>
 												</Button>
 											) : (
 												<Button
-													className='flex flex-col max-h-none h-max w-full py-4 px-2 bg-warning-300'
-													radius='sm'
-													variant='shadow'>
-													<FaRegLightbulb className='size-12' />
-													<span className='font-semibold text-xl'>Hint</span>
+													className="flex flex-col max-h-none h-max w-full py-4 px-2 bg-warning-300"
+													radius="sm"
+													variant="shadow">
+													<FaRegLightbulb className="size-12" />
+													<span className="font-semibold text-xl">Hint</span>
 												</Button>
 											)}
 											<Tooltip
-												content='Marked word will appear much in practice'
-												className='bg-gray-800 text-white text-[10px] w-40 text-center'
-												placement='bottom'
+												content="Marked word will appear much in practice"
+												className="bg-gray-800 text-white text-[10px] w-40 text-center"
+												placement="bottom"
 												offset={2}
-												radius='none'
+												radius="none"
 												closeDelay={100}>
 												<button
-													className='mt-5'
+													className="mt-5"
 													onClick={() => handleToggleMarkDown(question?.wordId)}>
 													<FaHeart
 														className={clsx(
