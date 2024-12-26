@@ -24,14 +24,16 @@ import { TranslationContext } from "../providers/TranslationProvider.jsx";
 import { queryKeys } from "../react-query/query-keys.js";
 
 const OwnCourse = () => {
-	const navigate = useNavigate();
-	const [courses, setCourses] = useState([]);
-	const [selectedCourseId, setSelectedCourseId] = useState(null);
-	const [isModalVisible, setIsModalVisible] = useState(false);
 	const user = useRecoilValue(userState);
 	const { updateUserState } = useContext(GlobalStateContext);
 	const { translation } = useContext(TranslationContext);
 	const queryClient = useQueryClient();
+
+	const [courses, setCourses] = useState([]);
+	const [selectedCourseId, setSelectedCourseId] = useState(null);
+	const [isModalVisible, setIsModalVisible] = useState(false);
+
+	const navigate = useNavigate();
 
 	const { data, isPending, isLoading, isRefetching } = useQuery({
 		queryKey: [queryKeys.ownCourses, user.info?.username],
@@ -66,8 +68,8 @@ const OwnCourse = () => {
 			setIsModalVisible(false);
 		},
 		onError: (error) => {
-			console.error("Error deleting course:", error);
-			toast.error("Failed to delete the course.");
+			console.error(error);
+			toast.error(translation(error?.response?.data?.errorCode));
 			setIsModalVisible(false);
 		},
 	});
@@ -91,13 +93,13 @@ const OwnCourse = () => {
 	};
 
 	return (
-		<div className='container max-w-screen-xl py-10 px-4 mt-15 bg-gray-100'>
-			<h1 className='text-xl font-semibold text-gray-700 mb-10'>Your Courses</h1>
+		<div className="container max-w-screen-xl py-10 px-4 mt-15 bg-gray-100">
+			<h1 className="text-xl font-semibold text-gray-700 mb-10">Your Courses</h1>
 
 			{isPending || isLoading || isRefetching ? (
 				<LoadingThreeDot />
 			) : (
-				<div className='py-4 grid xl:grid-cols-3 gap-4 lg:grid-cols-2 sm:grid-cols-1'>
+				<div className="py-4 grid xl:grid-cols-3 gap-4 lg:grid-cols-2 sm:grid-cols-1">
 					{courses?.length > 0 ? (
 						courses.map((item) => {
 							const formattedCourse = {
@@ -113,8 +115,8 @@ const OwnCourse = () => {
 							};
 
 							return (
-								<div key={formattedCourse.id} className='bg-white rounded-lg p-4'>
-									<div className='relative w-full'>
+								<div key={formattedCourse.id} className="bg-white rounded-lg p-4">
+									<div className="relative w-full">
 										<div
 											className={`absolute top-2 left-2 px-3 py-1 rounded-md text-sm font-bold z-10 ${
 												formattedCourse.price === "Free"
@@ -124,54 +126,54 @@ const OwnCourse = () => {
 											<p>{formattedCourse.price}</p>
 										</div>
 										<img
-											alt='Course Thumbnail'
+											alt="Course Thumbnail"
 											src={formattedCourse.image}
-											className='w-full h-48 object-cover rounded-lg'
+											className="w-full h-48 object-cover rounded-lg"
 										/>
 									</div>
 
-									<h3 className='line-clamp-1 py-2 text-lg font-semibold text-gray-800'>
+									<h3 className="line-clamp-1 py-2 text-lg font-semibold text-gray-800">
 										{formattedCourse.name}
 									</h3>
-									<div className='flex flex-wrap justify-between text-slate-400 py-3'>
-										<div className='flex gap-2 items-center text-gray-500'>
+									<div className="flex flex-wrap justify-between text-slate-400 py-3">
+										<div className="flex gap-2 items-center text-gray-500">
 											<FaBookBookmark />
 											<p>{formattedCourse.words}</p>
 										</div>
-										<div className='flex gap-2 items-center text-gray-500'>
+										<div className="flex gap-2 items-center text-gray-500">
 											<BsFillPeopleFill />
 											<p>{formattedCourse.enrollments}</p>
 										</div>
-										<div className='flex gap-2 items-center text-gray-500'>
+										<div className="flex gap-2 items-center text-gray-500">
 											<FaTrophy />
 											<p>{formattedCourse.level}</p>
 										</div>
 									</div>
 
-									<div className='flex mt-4'>
+									<div className="flex mt-4">
 										<div>
 											<Popover>
 												<PopoverTrigger>
 													<Button
 														isIconOnly
-														className='rounded-full bg-white border-0 border-gray-500 mr-4'
-														aria-label='Options'>
-														<BsThreeDots className='text-large' />
+														className="rounded-full bg-white border-0 border-gray-500 mr-4"
+														aria-label="Options">
+														<BsThreeDots className="text-large" />
 													</Button>
 												</PopoverTrigger>
 
 												<PopoverContent>
-													<div className='flex flex-col py-2'>
+													<div className="flex flex-col py-2">
 														<button
 															onClick={() =>
 																navigate(`/edit-course/${item["course id"]}`)
 															}
-															className='px-4 py-2 text-left hover:bg-gray-100 text-gray-700'>
+															className="px-4 py-2 text-left hover:bg-gray-100 text-gray-700">
 															Edit
 														</button>
 														<button
 															onClick={() => openDeleteModal(formattedCourse.id)}
-															className='px-4 py-2 text-left hover:bg-gray-100 text-gray-700'>
+															className="px-4 py-2 text-left hover:bg-gray-100 text-gray-700">
 															Delete
 														</button>
 													</div>
@@ -180,7 +182,7 @@ const OwnCourse = () => {
 										</div>
 
 										<Button
-											className='px-4 py-2 flex justify-end ml-auto bg-blue-500 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-600'
+											className="px-4 py-2 flex justify-end ml-auto bg-blue-500 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-600"
 											endContent={<MdOutlineKeyboardDoubleArrowRight />}
 											onClick={() => navigate(`/course-information/${formattedCourse.id}`)}>
 											Start
@@ -190,7 +192,7 @@ const OwnCourse = () => {
 							);
 						})
 					) : (
-						<p className='text-center text-gray-500'></p>
+						<p className="text-center text-gray-500"></p>
 					)}
 				</div>
 			)}
@@ -199,14 +201,14 @@ const OwnCourse = () => {
 			<Modal isOpen={isModalVisible} onClose={cancelDelete}>
 				<ModalContent>
 					<ModalHeader>Confirm Deletion</ModalHeader>
-					<div className='p-4 text-gray-700'>
+					<div className="p-4 text-gray-700">
 						Are you sure you want to delete this course? This action cannot be undone.
 					</div>
 					<ModalFooter>
-						<Button className='bg-gray-500 text-white' onClick={cancelDelete}>
+						<Button className="bg-gray-500 text-white" onClick={cancelDelete}>
 							Cancel
 						</Button>
-						<Button className='bg-red-500 text-white' onClick={confirmDelete} isLoading={isDeleting}>
+						<Button className="bg-red-500 text-white" onClick={confirmDelete} isLoading={isDeleting}>
 							Delete
 						</Button>
 					</ModalFooter>

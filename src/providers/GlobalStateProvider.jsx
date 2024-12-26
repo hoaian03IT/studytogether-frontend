@@ -57,6 +57,7 @@ function GlobalStateProvider({ children }) {
 		},
 		onError: (error) => {
 			console.error(error);
+			setShowLogoutModal(false);
 			toast.error("Oops! Something went wrong!");
 		},
 	});

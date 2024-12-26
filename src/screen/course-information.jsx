@@ -96,12 +96,16 @@ function CourseInformation() {
 	const navigate = useNavigate();
 
 	const handleLearnOrBuy = () => {
-		if (enrolled) {
+		// neu nguoi dung la nguoi so huu khoa hoc
+		if (courseInfoQuery.data?.["username"] === user.info?.username) {
+			if (enrolled) {
+				navigate(pathname.learn + "?ci=" + params?.courseId);
+			} else {
+				enrollMutation.mutate();
+			}
+		} else if (enrolled) {
 			navigate(pathname.learn + "?ci=" + params?.courseId);
-			return;
-		}
-
-		if (handledPrice > 0) {
+		} else if (handledPrice > 0) {
 			navigate(pathname.payment.split(":")[0] + params?.courseId);
 		} else {
 			enrollMutation.mutate();
@@ -128,18 +132,18 @@ function CourseInformation() {
 						{!!coursePriceQuery.data?.["price"] ? (
 							<Fragment>
 								<p className="text-white text-xl font-bold">
-									Purchase to continue this vocabulary course
+									{translation("course-information.title-has-price1")}
 								</p>
 								<p className="text-gray-200 text-sm font-normal w-1/2 text-center">
-									You need to buy to see full lessons of this course, thank you!
+									{translation("course-information.title-has-price2")}
 								</p>
-								{enrolled ? (
+								{enrolled || courseInfoQuery.data?.["username"] === user.info?.username ? (
 									<Button
 										onClick={handleLearnOrBuy}
 										isLoading={enrollMutation.isPending}
 										className="bg-third text-third-foreground shadow-2xl"
 										radius="sm">
-										Learn now
+										{translation("course-information.title-learn")}
 									</Button>
 								) : (
 									<Button
@@ -147,7 +151,7 @@ function CourseInformation() {
 										radius="sm"
 										onClick={handleLearnOrBuy}
 										isLoading={enrollMutation.isPending}>
-										Buy now -&nbsp;
+										{translation("course-information.title-buy")} -&nbsp;
 										{coursePriceQuery.data?.["currency"] === "USD"
 											? USDollar.format(handledPrice)
 											: VNDong.format(handledPrice)}
@@ -156,16 +160,20 @@ function CourseInformation() {
 							</Fragment>
 						) : (
 							<Fragment>
-								<p className="text-white text-xl font-bold">This vocabulary course is free for you</p>
+								<p className="text-white text-xl font-bold">
+									{translation("course-information.title-no-price1")}
+								</p>
 								<p className="text-gray-200 text-sm font-normal w-1/2 text-center">
-									There are a lot of words waiting for you to learn
+									{translation("course-information.title-no-price2")}
 								</p>
 								<Button
 									className="bg-third text-third-foreground shadow-2xl"
 									radius="sm"
 									isLoading={enrollMutation.isPending}
 									onClick={handleLearnOrBuy}>
-									{enrolled ? "Join now" : "Learn now"}
+									{enrolled || courseInfoQuery.data?.["username"] === user.info?.username
+										? "Join now"
+										: "Learn now"}
 								</Button>
 							</Fragment>
 						)}
@@ -174,7 +182,7 @@ function CourseInformation() {
 				<div className="bg-white px-6 py-8 col-span-4 rounded-md flex flex-col justify-between">
 					{!!coursePriceQuery.data?.["price"] ? (
 						<Fragment>
-							{!enrolled && (
+							{!enrolled && courseInfoQuery.data?.["username"] !== user.info?.username && (
 								<Fragment>
 									<div className="flex items-center">
 										<span className="text-2xl font-bold">
@@ -201,7 +209,16 @@ function CourseInformation() {
 							)}
 
 							<div className="mt-8 flex flex-col justify-center space-y-2">
-								{!enrolled ? (
+								{enrolled || courseInfoQuery.data?.["username"] === user.info?.username ? (
+									<Button
+										onClick={handleLearnOrBuy}
+										isLoading={enrollMutation.isPending}
+										className="bg-third text-third-foreground font-bold text-base"
+										size="lg"
+										radius="sm">
+										{translation("course-information.title-learn")}
+									</Button>
+								) : (
 									<Fragment>
 										<Button
 											className="bg-third text-third-foreground font-bold text-base"
@@ -209,7 +226,7 @@ function CourseInformation() {
 											isLoading={enrollMutation.isPending}
 											size="lg"
 											radius="sm">
-											Buy now
+											{translation("course-information.title-buy")}
 										</Button>
 										<Button
 											variant="bordered"
@@ -219,15 +236,6 @@ function CourseInformation() {
 											Add to whitelist
 										</Button>
 									</Fragment>
-								) : (
-									<Button
-										onClick={handleLearnOrBuy}
-										isLoading={enrollMutation.isPending}
-										className="bg-third text-third-foreground font-bold text-base"
-										size="lg"
-										radius="sm">
-										Learn now
-									</Button>
 								)}
 							</div>
 						</Fragment>

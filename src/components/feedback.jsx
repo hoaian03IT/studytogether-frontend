@@ -6,6 +6,7 @@ import { userState } from "../recoil/atoms/user.atom.js";
 import RatingStar from "react-rating-star-with-type";
 import TimeAgo from "react-timeago";
 import { CommentInput } from "./comment-input.jsx";
+import { convertUTCToLocalTime } from "../utils/convert-utc-to-local-time.js";
 
 function Feedback({ courseId, commentId, avatar, name, comment, createdAt, role, children, rate, onReplySubmit }) {
 	const user = useRecoilValue(userState);
@@ -42,7 +43,7 @@ function Feedback({ courseId, commentId, avatar, name, comment, createdAt, role,
 						) : null}
 						<span className="text-gray-500 text-sm">
 							{" "}
-							• <TimeAgo date={new Date(createdAt)} />
+							• <TimeAgo date={convertUTCToLocalTime(createdAt)} />
 						</span>
 					</p>
 					{rate && <RatingStar value={rate} count={5} activeColor="#FFD700" />}

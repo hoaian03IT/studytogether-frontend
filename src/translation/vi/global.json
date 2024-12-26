@@ -100,6 +100,19 @@
       "cancel": "HủyHủy",
       "quit": "Dừng",
       "restart": "Bắt đầu lại"
+    },
+    "my-course": {
+      "title-own-course": "Khóa học của bạn",
+      "title-unfinished-course": "Chưa hoàn thành",
+      "title-finished-course": "Đã hoàn thành"
+    },
+    "course-information": {
+      "title-has-price1": "Mua khóa học để tham gia",
+      "title-has-price2": "Bạn cần mua để xem đầy đủ các bài học của khóa học này, cảm ơn bạn!",
+      "title-learn": "Học ngay",
+      "title-buy": "Mua ngay",
+      "title-no-price1": "Khóa học này miễn phí cho bạn",
+      "title-no-price2": "Có rất nhiều từ vừng hay đang đợi bạn"
     }
   }
 }

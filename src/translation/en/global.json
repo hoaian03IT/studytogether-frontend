@@ -105,6 +105,19 @@
       "cancel": "Cancel",
       "quit": "Quit",
       "restart": "Restart"
+    },
+    "my-course": {
+      "title-own-course": "Own courses",
+      "title-unfinished-course": "Unfinished courses",
+      "title-finished-course": "Finished courses"
+    },
+    "course-information": {
+      "title-has-price1": "Purchase to continue this vocabulary course",
+      "title-has-price2": "You need to buy to see full lessons of this course, thank you!",
+      "title-learn": "Learn now",
+      "title-buy": "Buy now",
+      "title-no-price1": "This vocabulary course is free for you",
+      "title-no-price2": "There are a lot of words waiting for you to learn"
     }
   }
 }
