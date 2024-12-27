@@ -203,7 +203,7 @@ function SpeedReview() {
 		<CountDown number={timeStart} />
 	) : (
 		<div className="flex flex-col h-screen">
-			<HeaderLearnProgress page="speed-review" title="Speed Review" />
+			<HeaderLearnProgress page="speed-review" title="Speed Review" courseId={queries.get("ci")} />
 			{speedReviewSessionQuery.isPending || updateProgressMutation.isPending ? (
 				<LoadingWaitAMinute />
 			) : (

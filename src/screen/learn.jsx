@@ -185,7 +185,11 @@ function LearnPage() {
 
 	return (
 		<div className="flex flex-col h-screen">
-			<HeaderLearnProgress page="learn" title={`Learning level: ${learningLevelNames}`} />
+			<HeaderLearnProgress
+				page="learn"
+				title={`Learning level: ${learningLevelNames}`}
+				courseId={queries.get("ci")}
+			/>
 			<div className="bg-gray-200 h-full">
 				{learnNewWordSessionQuery?.isPending || updateLearnNewWordProgressMutation.isPending ? (
 					<LoadingWaitAMinute />

@@ -245,7 +245,7 @@ const CourseParticipant = () => {
 					{pointList.competitors.map((item, index) => (
 						<div
 							key={index}
-							className="flex items-center justify-between py-4 px-4 gap-2"
+							className="flex items-center justify-between py-4 px-6 gap-2"
 							style={{
 								backgroundImage: `url(${
 									index + 1 === 1
@@ -267,7 +267,7 @@ const CourseParticipant = () => {
 					))}
 					{pointList.competitors.findIndex((item) => item?.username === pointList.yours[0]?.["username"]) <
 						0 && (
-						<div className="flex items-center justify-between py-4 px-4 gap-2">
+						<div className="flex items-center justify-between py-4 px-6 gap-2">
 							<div className="flex items-center gap-4">
 								{pointList.competitors.length === 0 ? (
 									<FaUserGraduate className="size-5" />

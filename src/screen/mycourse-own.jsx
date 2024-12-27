@@ -101,17 +101,18 @@ const OwnCourse = () => {
 			) : (
 				<div className="py-4 grid xl:grid-cols-3 gap-4 lg:grid-cols-2 sm:grid-cols-1">
 					{courses?.length > 0 ? (
-						courses.map((item) => {
+						courses?.map((item) => {
 							const formattedCourse = {
-								id: item["course id"],
-								name: item.name,
-								price: parseFloat(item.price) > 0 ? `${parseFloat(item.price).toFixed(1)}$` : "Free",
-								image: item.image,
-								words: item["number words"],
-								enrollments: item["number enrollments"],
-								level: item["course level name"],
-								avatar: item["avatar image"],
-								author: item.username,
+								id: item?.["course id"],
+								name: item?.name,
+								price: parseFloat(item?.price) > 0 ? `${parseFloat(item?.price).toFixed(1)}$` : "Free",
+								image: item?.image,
+								words: item?.["number words"],
+								enrollments: item?.["number enrollments"],
+								level: item?.["course level name"],
+								avatar: item?.["avatar image"],
+								author: item?.username,
+								status: item?.["status"],
 							};
 
 							return (
@@ -166,7 +167,7 @@ const OwnCourse = () => {
 													<div className="flex flex-col py-2">
 														<button
 															onClick={() =>
-																navigate(`/edit-course/${item["course id"]}`)
+																navigate(`/edit-course/${item?.["course id"]}`)
 															}
 															className="px-4 py-2 text-left hover:bg-gray-100 text-gray-700">
 															Edit
