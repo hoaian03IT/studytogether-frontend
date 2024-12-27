@@ -10,8 +10,8 @@ import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
 import { useRecoilValue } from "recoil";
 import { TranslationContext } from "../providers/TranslationProvider.jsx";
 import { toast } from "react-toastify";
-import Revenue from "../screen/course-revenue.jsx";
-import { parseDate, getLocalTimeZone } from "@internationalized/date";
+import { Revenue } from "../screen/course-revenue.jsx";
+import { parseDate } from "@internationalized/date";
 import { useDateFormatter } from "@react-aria/i18n";
 
 const CourseBusiness = () => {
@@ -82,20 +82,6 @@ const CourseBusiness = () => {
 			setEndDate(null);
 		}
 	}, [price]);
-
-	// useEffect(() => {
-	// 	if (!isSettingsVisible) {
-	// 		setPrice(0);
-	// 		updatePriceCourseMutation.mutate({
-	// 			courseId: params?.courseId,
-	// 			newPrice: price || 0,
-	// 			newDiscount: discount || 0,
-	// 			discountFrom: startDate ? `${startDate.year}/${startDate.month}/${startDate.day}` : null,
-	// 			discountTo: endDate ? `${endDate.year}/${endDate.month}/${endDate.day}` : null,
-	// 			currency: "USD",
-	// 		});
-	// 	}
-	// }, [isSettingsVisible]);
 
 	const updatePriceCourseMutation = useMutation({
 		mutationFn: async (payload) => {
@@ -190,14 +176,9 @@ const CourseBusiness = () => {
 		}
 	};
 
-	const renderTabContent = () => {
-		if (activeTab === "price") return renderPriceTab(); // Giao diện "Thiết lập giá"
-		if (activeTab === "advance") return <Revenue courseId={params.courseId} />; // Giao diện "Doanh thu"
-	};
-
 	return (
-		<div className=" bg-gray-100 min-h-screen">
-			<form onSubmit={handleSubmit} className="p-6 bg-white rounded-lg max-w-4xl mx-auto mt-10 shadow-lg">
+		<div className=" py-12 bg-gray-100 min-h-screen">
+			<form onSubmit={handleSubmit} className="p-6 bg-white rounded-lg max-w-4xl mx-auto shadow-lg">
 				{/* Tabs and Switch */}
 				<div className="flex justify-between items-center border-b border-gray-300 mb-6 pb-4">
 					<div className="flex space-x-8">
@@ -238,22 +219,6 @@ const CourseBusiness = () => {
 				{isSettingsVisible && (
 					<div className="bg-white p-8 rounded-md shadow-md">
 						<h2 className="text-2xl font-semibold mb-6">Cài đặt giá khóa học</h2>
-
-						{/* Course Name */}
-						<div className="mb-6">
-							<label className="block font-medium text-gray-600 mb-2">Khóa</label>
-							<Input
-								color="primary"
-								type="text"
-								placeholder="Tên khóa"
-								value={coursePriceQuery.data?.["name"]}
-								variant="bordered"
-								size="lg"
-								radius="sm"
-								readOnly
-								disabled
-							/>
-						</div>
 
 						{/* Price and Duration */}
 						<div className="flex gap-6 mb-6">
@@ -373,7 +338,7 @@ const CourseBusiness = () => {
 					</div>
 				)}
 			</form>
-			<Revenue />
+			<Revenue courseId={params?.courseId} price={price} />
 		</div>
 	);
 };

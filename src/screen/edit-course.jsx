@@ -55,7 +55,6 @@ const EditCourseInfor = () => {
 
 	const [editable, setEditable] = useState(false);
 
-	const navigate = useNavigate();
 	const inputFileRef = useRef();
 
 	useEffect(() => {

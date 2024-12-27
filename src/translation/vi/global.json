@@ -20,6 +20,7 @@
     "EMAIL_NOT_FOUND": "Email không tồn tại",
     "PAYMENT_SUCCESS": "Thanh toán thành công",
     "CHANGE_PASSWORD_SUCCESS": "Mật khẩu của bạn đã được thay đổi",
+    "UPDATE_COURSE_SUCCESS": "Cập nhật thông tin khóa học thành công",
     "UPDATE_SUCCESS": "Cập nhật thành công",
     "COURSE_ENROLLED": "Bạn đã đăng ký khóa học này trước",
     "WARNING_UPDATE_PROFILE": "Vui lòng bổ sung thông tin để sử dụng đầy đủ các tính năng.",

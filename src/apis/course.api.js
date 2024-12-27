@@ -144,14 +144,15 @@ class CourseServiceClass {
 	}
 
 	async deleteOwnCourse(courseId, userState, updateUserState) {
-		try {
-			const httpAuth = createHttpAuth(userState, updateUserState);
-			const res = await httpAuth.delete(`/course/destroy/${courseId}`);
-			return res.data;
-		} catch (error) {
-			console.error("Error deleting course:", error);
-			throw error;
-		}
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.delete(`/course/destroy/${courseId}`);
+		return res.data;
+	}
+
+	async fetchCourseRevenue(courseId, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.get(`/course/revenue/${courseId}`);
+		return res.data;
 	}
 }
 

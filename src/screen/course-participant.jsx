@@ -138,7 +138,7 @@ const CourseParticipant = () => {
 					</div>
 				</div>
 			</div>
-			<div className="flex items-center bg-white border-b-gray-700 gap-8 border-[2px] px-[40px] py-4  w-full">
+			<div className="flex items-center bg-white border-b-gray-700 gap-8 border-[1px] px-[40px] py-4  w-full">
 				<div className="flex-1 flex flex-col">
 					<div className="m-[10px] font-mono">
 						<p>

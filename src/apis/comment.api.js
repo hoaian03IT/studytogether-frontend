@@ -1,4 +1,4 @@
-import { createHttpAuth } from "../config/http";
+import { createHttpAuth, http } from "../config/http";
 
 class CommentService {
 	static async createFeedbackComment({ comment, rate, courseId }, userState, updateUserState) {
@@ -9,6 +9,11 @@ class CommentService {
 	static async createReplyComment({ comment, replyCommentId, courseId }, userState, updateUserState) {
 		const httpAuth = createHttpAuth(userState, updateUserState);
 		const res = await httpAuth.post(`/comment/reply`, { comment, replyCommentId, courseId });
+		return res.data;
+	}
+
+	static async fetchCourseRate(courseId) {
+		const res = await http.get(`/comment/rate/${courseId}`);
 		return res.data;
 	}
 }

@@ -23,6 +23,8 @@ import { pathname } from "../routes/index.js";
 import { toast } from "react-toastify";
 import { TranslationContext } from "../providers/TranslationProvider.jsx";
 import { SocketClientContext } from "../providers/socket-client-provider.jsx";
+import { CommentService } from "../apis/comment.api.js";
+import { Rating } from "../components/rating.jsx";
 
 function CourseInformation() {
 	const params = useParams();
@@ -76,6 +78,18 @@ function CourseInformation() {
 		},
 		initialData: clientQuery.getQueryData([queryKeys.coursePrice, params?.courseId]),
 		enabled: !clientQuery.getQueryData([queryKeys.coursePrice, params?.courseId]),
+	});
+
+	const courseRateQuery = useQuery({
+		queryKey: [queryKeys.courseRate, params?.courseId],
+		queryFn: async ({ queryKey }) => {
+			try {
+				return await CommentService.fetchCourseRate(queryKey[1]);
+			} catch (error) {
+				toast.error(translation(error.response?.data?.errorCode));
+			}
+		},
+		enabled: !!params?.courseId,
 	});
 
 	const enrollMutation = useMutation({
@@ -288,7 +302,10 @@ function CourseInformation() {
 			<div className="grid grid-cols-12 gap-6">
 				<div className="col-span-8 p-6">
 					<div>
-						<h2 className="font-bold uppercase">{courseInfoQuery.data?.["name"]}</h2>
+						<div>
+							<h2 className="font-bold uppercase">{courseInfoQuery.data?.["name"]}</h2>
+							<Rating stars={5} value={courseRateQuery.data?.["averageRate"]} size="sm" />
+						</div>
 						<div className="flex items-center justify-between py-4 border-b-1 border-b-gray-300">
 							<User
 								name={
@@ -324,7 +341,7 @@ function CourseInformation() {
 										<div className="bg-third rounded-full size-6 flex items-center justify-center">
 											<LuPencilLine className="text-third-foreground" />
 										</div>
-										<span className="ms-1 text-sm">{courseInfoQuery.data?.["n_feedbacks"]}</span>
+										<span className="ms-1 text-sm">{courseRateQuery.data?.numberRates}</span>
 									</div>
 								</Tooltip>
 							</div>

@@ -477,18 +477,6 @@ function CourseVocabulary() {
 
 			<div className="flex mb-4">
 				<button
-					onClick={() => setShowTextModal(true)}
-					className="flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2">
-					<TbTextPlus className="size-6 mr-1" />
-					<span> Thêm từ văn bản</span>
-				</button>
-				<button
-					onClick={() => setShowFileModal(true)}
-					className="flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2">
-					<CgAttachment className="size-6 mr-1" />
-					<span> Thêm từ tệp</span>
-				</button>
-				<button
 					onClick={() => setShowGroupInput(!showGroupInput)}
 					className="flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2">
 					<LuPlus className="size-6 mr-1" />

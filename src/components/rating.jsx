@@ -1,9 +1,14 @@
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GoStarFill } from "react-icons/go";
 
-export const Rating = ({ stars = 5, value = 3, setValue, size = "md", className }) => {
+export const Rating = ({ stars = 5, value = 3, setValue, size = "md", className, color = "yellow" }) => {
 	const [current, setCurrent] = useState(value);
+
+	useEffect(() => {
+		setCurrent(value);
+	}, [value]);
+
 	const handleMouseEnter = (index) => {
 		setCurrent(index);
 	};
@@ -26,8 +31,18 @@ export const Rating = ({ stars = 5, value = 3, setValue, size = "md", className 
 						<GoStarFill
 							className={clsx(
 								"transition-all hover:scale-125",
-								index + 1 <= current ? "text-yellow-600" : "text-gray-400",
-								size === "sm" ? "size-8" : size === "md" ? "size-10" : size === "lg" ? "size-12" : "",
+								index + 1 <= current ? `text-${color}-600` : "text-gray-400",
+								size === "sm"
+									? "size-8"
+									: size === "md"
+									? "size-10"
+									: size === "lg"
+									? "size-12"
+									: size === "xs"
+									? "size-8"
+									: size === "tiny"
+									? "size-5"
+									: "",
 							)}
 						/>
 					</button>
