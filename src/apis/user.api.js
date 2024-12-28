@@ -24,6 +24,18 @@ class UserServiceClass {
 		const res = await httpAuth.post("/user/update-info", { firstName, lastName, phone, username, avatarBase64 });
 		return res.data;
 	}
+
+	async fetchUserStreak(userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.get("/user/streak");
+		return res.data;
+	}
+
+	async fetchUserStatistics(userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.get("/user/statistics");
+		return res.data;
+	}
 }
 
 const UserService = new UserServiceClass();

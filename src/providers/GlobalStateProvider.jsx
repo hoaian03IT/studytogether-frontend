@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
 import { pathname } from "../routes/index.js";
+import { streakState } from "../recoil/atoms/streak.atom.js";
 
 const GlobalStateContext = createContext({
 	updateUserState: () => {},
@@ -16,6 +17,7 @@ const GlobalStateContext = createContext({
 
 function GlobalStateProvider({ children }) {
 	const [user, setUser] = useRecoilState(userState);
+	const [streak, setStreak] = useRecoilState(streakState);
 	const [showLogoutModal, setShowLogoutModal] = useState(false);
 
 	const navigate = useNavigate();
@@ -74,35 +76,51 @@ function GlobalStateProvider({ children }) {
 		}
 	};
 
+	// query user information
 	useQuery({
 		queryKey: [queryKeys.userState],
 		queryFn: async () => {
 			try {
-				if (user?.isLogged) {
-					const data = await UserService.fetchUserInfo(user, updateUserState);
-					if (data) {
-						setUser((prev) => ({
-							...prev,
-							info: {
-								username: data?.username,
-								phone: data?.phone,
-								firstName: data?.["first name"],
-								lastName: data?.["last name"],
-								avatar: data?.["avatar image"],
-								email: data?.email,
-								role: data?.["role name"],
-								facebookId: data?.["facebook id"],
-								googleId: data?.["google id"],
-							},
-						}));
-						return data;
-					}
-				}
-				return {};
+				const data = await UserService.fetchUserInfo(user, updateUserState);
+				setUser((prev) => ({
+					...prev,
+					info: {
+						username: data?.username,
+						phone: data?.phone,
+						firstName: data?.["first name"],
+						lastName: data?.["last name"],
+						avatar: data?.["avatar image"],
+						email: data?.email,
+						role: data?.["role name"],
+						facebookId: data?.["facebook id"],
+						googleId: data?.["google id"],
+					},
+				}));
+
+				return data;
 			} catch (error) {
 				return Promise.reject(error);
 			}
 		},
+		enabled: user.isLogged,
+		staleTime: 1000 * 60 * 5, // 5 minutes
+		cacheTime: 1000 * 60 * 10, // 10 minutes
+	});
+
+	// query user streak
+	useQuery({
+		queryKey: [queryKeys.userStreak],
+		queryFn: async () => {
+			const { streakInfo } = await UserService.fetchUserStreak(user, updateUserState);
+			setStreak({
+				currentStreak: streakInfo?.["current streak"],
+				maxStreak: streakInfo?.["max streak"],
+				lastCompletedDate: streakInfo?.["last completed date"],
+			});
+			return streakInfo;
+		},
+		staleTime: 1000 * 60 * 5, // 5 minutes
+		enabled: !!user.token, // only fetch when user has authenticated
 	});
 
 	return (

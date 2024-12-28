@@ -9,11 +9,12 @@ import { SidebarMainItem } from "./sidebar-main-item";
 import { TranslationContext } from "../providers/TranslationProvider";
 import { NotificationComponent } from "../screen/notification-component";
 import { pathname } from "../routes/index.js";
+import { useRecoilValue } from "recoil";
+import { streakState } from "../recoil/atoms/streak.atom.js";
 
 function SidebarMain() {
+	const streak = useRecoilValue(streakState);
 	const { translation } = useContext(TranslationContext);
-
-	const [streak, setStreak] = useState(0);
 	const [isExpanded, setIsExpanded] = useState(true);
 
 	const sidebarItems = [
@@ -44,25 +45,25 @@ function SidebarMain() {
 	};
 
 	return (
-		<div className='px-2 py-2 h-full bg-white shadow-small'>
+		<div className="px-2 py-2 h-full bg-white shadow-small">
 			<div
 				className={clsx(
 					"py-2 px-3 flex items-center justify-between border-b-stone-200 border-b-1 transition-all",
 					isExpanded ? "" : "",
 				)}>
-				<div className=''>
+				<div className="">
 					<button
 						className={clsx("", isExpanded ? "animate-[spin-half_0.2s_ease-in-out_1]" : "")}
 						onClick={handleToggleExpanded}>
-						<HiOutlineViewList className='size-8' />
+						<HiOutlineViewList className="size-8" />
 					</button>
 				</div>
-				<div className={clsx("flex items-end", streak === 0 ? "text-stone-400" : "text-red-400")}>
+				<div className={clsx("flex items-end", streak.currentStreak === 0 ? "text-stone-400" : "text-red-400")}>
 					<AiOutlineFire className={clsx("transition-all", isExpanded ? "size-8" : "size-0")} />
-					<strong className='ms-1 text-2xl'>{isExpanded && streak}</strong>
+					<strong className="ms-1 text-2xl">{isExpanded && streak.currentStreak}</strong>
 				</div>
 			</div>
-			<div className='py-2 space-y-2'>
+			<div className="py-2 space-y-2">
 				{sidebarItems.map((item, index) => (
 					<SidebarMainItem
 						icon={item.icon}

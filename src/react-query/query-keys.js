@@ -21,6 +21,8 @@ const queryKeys = {
 	enrollmentProgress: "enrollment-progress",
 	courseRate: "course-rate",
 	courseRevenue: "course-revenue",
+	userStreak: "user-streak",
+	userStatistic: "user-statistic",
 };
 
 export { queryKeys };
