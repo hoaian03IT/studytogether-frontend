@@ -3,7 +3,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@nextui-org/popover";
 import logo from "../assets/logo-no-background.png";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { pathname } from "../routes";
-import { Fragment, useContext, useEffect, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import { FaSortDown } from "react-icons/fa";
 import clsx from "clsx";
 import { TranslationContext } from "../providers/TranslationProvider";
@@ -23,15 +23,15 @@ export const Header = ({ fluid = false }) => {
 	};
 
 	return (
-		<div className='sticky top-0 z-50'>
-			<Navbar maxWidth={fluid ? "full" : "xl"} className='bg-primary h-[3.5rem]'>
+		<div className="sticky top-0 z-50">
+			<Navbar maxWidth={fluid ? "full" : "xl"} className="bg-primary h-[3.5rem]">
 				<NavbarBrand as={Link} to={pathname.home}>
-					<img loading='eager' src={logo} alt='study-together' />
+					<img loading="eager" src={logo} alt="study-together" />
 				</NavbarBrand>
-				<NavbarContent className='hidden sm:flex gap-6' justify='center'>
+				<NavbarContent className="hidden sm:flex gap-6" justify="center">
 					<NavbarItem>
 						<NavLink
-							color='foreground'
+							color="foreground"
 							to={pathname.home}
 							className={({ isActive }) =>
 								clsx("text-xl", isActive ? "underline font-bold" : "font-semibold")
@@ -58,31 +58,31 @@ export const Header = ({ fluid = false }) => {
 						</NavLink>
 					</NavbarItem>
 				</NavbarContent>
-				<NavbarContent justify='end' className='gap-2'>
-					<NavbarItem className='hidden sm:flex'>
+				<NavbarContent justify="end" className="gap-2">
+					<NavbarItem className="hidden sm:flex">
 						<Popover
-							placement='bottom-start'
+							placement="bottom-start"
 							isOpen={showLanguageOption}
 							onOpenChange={setShowLanguageOption}>
 							<PopoverTrigger>
-								<button className='flex items-center border-none outline-none'>
-									<img src={language.image} alt='' className='size-5 rounded-full' />
-									<div className='ms-2 flex'>
+								<button className="flex items-center border-none outline-none">
+									<img src={language.image} alt="" className="size-5 rounded-full" />
+									<div className="ms-2 flex">
 										<span>{language.id.toUpperCase()}</span>
 										<FaSortDown className={showLanguageOption ? "rotate-180 translate-y-2" : ""} />
 									</div>
 								</button>
 							</PopoverTrigger>
-							<PopoverContent className='rounded-sm px-0'>
-								<div className='py-1 flex flex-col'>
+							<PopoverContent className="rounded-sm px-0">
+								<div className="py-1 flex flex-col">
 									{languageSets.map((language) => {
 										return (
 											<button
 												key={language.id}
-												className='px-4 py-3 flex items-center hover:bg-blue-50 transition-all'
+												className="px-4 py-3 flex items-center hover:bg-blue-50 transition-all"
 												onClick={() => handleSelectLanguage(language)}>
-												<img src={language.image} alt='' className='size-5 rounded-full' />
-												<div className='ms-3 flex items-center'>
+												<img src={language.image} alt="" className="size-5 rounded-full" />
+												<div className="ms-3 flex items-center">
 													<span>
 														{language.name} ({language.id.toUpperCase()})
 													</span>
@@ -99,16 +99,16 @@ export const Header = ({ fluid = false }) => {
 					) : (
 						<Fragment>
 							<NavbarItem>
-								<Button as={Link} to={pathname.signUp} radius='sm' className='bg-white'>
+								<Button as={Link} to={pathname.signUp} radius="sm" className="bg-white">
 									{translation("sign-up")}
 								</Button>
 							</NavbarItem>
-							<NavbarItem className='hidden lg:flex'>
+							<NavbarItem className="hidden lg:flex">
 								<Button
 									as={Link}
 									to={`${pathname.signIn}?redirect=${currentPathname.split("/")[1]}`}
-									radius='sm'
-									className='bg-secondary text-white'>
+									radius="sm"
+									className="bg-secondary text-white">
 									{translation("sign-in")}
 								</Button>
 							</NavbarItem>

@@ -56,17 +56,17 @@ const MultipleChoiceExercise = forwardRef(
 		};
 
 		return (
-			<div className='flex flex-col items-center'>
-				<h2 className='text-4xl font-bold mb-6 flex flex-col items-center gap-2 break-words'>
+			<div className="flex flex-col items-center">
+				<h2 className="text-4xl font-bold mb-6 flex flex-col items-center gap-2 break-words">
 					{question} {pronunciation && <Audio src={pronunciation} show={!!pronunciation} />}
 				</h2>
 
-				<div className='space-y-4 w-full flex flex-col items-center'>
+				<div className="space-y-4 w-full flex flex-col items-center">
 					<div>
-						<Image className='min-h-64 min-w-64' src={image} alt={question} />
+						<Image className="h-80 min-w-80" src={image} alt={question} />
 					</div>
-					<p className='text-2xl font-bold mb-6 flex items-center gap-2'>Your answer:</p>
-					<div className='w-full grid grid-cols-2 gap-4'>
+					<p className="text-2xl font-bold mb-6 flex items-center gap-2">Your answer:</p>
+					<div className="w-full grid grid-cols-2 gap-4">
 						{optionsForUser?.map((item, index) => (
 							<Button
 								className={clsx(
@@ -83,7 +83,7 @@ const MultipleChoiceExercise = forwardRef(
 										: "default"
 								}
 								onClick={() => handleSubmit(item)}
-								size='lg'>
+								size="lg">
 								{item}
 							</Button>
 						))}

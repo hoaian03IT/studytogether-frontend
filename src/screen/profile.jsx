@@ -75,7 +75,7 @@ const Profile = () => {
 				.catch(() => {
 					setValidInputs((prev) => ({
 						...prev,
-						username: { valid: false, errMsg: "Tên đăng nhập đã tồn tại" },
+						username: { valid: false, errMsg: "Username exists" },
 					}));
 				});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -119,7 +119,7 @@ const Profile = () => {
 
 		setFormValue({
 			...formValue,
-			[name]: value.trim(),
+			[name]: value,
 		});
 	};
 
@@ -147,28 +147,28 @@ const Profile = () => {
 		event.preventDefault();
 		if (!editable) return;
 		let submittable = true;
-		if (formValue.lastName && !validationForm.name(formValue.lastName)) {
+		if (formValue.lastName && !validationForm.name(formValue.lastName?.trim())) {
 			submittable = false;
-			setValidInputs((prev) => ({ ...prev, lastName: { valid: false, errMsg: "Họ không hợp lệ" } }));
+			setValidInputs((prev) => ({ ...prev, lastName: { valid: false, errMsg: "First name is not valid" } }));
 		} else {
 			setValidInputs((prev) => ({ ...prev, lastName: { valid: true, errMsg: "" } }));
 		}
-		if (formValue.firstName && !validationForm.name(formValue.firstName)) {
+		if (formValue.firstName?.trim() && !validationForm.name(formValue.firstName?.trim())) {
 			submittable = false;
-			setValidInputs((prev) => ({ ...prev, firstName: { valid: false, errMsg: "Tên không hợp lệ" } }));
+			setValidInputs((prev) => ({ ...prev, firstName: { valid: false, errMsg: "Last name is not valid" } }));
 		} else {
 			setValidInputs((prev) => ({ ...prev, firstName: { valid: true, errMsg: "" } }));
 		}
-		if (formValue.phone && !validationForm.phone(formValue.phone)) {
+		if (formValue.phone?.trim() && !validationForm.phone(formValue.phone?.trim())) {
 			submittable = false;
-			setValidInputs((prev) => ({ ...prev, phone: { valid: false, errMsg: "Số điện thoại không hợp lệ" } }));
+			setValidInputs((prev) => ({ ...prev, phone: { valid: false, errMsg: "Phone is not valid" } }));
 		} else {
 			setValidInputs((prev) => ({ ...prev, phone: { valid: true, errMsg: "" } }));
 		}
 
-		if (!validationForm.username(formValue.username)) {
+		if (!validationForm.username(formValue.username?.trim())) {
 			submittable = false;
-			setValidInputs((prev) => ({ ...prev, username: { valid: false, errMsg: "Tên đăng nhập không hợp lệ" } }));
+			setValidInputs((prev) => ({ ...prev, username: { valid: false, errMsg: "Username is not valid" } }));
 		} else {
 			setValidInputs((prev) => ({ ...prev, username: { valid: true, errMsg: "" } }));
 		}
@@ -176,20 +176,20 @@ const Profile = () => {
 		if (!submittable) return;
 		// nếu như thông tin không thay đổi thì không cần call apis
 		if (
-			formValue.firstName === user.info?.firstName &&
-			formValue.lastName === user.info?.lastName &&
-			formValue.phone === user.info?.phone &&
-			formValue.username === user.info?.username
+			formValue.firstName?.trim() === user.info?.firstName &&
+			formValue.lastName?.trim() === user.info?.lastName &&
+			formValue.phone?.trim() === user.info?.phone &&
+			formValue.username?.trim() === user.info?.username
 		) {
 			setEditable(false);
 			return;
 		}
 		updateInfoMutation.mutate({
-			firstName: formValue.firstName,
-			lastName: formValue.lastName,
-			phone: formValue.phone,
-			username: formValue.username,
-			avatarBase64: formValue.avatar,
+			firstName: formValue.firstName?.trim(),
+			lastName: formValue.lastName?.trim(),
+			phone: formValue.phone?.trim(),
+			username: formValue.username?.trim(),
+			avatarBase64: formValue.avatar?.trim(),
 		});
 	};
 
@@ -207,7 +207,7 @@ const Profile = () => {
 	return (
 		<div className="bg-white p-8 rounded w-full">
 			<div className="flex items-center">
-				<h1 className="text-2xl font-semibold flex items-center">Chỉnh sửa hồ sơ </h1>
+				<h1 className="text-2xl font-semibold flex items-center">Edit profile </h1>
 				{!editable && (
 					<TbEdit
 						className="size-6 ms-4 text-secondary cursor-pointer active:opacity-70 transition-all"
@@ -216,7 +216,7 @@ const Profile = () => {
 				)}
 			</div>
 			<div className="">
-				Xin chào,{" "}
+				Hello, &nbsp;
 				{user.info?.firstName || user.info?.lastName
 					? `${user.info?.firstName} ${user.info?.lastName}`
 					: user.info?.username}
@@ -250,7 +250,7 @@ const Profile = () => {
 						<Input
 							name="lastName"
 							type="text"
-							label={<p className="ms-1">Họ</p>}
+							label={<p className="ms-1">First name</p>}
 							labelPlacement="outside"
 							placeholder="Trà"
 							radius="sm"
@@ -266,7 +266,7 @@ const Profile = () => {
 						<Input
 							name="firstName"
 							type="text"
-							label={<p className="ms-1">Tên</p>}
+							label={<p className="ms-1">Last name</p>}
 							labelPlacement="outside"
 							placeholder="Thảo"
 							radius="sm"
@@ -282,7 +282,7 @@ const Profile = () => {
 						<Input
 							name="username"
 							type="text"
-							label={<p className="ms-1">Tên đăng nhập</p>}
+							label={<p className="ms-1">Username</p>}
 							labelPlacement="outside"
 							placeholder="traluongpthao"
 							radius="sm"
@@ -298,7 +298,7 @@ const Profile = () => {
 						<Input
 							name="phone"
 							type="text"
-							label={<p className="ms-1">Số điện thoại</p>}
+							label={<p className="ms-1">Phone</p>}
 							labelPlacement="outside"
 							placeholder="0854212084"
 							radius="sm"
@@ -313,7 +313,7 @@ const Profile = () => {
 					{!user?.info?.facebookId && !user?.info?.googleId ? (
 						<div className="mb-6">
 							<Link to={pathname.changePassword} className="text-secondary hover:underline">
-								Thay đổi mật khẩu
+								Change password
 							</Link>
 						</div>
 					) : null}
@@ -327,7 +327,7 @@ const Profile = () => {
 							color="default"
 							radius="sm"
 							size="lg">
-							Hủy
+							Cancel
 						</Button>
 						<Button
 							type="submit"
@@ -336,7 +336,7 @@ const Profile = () => {
 							radius="sm"
 							size="lg"
 							isLoading={updateInfoMutation.isPending}>
-							Lưu
+							Update
 						</Button>
 					</div>
 				)}

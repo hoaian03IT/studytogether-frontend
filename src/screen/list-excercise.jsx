@@ -176,29 +176,29 @@ const ListExercise = () => {
 	return (
 		<ExerciseContext.Provider
 			value={{ courseIdKey: params?.courseId?.toString(), levelIdKey: selectedLevel?.toString() }}>
-			<div className='grid grid-cols-12 gap-4 h-full'>
-				<div className='flex flex-col col-span-10'>
-					<div className='flex gap-4'>
-						<Button className='px-8' color='primary' radius='sm' onClick={handleOpenInsertModal}>
-							Thêm mới
+			<div className="grid grid-cols-12 gap-4 h-full">
+				<div className="flex flex-col col-span-10">
+					<div className="flex gap-4">
+						<Button className="px-8" color="primary" radius="sm" onClick={handleOpenInsertModal}>
+							Add new
 						</Button>
 						<Input
-							type='text'
-							radius='sm'
-							placeholder='Tìm kiếm theo tiêu đề bài tập'
-							className='col-span-2 row-start-2 border-spacing-2'
+							type="text"
+							radius="sm"
+							placeholder="Search by exercise title"
+							className="col-span-2 row-start-2 border-spacing-2"
 							startContent={
-								<RxMagnifyingGlass className='text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0 size-6' />
+								<RxMagnifyingGlass className="text-black/50 mb-0.5 dark:text-white/90 text-slate-400 pointer-events-none flex-shrink-0 size-6" />
 							}
 							value={search}
 							onValueChange={setSearch}
 						/>
 						<Select
-							aria-label='difficulty'
-							type='text'
-							radius='sm'
-							placeholder='Difficulty'
-							className='col-span-2 row-start-2 border-spacing-2 min-w-40 w-40'
+							aria-label="difficulty"
+							type="text"
+							radius="sm"
+							placeholder="Difficulty"
+							className="col-span-2 row-start-2 border-spacing-2 min-w-40 w-40"
 							selectedKeys={[difficulty?.toString()]}
 							value={difficulty}
 							onChange={(e) => setDifficulty(e.target.value)}>
@@ -209,11 +209,11 @@ const ListExercise = () => {
 							))}
 						</Select>
 						<Select
-							aria-label='type-question'
-							type='text'
-							radius='sm'
-							placeholder='Type question'
-							className='col-span-2 row-start-2 border-spacing-2 min-w-40 w-40'
+							aria-label="type-question"
+							type="text"
+							radius="sm"
+							placeholder="Type question"
+							className="col-span-2 row-start-2 border-spacing-2 min-w-40 w-40"
 							selectedKeys={[filterTypeQuestion?.toString()]}
 							value={filterTypeQuestion}
 							onChange={(e) => setFilterTypeQuestion(e.target.value)}>
@@ -260,11 +260,11 @@ const ListExercise = () => {
 								);
 							})
 						) : (
-							<div className='italic text-center font-light'>(Empty)</div>
+							<div className="italic text-center font-light">(Empty)</div>
 						)}
 					</div>
 				</div>
-				<div className='col-span-2 h-full'>
+				<div className="col-span-2 h-full">
 					<SidebarListExercise
 						levels={levelQuery.data}
 						selectedLevels={selectedLevel}

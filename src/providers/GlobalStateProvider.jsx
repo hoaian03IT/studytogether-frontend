@@ -81,28 +81,31 @@ function GlobalStateProvider({ children }) {
 		queryKey: [queryKeys.userState],
 		queryFn: async () => {
 			try {
-				const data = await UserService.fetchUserInfo(user, updateUserState);
-				setUser((prev) => ({
-					...prev,
-					info: {
-						username: data?.username,
-						phone: data?.phone,
-						firstName: data?.["first name"],
-						lastName: data?.["last name"],
-						avatar: data?.["avatar image"],
-						email: data?.email,
-						role: data?.["role name"],
-						facebookId: data?.["facebook id"],
-						googleId: data?.["google id"],
-					},
-				}));
+				if (user?.isLogged) {
+					const data = await UserService.fetchUserInfo(user, updateUserState);
+					setUser((prev) => ({
+						...prev,
+						info: {
+							username: data?.username,
+							phone: data?.phone,
+							firstName: data?.["first name"],
+							lastName: data?.["last name"],
+							avatar: data?.["avatar image"],
+							email: data?.email,
+							role: data?.["role name"],
+							facebookId: data?.["facebook id"],
+							googleId: data?.["google id"],
+						},
+					}));
 
-				return data;
+					return data;
+				}
+				return {};
 			} catch (error) {
 				return Promise.reject(error);
 			}
 		},
-		enabled: user.isLogged,
+		enabled: user?.isLogged,
 		staleTime: 1000 * 60 * 5, // 5 minutes
 		cacheTime: 1000 * 60 * 10, // 10 minutes
 	});
@@ -113,8 +116,8 @@ function GlobalStateProvider({ children }) {
 		queryFn: async () => {
 			const { streakInfo } = await UserService.fetchUserStreak(user, updateUserState);
 			setStreak({
-				currentStreak: streakInfo?.["current streak"],
-				maxStreak: streakInfo?.["max streak"],
+				currentStreak: streakInfo?.["current streak"] || 0,
+				maxStreak: streakInfo?.["max streak"] || 0,
 				lastCompletedDate: streakInfo?.["last completed date"],
 			});
 			return streakInfo;
