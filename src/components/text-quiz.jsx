@@ -8,6 +8,7 @@ export const TextQuiz = forwardRef(({ question, answer, audio, isCorrect, handle
 	const [value, setValue] = useState("");
 	const [randomLetters, setRandomLetters] = useState(generateRandomLetter(question, answer));
 	const [isSubmitted, setIsSubmitted] = useState(false);
+	const [numberShowedLetter, setNumberShowedLetter] = useState(0);
 
 	useEffect(() => {
 		setValue("");
@@ -23,7 +24,9 @@ export const TextQuiz = forwardRef(({ question, answer, audio, isCorrect, handle
 					handleSubmit();
 				},
 				handleHint: () => {
-					setValue(answer);
+					let n = numberShowedLetter + 1;
+					setValue(answer.slice(0, n));
+					setNumberShowedLetter(n);
 				},
 			};
 		},
