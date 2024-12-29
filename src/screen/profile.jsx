@@ -119,7 +119,7 @@ const Profile = () => {
 
 		setFormValue({
 			...formValue,
-			[name]: value.trim(),
+			[name]: value,
 		});
 	};
 
@@ -147,26 +147,26 @@ const Profile = () => {
 		event.preventDefault();
 		if (!editable) return;
 		let submittable = true;
-		if (formValue.lastName && !validationForm.name(formValue.lastName)) {
+		if (formValue.lastName && !validationForm.name(formValue.lastName?.trim())) {
 			submittable = false;
 			setValidInputs((prev) => ({ ...prev, lastName: { valid: false, errMsg: "First name is not valid" } }));
 		} else {
 			setValidInputs((prev) => ({ ...prev, lastName: { valid: true, errMsg: "" } }));
 		}
-		if (formValue.firstName && !validationForm.name(formValue.firstName)) {
+		if (formValue.firstName?.trim() && !validationForm.name(formValue.firstName?.trim())) {
 			submittable = false;
 			setValidInputs((prev) => ({ ...prev, firstName: { valid: false, errMsg: "Last name is not valid" } }));
 		} else {
 			setValidInputs((prev) => ({ ...prev, firstName: { valid: true, errMsg: "" } }));
 		}
-		if (formValue.phone && !validationForm.phone(formValue.phone)) {
+		if (formValue.phone?.trim() && !validationForm.phone(formValue.phone?.trim())) {
 			submittable = false;
 			setValidInputs((prev) => ({ ...prev, phone: { valid: false, errMsg: "Phone is not valid" } }));
 		} else {
 			setValidInputs((prev) => ({ ...prev, phone: { valid: true, errMsg: "" } }));
 		}
 
-		if (!validationForm.username(formValue.username)) {
+		if (!validationForm.username(formValue.username?.trim())) {
 			submittable = false;
 			setValidInputs((prev) => ({ ...prev, username: { valid: false, errMsg: "Username is not valid" } }));
 		} else {
@@ -176,20 +176,20 @@ const Profile = () => {
 		if (!submittable) return;
 		// nếu như thông tin không thay đổi thì không cần call apis
 		if (
-			formValue.firstName === user.info?.firstName &&
-			formValue.lastName === user.info?.lastName &&
-			formValue.phone === user.info?.phone &&
-			formValue.username === user.info?.username
+			formValue.firstName?.trim() === user.info?.firstName &&
+			formValue.lastName?.trim() === user.info?.lastName &&
+			formValue.phone?.trim() === user.info?.phone &&
+			formValue.username?.trim() === user.info?.username
 		) {
 			setEditable(false);
 			return;
 		}
 		updateInfoMutation.mutate({
-			firstName: formValue.firstName,
-			lastName: formValue.lastName,
-			phone: formValue.phone,
-			username: formValue.username,
-			avatarBase64: formValue.avatar,
+			firstName: formValue.firstName?.trim(),
+			lastName: formValue.lastName?.trim(),
+			phone: formValue.phone?.trim(),
+			username: formValue.username?.trim(),
+			avatarBase64: formValue.avatar?.trim(),
 		});
 	};
 
