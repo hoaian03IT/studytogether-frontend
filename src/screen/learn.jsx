@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom.js";
 import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
@@ -42,10 +42,12 @@ function LearnPage() {
 		current: 0,
 		total: 0,
 	});
+	const [isHint, setIsHint] = useState(false);
 	const [isCorrect, setIsCorrect] = useState(true);
 	const [learningLevelNames, setLearningLevelNames] = useState("");
 
 	const navigate = useNavigate();
+	const textQuizRef = useRef(null);
 
 	const learnNewWordSessionQuery = useQuery({
 		queryKey: [user.info?.username, queries.get("ci")],
@@ -113,7 +115,11 @@ function LearnPage() {
 
 	const handleCalculatePoints = () => {
 		if (isCorrect && !question?.isWrong) {
-			setCurrentPoints((prev) => prev + unitPoint);
+			if (isHint) {
+				setCurrentPoints((prev) => prev + unitPoint / 10);
+			} else {
+				setCurrentPoints((prev) => prev + unitPoint);
+			}
 		}
 	};
 
@@ -156,6 +162,7 @@ function LearnPage() {
 		handleProgress();
 		setRd((prev) => prev + 1); // random bắt buộc các child component có prop là rd phải re-render
 		setNextable(false);
+		setIsHint(false);
 
 		if (questions.length === 0) {
 			setQuestion(null);
@@ -180,6 +187,15 @@ function LearnPage() {
 			setQuestion(...tmpQuestions.splice(randomQuestionIndex, 1));
 			// set question con lai
 			setQuestions(tmpQuestions);
+		}
+	};
+
+	const handleHint = () => {
+		if (question?.template === "multiple-choice") {
+			setIsHint(true);
+		} else if (question?.template === "text") {
+			setIsHint(true);
+			textQuizRef.current.handleHint();
 		}
 	};
 
@@ -221,6 +237,7 @@ function LearnPage() {
 												/>
 											) : question?.template === "multiple-choice" ? (
 												<MultipleChoiceExercise
+													isHint={isHint}
 													question={question?.question}
 													answer={question?.answer}
 													options={question?.options}
@@ -232,6 +249,8 @@ function LearnPage() {
 												/>
 											) : question?.template === "text" ? (
 												<TextQuiz
+													ref={textQuizRef}
+													isHint={isHint}
 													question={question?.question}
 													answer={question?.answer}
 													image={question?.image}
@@ -259,7 +278,8 @@ function LearnPage() {
 												<Button
 													className="flex flex-col max-h-none h-max w-full py-4 px-2 bg-warning-300"
 													radius="sm"
-													variant="shadow">
+													variant="shadow"
+													onPress={handleHint}>
 													<FaRegLightbulb className="size-12" />
 													<span className="font-semibold text-xl">Hint</span>
 												</Button>

@@ -17,6 +17,8 @@ import { FlashCardModal } from "../components/flash-cards";
 import { MostPopularCourse } from "../components/most-popular";
 import { LoadingThreeDot } from "../components/loadings/loading-three-dot";
 import { LoadingWaitAMinute } from "../components/loadings/loading-wait-a-minute";
+import { Link } from "react-router-dom";
+import { pathname } from "../routes";
 
 const FlashCard = () => {
 	const user = useRecoilValue(userState);
@@ -83,15 +85,19 @@ const FlashCard = () => {
 						return (
 							<div key={index} className="bg-white rounded-lg p-4 shadow-lg border col-span-1">
 								<div className="relative w-full">
-									<img
-										alt="course thumbnail"
-										src={item["image"] || "https://via.placeholder.com/150"}
-										className="w-full h-48 object-cover rounded-lg"
-									/>
+									<Link to={pathname.courseInformation.split(":")[0] + item?.["course id"]}>
+										<img
+											alt="course thumbnail"
+											src={item["image"] || "https://via.placeholder.com/150"}
+											className="w-full h-48 object-cover rounded-lg"
+										/>
+									</Link>
 								</div>
-								<h3 className="line-clamp-1 py-2 text-lg font-semibold text-gray-800">
-									{item["name"]}
-								</h3>
+								<Link to={pathname.courseInformation.split(":")[0] + item?.["course id"]}>
+									<h3 className="line-clamp-1 py-2 text-lg font-semibold text-gray-800">
+										{item["name"]}
+									</h3>
+								</Link>
 								<div className="flex flex-wrap justify-between text-slate-400 py-3">
 									<div className="flex gap-2 items-center text-gray-500">
 										<FaBookBookmark />

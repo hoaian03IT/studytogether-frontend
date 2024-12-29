@@ -22,12 +22,10 @@ function generateOptions(options = [], answer, number) {
 }
 
 const MultipleChoiceExercise = forwardRef(
-	({ isCorrect, question, answer, options, image, pronunciation, handleCheckResult, rd }, ref) => {
+	({ isCorrect, question, answer, options, image, pronunciation, handleCheckResult, rd, isHint }, ref) => {
 		const [selectedAnswer, setSelectedAnswer] = useState("");
 		const [isSubmitted, setIsSubmitted] = useState(false);
 		const [optionsForUser, setOptionForUser] = useState([]);
-
-		console.log({ type: "MultipleChoiceExercise", audio: pronunciation, answer, question });
 
 		useEffect(() => {
 			setSelectedAnswer("");
@@ -47,6 +45,12 @@ const MultipleChoiceExercise = forwardRef(
 			},
 			[selectedAnswer],
 		);
+
+		useEffect(() => {
+			if (isHint) {
+				handleSubmit(answer);
+			}
+		}, [isHint]);
 
 		const handleSubmit = (userAnswer) => {
 			if (isSubmitted) return;
