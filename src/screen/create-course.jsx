@@ -150,7 +150,7 @@ const CreateCourse = () => {
 	return (
 		<div className='bg-white px-6 rounded w-full flex flex-col items-center'>
 			<h1 className='w-full text-gray-700 p-6 mt-4 bg-gradient-to-r from-blue-300 to-red-100 rounded-lg text-center text-3xl'>
-				TẠO KHÓA HỌC CHO RIÊNG BẠN
+				CREATE YOUR OWN
 			</h1>
 			<div className='max-w-screen-lg w-full'>
 				<form onSubmit={handleSubmit} className='my-6 w-full grid gap-x-4 gap-y-5 grid-cols-6'>
@@ -158,7 +158,7 @@ const CreateCourse = () => {
 						<div className='col-span-2 grid grid-cols-2 gap-4'>
 							<Select
 								size='lg'
-								label={<Label>Ngôn ngữ gốc</Label>}
+								label={<Label>Native language</Label>}
 								placeholder='English'
 								labelPlacement='outside'
 								radius='sm'
@@ -180,7 +180,7 @@ const CreateCourse = () => {
 							</Select>
 							<Select
 								size='lg'
-								label={<Label>Ngôn ngữ học</Label>}
+								label={<Label>Language to learn</Label>}
 								placeholder='Tiếng Việt'
 								labelPlacement='outside'
 								radius='sm'
@@ -203,7 +203,7 @@ const CreateCourse = () => {
 						</div>
 						<Select
 							size='lg'
-							label={<Label>Cấp độ</Label>}
+							label={<Label>Levels</Label>}
 							className='col-span-4'
 							placeholder='Cấp độ'
 							labelPlacement='outside'
@@ -225,7 +225,7 @@ const CreateCourse = () => {
 							size='lg'
 							name='courseName'
 							type='text'
-							label={<Label>Tên bộ từ vựng</Label>}
+							label={<Label>Name</Label>}
 							labelPlacement='outside'
 							radius='sm'
 							placeholder='VD: Tiếng anh lớp 6'
@@ -248,7 +248,7 @@ const CreateCourse = () => {
 							size='lg'
 							name='tag'
 							type='text'
-							label={<Label>Từ khoá</Label>}
+							label={<Label>Keyword</Label>}
 							placeholder='VD: lớp 6'
 							labelPlacement='outside'
 							radius='sm'
@@ -270,7 +270,7 @@ const CreateCourse = () => {
 					</div>
 					<div className='col-span-2 row-span-2 flex flex-col w-full h-full'>
 						<div className='-translate-y-1'>
-							<Label>Hình ảnh</Label>
+							<Label>Image</Label>
 						</div>
 						<div className='flex flex-col h-full'>
 							<img
@@ -295,7 +295,7 @@ const CreateCourse = () => {
 						size='lg'
 						name='shortDescription'
 						type='text'
-						label={<Label>Mô tả ngắn</Label>}
+						label={<Label>Short description</Label>}
 						labelPlacement='outside'
 						radius='sm'
 						placeholder='Viết vào ở đây...'
@@ -317,7 +317,7 @@ const CreateCourse = () => {
 					<Textarea
 						size='lg'
 						disableAutosize
-						label={<Label>Mô tả chi tiết</Label>}
+						label={<Label>Detail description</Label>}
 						labelPlacement='outside'
 						radius='sm'
 						placeholder='Viết vào ở đây...'
@@ -332,13 +332,13 @@ const CreateCourse = () => {
 							type='button'
 							onClick={handleCancel}
 							className='col-start-6 col-span-1 bg-gray-300 text-gray-700 px-4 py-2 rounded'>
-							Hủy
+							Cancel
 						</Button>
 						<Button
 							type='submit'
 							className='col-span-1 bg-secondary px-4 py-2 rounded text-white'
 							isLoading={courseMutation.isPending}>
-							Tạo ngay
+							Create
 						</Button>
 					</div>
 				</form>

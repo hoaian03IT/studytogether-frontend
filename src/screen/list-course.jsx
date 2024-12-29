@@ -18,7 +18,7 @@ const ListCourse = () => {
 	return (
 		<div className='container max-w-screen-xl py-10 px-4 bg-slate-200'>
 			<h1 className='text-gray-700 mb p-6 b bg-gradient-to-r from-blue-300 to-red-100 rounded-lg flex text-center'>
-				LỰA CHỌN BỘ TỪ VỰNG CHO RIÊNG BẠN
+			CHOOSE YOUR OWN VOCABULARY
 			</h1>
 			<div>
 				<SearchnFilter onFilter={handleFilterResults} />
