@@ -287,6 +287,7 @@ const CreateCourse = () => {
 								onChange={onChangeImage}
 								multiple={false}
 								accept='image/*'
+								length= 'eng'
 							/>
 						</div>
 					</div>
