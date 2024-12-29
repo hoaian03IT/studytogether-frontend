@@ -180,8 +180,8 @@ export default function Filter({ onFilter }) {
 					{/* Source Language */}
 					<div>
 						<Select
-							label="Ngôn ngữ gốc"
-							placeholder="Chọn ngôn ngữ"
+							label="Native Language"
+							placeholder="Select language"
 							className="min-w-[200px]"
 							selectedKey={formValue.sourceLanguageId}
 							onSelectionChange={(key) => handleInputChange("sourceLanguageId", key)}>
@@ -195,8 +195,8 @@ export default function Filter({ onFilter }) {
 
 					<div>
 						<Select
-							label="Ngôn ngữ học"
-							placeholder="Chọn ngôn ngữ cần học"
+							label="Language to learn"
+							placeholder="Select language"
 							className="min-w-[200px]"
 							selectedKey={formValue.targetLanguageId}
 							onSelectionChange={(key) => handleInputChange("targetLanguageId", key)}>
@@ -210,8 +210,8 @@ export default function Filter({ onFilter }) {
 
 					<div>
 						<Select
-							label="Cấp độ"
-							placeholder="Chọn cấp độ"
+							label="Level"
+							placeholder="Select level"
 							className="min-w-[200px]"
 							selectedKeys={formValue.levels}
 							onSelectionChange={(keys) => handleInputChange("levels", Array.from(keys))}>
