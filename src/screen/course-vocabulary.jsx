@@ -142,7 +142,7 @@ function CourseVocabulary() {
 		onSuccess: (levelId) => {
 			const oldData = queryClient.getQueryData([queryKeys.courseVocabulary, params?.courseId]);
 
-			const newLevels = oldData.vocabularyList.filter((item) => item.levelId !== levelId);
+			const newLevels = oldData.vocabularyList.filter((item) => item.levelId != levelId);
 			queryClient.setQueryData([queryKeys.courseVocabulary, params?.courseId], {
 				...oldData,
 				vocabularyList: newLevels,
@@ -167,7 +167,7 @@ function CourseVocabulary() {
 			const oldData = queryClient.getQueryData([queryKeys.courseVocabulary, params?.courseId]);
 			const newVocabularyList = oldData.vocabularyList;
 			for (let i = 0; i < newVocabularyList.length; i++) {
-				if (newVocabularyList[i].levelId === updatedLevel["level id"]) {
+				if (newVocabularyList[i].levelId == updatedLevel["level id"]) {
 					newVocabularyList[i].levelName = updatedLevel["level name"];
 					break;
 				}
@@ -187,7 +187,6 @@ function CourseVocabulary() {
 		onSuccess: (data) => {
 			const newWord = data?.newWord;
 			let newVocabularyList = vocabularyQuery.data.vocabularyList;
-			console.log({ newVocabularyList });
 			for (let i = 0; i < newVocabularyList?.length; i++) {
 				if (newVocabularyList[i].levelId == newWord["level id"]) {
 					newVocabularyList[i]["words"].push({
@@ -230,7 +229,7 @@ function CourseVocabulary() {
 			const { wordId, levelId } = data;
 			let newVocabularyList = vocabularyQuery.data.vocabularyList;
 			for (let i = 0; i < newVocabularyList?.length; i++) {
-				if (newVocabularyList[i].levelId === levelId) {
+				if (newVocabularyList[i].levelId == levelId) {
 					let wordList = newVocabularyList[i].words;
 					wordList = wordList.filter((word) => wordId !== word?.wordId);
 					newVocabularyList[i].words = wordList;
@@ -269,13 +268,14 @@ function CourseVocabulary() {
 			const updatedWord = data?.updatedWord;
 			let newVocabularyList = vocabularyQuery.data.vocabularyList;
 			if (!newVocabularyList || !updatedWord) return;
+
 			// Trường hợp cập nhật từ trong cùng level
-			if (updatedWord["level id"].toString() === wordEditing.oldLevelId) {
-				const levelIndex = newVocabularyList.findIndex((level) => level.levelId === updatedWord["level id"]);
+			if (updatedWord["level id"].toString() == wordEditing.oldLevelId) {
+				const levelIndex = newVocabularyList.findIndex((level) => level.levelId == updatedWord["level id"]);
 
 				if (levelIndex !== -1) {
 					const wordIndex = newVocabularyList[levelIndex].words.findIndex(
-						(word) => word.wordId === updatedWord?.["word id"],
+						(word) => word.wordId == updatedWord?.["word id"],
 					);
 
 					if (wordIndex !== -1) {
@@ -296,18 +296,18 @@ function CourseVocabulary() {
 			else {
 				// Xóa từ khỏi level cũ
 				const oldLevelIndex = newVocabularyList.findIndex(
-					(level) => level.levelId.toString() === wordEditing.oldLevelId,
+					(level) => level.levelId.toString() == wordEditing.oldLevelId,
 				);
 
 				if (oldLevelIndex !== -1) {
 					newVocabularyList[oldLevelIndex].words = newVocabularyList[oldLevelIndex].words.filter(
-						(word) => word.wordId !== updatedWord?.["word id"],
+						(word) => word.wordId != updatedWord?.["word id"],
 					);
 				}
 
 				// Thêm từ vào level mới
 				const newLevelIndex = newVocabularyList.findIndex(
-					(level) => level.levelId === updatedWord?.["level id"],
+					(level) => level.levelId == updatedWord?.["level id"],
 				);
 
 				if (newLevelIndex !== -1) {

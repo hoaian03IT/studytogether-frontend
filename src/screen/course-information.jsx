@@ -188,6 +188,8 @@ function CourseInformation() {
 								</p>
 								{enrolled || courseInfoQuery.data?.["username"] === user.info?.username ? (
 									<Button
+										disabled={courseInfoQuery.data?.["status"] === "pending"}
+										isDisabled={courseInfoQuery.data?.["status"] === "pending"}
 										onClick={handleLearnOrBuy}
 										isLoading={enrollMutation.isPending}
 										className="bg-third text-third-foreground shadow-2xl"
@@ -196,6 +198,8 @@ function CourseInformation() {
 									</Button>
 								) : (
 									<Button
+										disabled={courseInfoQuery.data?.["status"] === "pending"}
+										isDisabled={courseInfoQuery.data?.["status"] === "pending"}
 										className="bg-third text-third-foreground shadow-2xl"
 										radius="sm"
 										onClick={handleLearnOrBuy}
@@ -216,6 +220,8 @@ function CourseInformation() {
 									{translation("course-information.title-no-price2")}
 								</p>
 								<Button
+									disabled={courseInfoQuery.data?.["status"] === "pending"}
+									isDisabled={courseInfoQuery.data?.["status"] === "pending"}
 									className="bg-third text-third-foreground shadow-2xl"
 									radius="sm"
 									isLoading={enrollMutation.isPending}
@@ -260,6 +266,8 @@ function CourseInformation() {
 							<div className="mt-8 flex flex-col justify-center space-y-2">
 								{enrolled || courseInfoQuery.data?.["username"] === user.info?.username ? (
 									<Button
+										disabled={courseInfoQuery.data?.["status"] === "pending"}
+										isDisabled={courseInfoQuery.data?.["status"] === "pending"}
 										onClick={handleLearnOrBuy}
 										isLoading={enrollMutation.isPending}
 										className="bg-third text-third-foreground font-bold text-base"
@@ -270,6 +278,8 @@ function CourseInformation() {
 								) : (
 									<Fragment>
 										<Button
+											disabled={courseInfoQuery.data?.["status"] === "pending"}
+											isDisabled={courseInfoQuery.data?.["status"] === "pending"}
 											className="bg-third text-third-foreground font-bold text-base"
 											onClick={handleLearnOrBuy}
 											isLoading={enrollMutation.isPending}

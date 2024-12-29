@@ -10,17 +10,19 @@ export const CourseCard = ({ item }) => {
 	return (
 		<div className="w-full flex bg-white rounded-lg p-4 shadow-lg border">
 			<Link to={pathname.courseInformation.split(":")[0] + item?.["course id"]}>
-				<Image alt={item?.["name"]} src={item?.["image"]} className="w-40 h-40 rounded-lg object-cover" />
+				<Image alt={item?.["name"]} src={item?.["image"]} className="size-36 rounded-lg object-cover" />
 			</Link>
 			<div className="flex-grow pl-6">
 				<Link to={pathname.courseInformation.split(":")[0] + item?.["course id"]}>
 					<h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-1">{item?.["name"]}</h3>
 				</Link>
 				<div className="flex items-center text-gray-500 text-sm mb-4 gap-2">
-					<div className="flex items-center">
-						<FaBookBookmark className="mr-2" />
-						Words: {item?.["totalWords"]}
-					</div>
+					{item?.["totalWords"] && (
+						<div className="flex items-center">
+							<FaBookBookmark className="mr-2" />
+							Words: {item?.["totalWords"]}
+						</div>
+					)}
 					<div className="flex items-center">
 						<BsFillPeopleFill className="mr-2" />
 						Student: {item?.["number enrollments"]}

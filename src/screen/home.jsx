@@ -410,7 +410,7 @@ const Dashboard = () => {
 						</div>
 					</div>
 					<span className="text-2xl font-bold mt-6 text-primary-500">Recent Courses</span>
-					<div className="grid grid-cols-3 gap-2 my-4">
+					<div className="grid grid-cols-3 gap-4 my-4">
 						{incompleteCourse.map((item) => (
 							<CourseCard key={item?.["enrollment id"]} item={item} />
 						))}
@@ -430,7 +430,7 @@ const Dashboard = () => {
 
 			<span className="text-2xl font-bold mt-6 text-primary-500">Top most discount</span>
 			<div className="py-4 grid xl:grid-cols-3 gap-4 lg:grid-cols-2 sm:grid-cols-1">
-				<MostDiscountCourse limit="8" />
+				<MostDiscountCourse limit="4" />
 			</div>
 		</div>
 	);

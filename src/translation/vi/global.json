@@ -34,6 +34,7 @@
     "COURSE_STOPPED": "Dừng khoá học thành công",
     "REGISTER_FIRST": "Bạn cần đăng ký tài khoản",
     "OOPS":"Ôi! Hỏng rồi",
+    "COURSE_NOT_FOUND": "Khóa học không tồn tại",
     "HAD_ENROLLMENTS": "Không thể đổi sang riêng tư. Đã có người đăng ký khóa học này",
     "FEEDBACK_SUCCESS": "Đánh giá của bạn đã được gửi",
     "CREATE_COURSE_SUCCESS": "Tạo khoá học thành công, vui lòng đợi kiểm duyệt",

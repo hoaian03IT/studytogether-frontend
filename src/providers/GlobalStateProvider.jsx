@@ -72,7 +72,7 @@ function GlobalStateProvider({ children }) {
 		if (user?.isLogged) {
 			logoutMutation.mutate();
 		} else {
-			toast.warn("Bạn chưa đăng nhập trước đó");
+			toast.warn("You have not been logged");
 		}
 	};
 

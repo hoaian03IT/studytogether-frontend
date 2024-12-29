@@ -27,6 +27,8 @@ const MultipleChoiceExercise = forwardRef(
 		const [isSubmitted, setIsSubmitted] = useState(false);
 		const [optionsForUser, setOptionForUser] = useState([]);
 
+		console.log({ options });
+
 		useEffect(() => {
 			setSelectedAnswer("");
 			setIsSubmitted(false);
