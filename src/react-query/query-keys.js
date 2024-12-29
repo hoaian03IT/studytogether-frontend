@@ -25,6 +25,8 @@ const queryKeys = {
 	userStatistic: "user-statistic",
 	mostPopularCourse: "most-popular-course",
 	mostDiscountCourse: "most-discount-course",
+	allLearntWords: "all-learnt-words",
+	markedWords: "marked-words",
 };
 
 export { queryKeys };

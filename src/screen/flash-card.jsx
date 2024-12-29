@@ -1,189 +1,165 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import ReactCardFlip from "react-card-flip";
 import { IoVolumeHigh } from "react-icons/io5";
+import { queryKeys } from "../react-query/query-keys";
+import { CourseService } from "../apis/course.api";
+import { useRecoilValue } from "recoil";
+import { userState } from "../recoil/atoms/user.atom";
+import { GlobalStateContext } from "../providers/GlobalStateProvider";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { FaBookBookmark, FaTrophy } from "react-icons/fa6";
+import { BsFillPeopleFill } from "react-icons/bs";
+import { Button } from "@nextui-org/button";
+import { Avatar, Progress, Tooltip } from "@nextui-org/react";
+import { TranslationContext } from "../providers/TranslationProvider";
+import { VocabularyService } from "../apis/vocabulary.api";
+import { FlashCardModal } from "../components/flash-cards";
+import { MostPopularCourse } from "../components/most-popular";
+import { LoadingThreeDot } from "../components/loadings/loading-three-dot";
+import { LoadingWaitAMinute } from "../components/loadings/loading-wait-a-minute";
 
 const FlashCard = () => {
-	const vocabularyList = [
-		{ front: "Apple", back: "Quả táo" },
-		{ front: "Hello", back: "xin chào" },
-		{ front: "collect", back: "thu thập" },
-		{ front: "milk tea", back: "trà sữa" },
-		{ front: "notebook", back: "vở" },
-	];
+	const user = useRecoilValue(userState);
+	const { updateUserState } = useContext(GlobalStateContext);
+	const { translation } = useContext(TranslationContext);
 
-	const [currentIndex, setCurrentIndex] = useState(0);
-	const [isFlipped, setIsFlipped] = useState(false);
+	const [courses, setCourses] = useState([]);
 
-	const handleFlip = () => {
-		setIsFlipped(!isFlipped);
-	};
+	const [words, setWords] = useState([]);
 
-    const handleNext = () => {
-        setIsFlipped(false);
-        if (currentIndex < vocabularyList.length - 1) {
-            setCurrentIndex(currentIndex + 1);
+	const [showModal, setShowModal] = useState(false);
 
-        }
-    };
+	const enrolledCourseQuery = useQuery({
+		queryKey: [queryKeys.finishedCourses],
+		queryFn: async () => {
+			try {
+				let data = await CourseService.fetchUnfinishedCourses(user, updateUserState);
+				const courses = data?.completeCourses?.concat(data?.incompleteCourses);
+				setCourses(courses);
+				return courses;
+			} catch (error) {
+				console.error(error);
+				toast.error(translation(error.response.data?.errorCode));
+			}
+		},
+	});
 
-	
+	const learntWordMutation = useMutation({
+		mutationFn: async (enrollmentId) =>
+			await VocabularyService.fetchLearntWordByEnrollment(enrollmentId, user, updateUserState),
+		onSuccess: (data) => {
+			setWords(data?.words);
+			setShowModal(true);
+		},
+		onError: (error) => {
+			console.error(error);
+			toast.error(translation(error.response.data?.errorCode));
+		},
+	});
 
-	const handleBack = () => {
-		setIsFlipped(false);
-		if (currentIndex > 0) {
-			setCurrentIndex(currentIndex - 1);
-		}
-	};
-
-	const speakText = (text, e) => {
-		const utterance = new SpeechSynthesisUtterance(text);
-		utterance.lang = "en-US";
-		window.speechSynthesis.speak(utterance);
-	};
-
-	const speakText1 = (text, e) => {
-		const utterance = new SpeechSynthesisUtterance(text);
-		utterance.lang = "vi-VN";
-		window.speechSynthesis.speak(utterance);
-	};
+	const markedWordMutation = useMutation({
+		mutationFn: async (enrollmentId) =>
+			await VocabularyService.fetchMarkedWordByEnrollment(enrollmentId, user, updateUserState),
+		onSuccess: (data) => {
+			setWords(data?.words);
+			setShowModal(true);
+		},
+		onError: (error) => {
+			console.error(error);
+			toast.error(translation(error.response.data?.errorCode));
+		},
+	});
 
 	return (
-		<div style={{
-			display: "flex",
-			flexDirection: "column",
-			alignItems: "center",
-			justifyContent: "center",
-			height: "100vh",
-			backgroundColor: "#f4f6f8",
-		}}>
-			<ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
-				{/* Front Side */}
-				<div
-					onClick={handleFlip}
-					style={{
-						width: "600px",
-						height: "400px",
-						backgroundColor: "#fff",
-						borderRadius: "12px",
-						boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-						display: "flex",
-						flexDirection: "column",
-						justifyContent: "center",
-						alignItems: "center",
-						cursor: "pointer",
-						padding: "20px",
-						position: "relative",
-					}}
-				>
-					<IoVolumeHigh
-						onClick={(e) => {
-							e.stopPropagation();
-							speakText(vocabularyList[currentIndex].front, e);
-						}}
-						style={{
-							position: "absolute",
-							top: "20px",
-							right: "20px",
-							fontSize: "24px",
-							color: "#007bff",
-							cursor: "pointer",
-							transition: "transform 0.2s ease",
-						}}
-						onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
-						onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-						onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-					/>
-					<p style={{
-						fontSize: "24px",
-						color: "#007bff",
-						fontWeight: "500",
-						textAlign: "center",
-					}}>
-						{vocabularyList[currentIndex].front}
-					</p>
-				</div>
-
-				{/* Back Side */}
-				<div
-					onClick={handleFlip}
-					style={{
-						width: "600px",
-						height: "400px",
-						backgroundColor: "#fff",
-						borderRadius: "12px",
-						boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-						display: "flex",
-						flexDirection: "column",
-						justifyContent: "center",
-						alignItems: "center",
-						cursor: "pointer",
-						padding: "20px",
-						position: "relative",
-					}}
-				>
-					<IoVolumeHigh
-						onClick={(e) => {
-							e.stopPropagation();
-							speakText1(vocabularyList[currentIndex].back, e);
-						}}
-						style={{
-							position: "absolute",
-							top: "20px",
-							right: "20px",
-							fontSize: "24px",
-							color: "#007bff",
-							cursor: "pointer",
-							transition: "transform 0.2s ease",
-						}}
-						onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.95)")}
-						onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
-						onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
-					/>
-					<p style={{
-						fontSize: "24px",
-						color: "#007bff",
-						fontWeight: "500",
-						textAlign: "center",
-					}}>
-						{vocabularyList[currentIndex].back}
-					</p>
-				</div>
-			</ReactCardFlip>
-
-			<div style={{ marginTop: "30px" }}>
-				<button
-					onClick={handleBack}
-					disabled={currentIndex === 0}
-					style={{
-						marginRight: "10px",
-						padding: "10px 20px",
-						fontSize: "16px",
-						backgroundColor: "#6c757d",
-						color: "white",
-						border: "none",
-						borderRadius: "8px",
-						cursor: currentIndex === 0 ? "not-allowed" : "pointer",
-						opacity: currentIndex === 0 ? 0.5 : 1,
-					}}
-				>
-					Back
-				</button>
-				<button
-					onClick={handleNext}
-					disabled={currentIndex === vocabularyList.length - 1}
-					style={{
-						padding: "10px 20px",
-						fontSize: "16px",
-						backgroundColor: "#007bff",
-						color: "white",
-						border: "none",
-						borderRadius: "8px",
-						cursor: currentIndex === vocabularyList.length - 1 ? "not-allowed" : "pointer",
-						opacity: currentIndex === vocabularyList.length - 1 ? 0.5 : 1,
-					}}
-				>
-					Next
-				</button>
+		<div className="p-8">
+			<h3 className="block text-blue-500 font-semibold text-2xl my-5">
+				Select enrolled course to review learnt words
+			</h3>
+			<div className="grid grid-cols-4">
+				{enrolledCourseQuery.isPending || enrolledCourseQuery.isLoading || enrolledCourseQuery.isFetching ? (
+					<LoadingWaitAMinute />
+				) : (
+					courses?.map((item, index) => {
+						return (
+							<div key={index} className="bg-white rounded-lg p-4 shadow-lg border col-span-1">
+								<div className="relative w-full">
+									<img
+										alt="course thumbnail"
+										src={item["image"] || "https://via.placeholder.com/150"}
+										className="w-full h-48 object-cover rounded-lg"
+									/>
+								</div>
+								<h3 className="line-clamp-1 py-2 text-lg font-semibold text-gray-800">
+									{item["name"]}
+								</h3>
+								<div className="flex flex-wrap justify-between text-slate-400 py-3">
+									<div className="flex gap-2 items-center text-gray-500">
+										<FaBookBookmark />
+										<p>{item["totalWords"]}</p>
+									</div>
+									<div className="flex gap-2 items-center text-gray-500">
+										<BsFillPeopleFill />
+										{item["number enrollments"]}
+									</div>
+									<div className="flex gap-2 items-center text-gray-500">
+										<FaTrophy />
+										<p>{item["course level name"]}</p>
+									</div>
+								</div>
+								<div>
+									<Progress
+										size="md"
+										minValue={0}
+										maxValue={item?.["totalWords"]}
+										value={item?.["learntWords"]}
+									/>
+								</div>
+								<div className="flex mt-4">
+									<div className="flex justify-start">
+										<Avatar src={item["avatar image"]} />
+										<div>
+											<p className="text-sm ml-3 font-semibold text-gray-800">
+												{item["username"]}
+											</p>
+											<p className="text-xs ml-3 text-gray-500">
+												{translation("my-unfinished-course.author")}
+											</p>
+										</div>
+									</div>
+								</div>
+								<div className="flex items-center justify-end gap-2">
+									<Tooltip
+										placement="bottom"
+										radius="sm"
+										content="Create flashcards set with marked words">
+										<Button
+											radius="sm"
+											onPress={() => learntWordMutation.mutate(item?.["enrollment id"])}
+											className="px-4 py-2 flex justify-end bg-third text-white text-sm font-semibold rounded-lg shadow-md">
+											All learnt
+										</Button>
+									</Tooltip>
+									<Tooltip
+										placement="bottom"
+										radius="sm"
+										content="Create flashcards set with all learnt words">
+										<Button
+											radius="sm"
+											onPress={() => markedWordMutation.mutate(item?.["enrollment id"])}
+											className="px-4 py-2 flex justify-end bg-secondary text-white text-sm font-semibold rounded-lg shadow-md">
+											Favorite
+										</Button>
+									</Tooltip>
+								</div>
+							</div>
+						);
+					})
+				)}
+			</div>
+			<FlashCardModal isOpen={showModal && words.length > 0} words={words} onClose={() => setShowModal(false)} />
+			<label className="block text-blue-500 font-semibold text-2xl pt-8 pb-4">Most popular courses</label>
+			<div className="grid grid-cols-3 gap-2">
+				<MostPopularCourse limit="3" />
 			</div>
 		</div>
 	);

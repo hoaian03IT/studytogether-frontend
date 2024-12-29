@@ -26,7 +26,7 @@ function SidebarMain() {
 		{
 			label: translation("sidebar-main.flash-card"),
 			icon: TbCards,
-			path: "/flashcards",
+			path: pathname.flashCard,
 		},
 		{
 			label: translation("sidebar-main.notification"),

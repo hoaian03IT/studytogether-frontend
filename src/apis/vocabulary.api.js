@@ -86,6 +86,18 @@ class VocabularyServiceClass {
 		});
 		return res.data;
 	}
+
+	async fetchLearntWordByEnrollment(enrollmentId, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.get(`/vocabulary/learnt-words/${enrollmentId}`);
+		return res.data;
+	}
+
+	async fetchMarkedWordByEnrollment(enrollmentId, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.get(`/vocabulary/marked-words/${enrollmentId}`);
+		return res.data;
+	}
 }
 
 const VocabularyService = new VocabularyServiceClass();
