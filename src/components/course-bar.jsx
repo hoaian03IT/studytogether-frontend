@@ -1,24 +1,46 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavLink, useParams } from "react-router-dom";
 import { pathname } from "../routes/index.js";
 import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom.js";
+import { TranslationContext } from "../providers/TranslationProvider.jsx";
 
 const CourseBar = () => {
 	const params = useParams();
 	const user = useRecoilValue(userState);
+	const { translation } = useContext(TranslationContext);
 
 	const menuItems = [
-		{ path: pathname.courseVocabulary, label: "TỪ VỰNG", icon: "✒️", permissions: ["learner", "teacher", "admin"] },
-		{ path: pathname.listExamples, label: "VÍ DỤ", icon: "📑", permissions: ["learner", "teacher", "admin"] },
-		{ path: pathname.listExercise, label: "BÀI TẬP", icon: "📚", permissions: ["teacher", "admin"] },
+		{
+			path: pathname.courseVocabulary,
+			label: translation("course-bar.vocabulary"),
+			icon: "✒️",
+			permissions: ["learner", "teacher", "admin"],
+		},
+		{
+			path: pathname.listExamples,
+			label: translation("course-bar.example"),
+			icon: "📑",
+			permissions: ["learner", "teacher", "admin"],
+		},
+		{
+			path: pathname.listExercise,
+			label: translation("course-bar.exercise"),
+			icon: "📚",
+			permissions: ["teacher", "admin"],
+		},
 		{
 			path: pathname.editCourse,
-			label: "THÔNG TIN KHÓA",
+			label: translation("course-bar.information"),
 			icon: "ℹ️",
 			permissions: ["learner", "teacher", "admin"],
 		},
-		{ path: pathname.courseBusiness, label: "KINH DOANH", icon: "💰", permissions: ["teacher", "admin"] },
+		{
+			path: pathname.courseBusiness,
+			label: translation("course-bar.business"),
+			icon: "💰",
+			permissions: ["teacher", "admin"],
+		},
 	];
 
 	return (
@@ -36,7 +58,7 @@ const CourseBar = () => {
 							}`
 						}>
 						<span className="text-2xl">{item.icon}</span>
-						<span>{item.label}</span>
+						<span className="uppercase">{item.label}</span>
 					</NavLink>
 				) : null,
 			)}

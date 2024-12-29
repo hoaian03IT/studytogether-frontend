@@ -94,7 +94,7 @@ const OwnCourse = () => {
 
 	return (
 		<div className="container max-w-screen-xl py-10 px-4 mt-15 bg-gray-100">
-			<h1 className="text-xl font-semibold text-gray-700 mb-10">Your Courses</h1>
+			<h1 className="text-xl font-semibold text-gray-700 mb-10">{translation("my-owned-course.your-course")}</h1>
 
 			{isPending || isLoading || isRefetching ? (
 				<LoadingThreeDot />
@@ -116,7 +116,7 @@ const OwnCourse = () => {
 							};
 
 							return (
-								<div key={formattedCourse.id} className="bg-white rounded-lg p-4">
+								<div key={formattedCourse.id} className="bg-white rounded-lg p-4 shadow-medium">
 									<div className="relative w-full">
 										<div
 											className={`absolute top-2 left-2 px-3 py-1 rounded-md text-sm font-bold z-10 ${
@@ -170,12 +170,12 @@ const OwnCourse = () => {
 																navigate(`/edit-course/${item?.["course id"]}`)
 															}
 															className="px-4 py-2 text-left hover:bg-gray-100 text-gray-700">
-															Edit
+															{translation("my-owned-course.edit")}
 														</button>
 														<button
 															onClick={() => openDeleteModal(formattedCourse.id)}
 															className="px-4 py-2 text-left hover:bg-gray-100 text-gray-700">
-															Delete
+															{translation("my-owned-course.delete")}
 														</button>
 													</div>
 												</PopoverContent>
@@ -186,14 +186,14 @@ const OwnCourse = () => {
 											className="px-4 py-2 flex justify-end ml-auto bg-blue-500 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-600"
 											endContent={<MdOutlineKeyboardDoubleArrowRight />}
 											onClick={() => navigate(`/course-information/${formattedCourse.id}`)}>
-											Start
+											{translation("my-owned-course.start")}
 										</Button>
 									</div>
 								</div>
 							);
 						})
 					) : (
-						<p className="text-center text-gray-500"></p>
+						<p className="text-center text-gray-500">{translation("my-owned-course.no-course")}</p>
 					)}
 				</div>
 			)}
@@ -201,16 +201,14 @@ const OwnCourse = () => {
 			{/* Modal for deletion confirmation */}
 			<Modal isOpen={isModalVisible} onClose={cancelDelete}>
 				<ModalContent>
-					<ModalHeader>Confirm Deletion</ModalHeader>
-					<div className="p-4 text-gray-700">
-						Are you sure you want to delete this course? This action cannot be undone.
-					</div>
+					<ModalHeader>{translation("my-owned-course.confirm-delete")}</ModalHeader>
+					<div className="p-4 text-gray-700">{translation("my-owned-course.delete-message")}</div>
 					<ModalFooter>
 						<Button className="bg-gray-500 text-white" onClick={cancelDelete}>
-							Cancel
+							{translation("my-owned-course.cancel")}
 						</Button>
 						<Button className="bg-red-500 text-white" onClick={confirmDelete} isLoading={isDeleting}>
-							Delete
+							{translation("my-owned-course.delete")}
 						</Button>
 					</ModalFooter>
 				</ModalContent>

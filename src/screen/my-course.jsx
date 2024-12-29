@@ -3,7 +3,6 @@ import OwnCourse from "../screen/mycourse-own";
 import FinishedCourse from "../screen/mycourse-finished";
 import UnfinishedCourse from "../screen/mycourse-unfinished";
 import { Tabs, Tab } from "@nextui-org/react";
-import { useNavigate } from "react-router-dom";
 import { TranslationContext } from "../providers/TranslationProvider";
 
 const MyCourse = () => {

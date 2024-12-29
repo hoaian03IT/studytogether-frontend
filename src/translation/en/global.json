@@ -119,6 +119,81 @@
       "title-buy": "Buy now",
       "title-no-price1": "This vocabulary course is free for you",
       "title-no-price2": "There are a lot of words waiting for you to learn"
+    },
+    "my-owned-course": {
+      "your-course": "Your courses",
+      "no-course": "You have not owned any courses",
+      "confirm-delete": "Delete confirmation",
+      "delete-message": "Are you sure you want to delete this course? This action cannot be undone.",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "start": "Start"
+    },
+    "my-finished-course": {
+      "quit": "Quit",
+      "restart": "Restart",
+      "score": "Score",
+      "learnt": "Learnt",
+      "author": "Author",
+      "continue": "Continue",
+      "no-course": "You have not enrolled any courses"
+    },
+    "my-unfinished-course": {
+      "complete": "Completed",
+      "restart": "Restart",
+      "score": "Score",
+      "learnt": "Learnt",
+      "author": "Author",
+      "no-course": "You have not finished any courses"
+    },
+    "course-bar": {
+      "vocabulary":"Vocabulary",
+      "example": "Example",
+      "exercise": "Exercise",
+      "information": "Information",
+      "business": "Business"
+    },
+    "vocabulary-screen": {
+      "title": "Create your owned vocabulary set",
+      "placeholder-title": "Family vocabulary set",
+      "title-add-level": "Add levels/collections",
+      "word": "Word",
+      "word-placeholder": "Type word",
+      "definition": "Definition",
+      "definition-placeholder": "Type definition",
+      "type": "Word type",
+      "type-placeholder": "Type word type",
+      "transcription": "transcript",
+      "transcription-placeholder": "Word transcript",
+      "audio": "Audio/Pronunciation",
+      "audio-placeholder": "Add audio file",
+      "image": "Image/Demonstration",
+      "levels": "Level/Collection",
+      "levels-selection-placeholder": "Select level/collection",
+      "add": "Add",
+      "update": "Update",
+      "cancel":"Cancel",
+      "remove": "Remove",
+      "table": {
+        "word": "Word",
+        "definition": "Definition",
+        "type": "Word type",
+        "transcription": "Transcript",
+        "audio": "Audio",
+        "image": "Image",
+        "action": "Action",
+        "show": "Show",	
+        "hide": "Hide",
+        "rename": "Rename",
+        "delete": "Delete",
+        "delete-confirmation": "Delete confirmation",
+        "delete-message": "Are you sure you want to delete ",
+        "this-group": "this group",
+        "this-word": "this word",
+        "rename-word": "Rename word",
+        "add-level-placeholder": "Type level/collection name"
+      }
     }
   }
 }

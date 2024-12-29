@@ -1,8 +1,6 @@
-import React, { Fragment, useContext, useEffect, useRef, useState } from "react";
+import React, { Fragment, useContext, useRef, useState } from "react";
 import { IoIosCloseCircle } from "react-icons/io";
 import { FaMicrophone } from "react-icons/fa";
-import { TbTextPlus } from "react-icons/tb";
-import { CgAttachment } from "react-icons/cg";
 import { LuPlus } from "react-icons/lu";
 import { VocabularyService } from "../apis/vocabulary.api.js";
 import { GlobalStateContext } from "../providers/GlobalStateProvider.jsx";
@@ -471,16 +469,15 @@ function CourseVocabulary() {
 		<div className="p-6 bg-gray-100 min-h-screen">
 			{/* Content Section */}
 			<div className="bg-white p-6 rounded-lg shadow-md relative mt-6 mb-6">
-				<h2 className="text-xl font-bold mb-4">Tạo bộ từ vựng cho riêng bạn</h2>
-				<p className="text-gray-400">Bộ từ vựng gia đình</p>
+				<h2 className="text-xl font-bold mb-4">{translation("vocabulary-screen.title")}</h2>
+				<p className="text-gray-400">{translation("vocabulary-screen.placeholder-title")}</p>
 			</div>
-
 			<div className="flex mb-4">
 				<button
 					onClick={() => setShowGroupInput(!showGroupInput)}
 					className="flex items-center px-4 py-2 bg-white border rounded-md shadow-sm mr-2">
 					<LuPlus className="size-6 mr-1" />
-					<span> Thêm nhóm/cấp độ</span>
+					<span>{translation("vocabulary-screen.title-add-level")}</span>
 				</button>
 			</div>
 			<div className="bg-white p-6 rounded-lg shadow-md mb-6 flex items-start gap-6">
@@ -512,9 +509,12 @@ function CourseVocabulary() {
 									radius="sm"
 									value={vocabulary}
 									onValueChange={setVocabulary}
-									placeholder="Nhập từ vựng"
+									placeholder={translation("vocabulary-screen.word-placeholder")}
 									label={
-										<label>Từ vựng ({courseLanguagesQuery.data?.["target language name"]})</label>
+										<label>
+											{translation("vocabulary-screen.word")} (
+											{courseLanguagesQuery.data?.["target language name"]})
+										</label>
 									}
 									labelPlacement="outside"
 									className="bg-white rounded-small"
@@ -547,10 +547,11 @@ function CourseVocabulary() {
 									onPointerDown={() => {
 										wordTranslation.length > 0 && triggerDefinitionSuggestion.current.click();
 									}}
-									placeholder="Nhập định nghĩa"
+									placeholder={translation("vocabulary-screen.definition-placeholder")}
 									label={
 										<label className="-translate-y-2">
-											Định nghĩa ({courseLanguagesQuery.data?.["source language name"]})
+											{translation("vocabulary-screen.definition")} (
+											{courseLanguagesQuery.data?.["source language name"]})
 										</label>
 									}
 									labelPlacement="outside"
@@ -611,8 +612,12 @@ function CourseVocabulary() {
 									onPointerDown={() => {
 										type.length > 0 && triggerTypeWordSuggestion.current.click();
 									}}
-									placeholder="Loại từ"
-									label={<label className="-translate-y-2">Loại từ </label>}
+									placeholder={translation("vocabulary-screen.type-placeholder")}
+									label={
+										<label className="-translate-y-2">
+											{translation("vocabulary-screen.type")}
+										</label>
+									}
 									labelPlacement="outside"
 									className="bg-white rounded-small"
 								/>
@@ -623,7 +628,7 @@ function CourseVocabulary() {
 									<DropdownMenu>
 										{type
 											.filter((e, i, self) => i === self.indexOf(e))
-											.map((item, index) => (
+											.map((item) => (
 												<DropdownItem
 													radius="sm"
 													color="light"
@@ -667,8 +672,12 @@ function CourseVocabulary() {
 									onPointerDown={() => {
 										transcript.length > 0 && triggerTranscriptSuggestion.current.click();
 									}}
-									placeholder="Bản ghi (cách phát âm)"
-									label={<label className="-translate-y-2">Bản ghi</label>}
+									placeholder={translation("vocabulary-screen.transcription-placeholder")}
+									label={
+										<label className="-translate-y-2">
+											{translation("vocabulary-screen.transcription")}
+										</label>
+									}
 									labelPlacement="outside"
 									className="bg-white rounded-small"
 								/>
@@ -705,7 +714,7 @@ function CourseVocabulary() {
 					{/* Add audio */}
 					<div>
 						<div className="space-y-2">
-							<label className="text-sm">Audio/Pronunciation</label>
+							<label className="text-sm">{translation("vocabulary-screen.audio")}</label>
 							{!audio && (
 								<div className="flex items-center gap-2">
 									<button
@@ -713,14 +722,14 @@ function CourseVocabulary() {
 										onClick={() => document.getElementById("audioInput").click()}
 										className="flex items-center gap-2 text-sm font-medium cursor-pointer bg-white border border-gray-300 p-2 rounded-md hover:bg-gray-100  transition">
 										<FaMicrophone />
-										<span>Thêm tệp âm thanh</span>
+										<span>{translation("vocabulary-screen.audio-placeholder")}</span>
 									</button>
-									<button
+									{/* <button
 										type="button"
 										className="flex items-center gap-2 text-sm font-medium cursor-pointer bg-white border border-gray-300 p-2 rounded-md hover:bg-gray-100  transition">
 										<FaMicrophone />
 										<span>Ghi âm</span>
-									</button>
+									</button> */}
 								</div>
 							)}
 							<input
@@ -739,7 +748,7 @@ function CourseVocabulary() {
 									<span
 										className="text-sm text-secondary cursor-pointer active:opacity-70 transition-all"
 										onClick={() => setAudio(null)}>
-										Remove
+										{translation("vocabulary-screen.remove")}
 									</span>
 								</Fragment>
 							)}
@@ -747,7 +756,7 @@ function CourseVocabulary() {
 
 						{/*add image */}
 						<div className="mt-4 space-y-2">
-							<label className="text-sm">Image/Demonstration</label>
+							<label className="text-sm">{translation("vocabulary-screen.image")}</label>
 							<div>
 								<button type="button" className="border-1 rounded-sm border-dashed border-gray-300">
 									<Image
@@ -765,7 +774,7 @@ function CourseVocabulary() {
 								<span
 									className="text-sm text-secondary cursor-pointer active:opacity-70 transition-all"
 									onClick={() => setImage(null)}>
-									Remove
+									{translation("vocabulary-screen.remove")}
 								</span>
 							)}
 							<input
@@ -784,9 +793,9 @@ function CourseVocabulary() {
 						<Select
 							isRequired
 							aria-label="level course"
-							label={<label>Nhóm/Cấp độ</label>}
+							label={<label>{translation("vocabulary-screen.levels")}</label>}
 							labelPlacement="outside"
-							placeholder="Select levels"
+							placeholder={translation("vocabulary-screen.levels-selection-placeholder")}
 							variant="bordered"
 							onChange={handleChangeGroup}
 							radius="sm"
@@ -808,19 +817,19 @@ function CourseVocabulary() {
 							type="submit"
 							radius="sm"
 							className="mt-4 bg-secondary text-secondary-foreground">
-							Thêm
+							{translation("vocabulary-screen.add")}
 						</Button>
 					) : (
 						<div className="flex space-x-2">
 							<Button type="reset" color="default" radius="sm" onClick={clearFormWord} className="mt-4">
-								Hủy
+								{translation("vocabulary-screen.cancel")}
 							</Button>
 							<Button
 								isLoading={updateWordMutation.isPending}
 								type="submit"
 								radius="sm"
 								className="mt-4 bg-secondary text-secondary-foreground">
-								Lưu
+								{translation("vocabulary-screen.update")}
 							</Button>
 						</div>
 					)}
@@ -828,12 +837,24 @@ function CourseVocabulary() {
 
 				<div className="w-3/4 border rounded-lg overflow-hidden">
 					<div className="grid grid-cols-12 bg-blue-100 p-2 gap-x-1">
-						<span className="font-bold text-blue-400 col-span-3 ">Từ vựng</span>
-						<span className="font-bold text-blue-400 col-span-3 ml-4">Định nghĩa</span>
-						<span className="font-bold text-blue-400 col-span-1 justify-self-center">Audio</span>
-						<span className="font-bold text-blue-400 col-span-1 justify-self-center">Hình ảnh</span>
-						<span className="font-bold text-blue-400 col-span-2 justify-self-start">Transcript</span>
-						<span className="font-bold text-blue-400 col-span-2 justify-self-end">Action</span>
+						<span className="font-bold text-blue-400 col-span-3 ">
+							{translation("vocabulary-screen.table.word")}
+						</span>
+						<span className="font-bold text-blue-400 col-span-3 ml-4">
+							{translation("vocabulary-screen.table.definition")}
+						</span>
+						<span className="font-bold text-blue-400 col-span-1 justify-self-center">
+							{translation("vocabulary-screen.table.audio")}
+						</span>
+						<span className="font-bold text-blue-400 col-span-1 justify-self-center">
+							{translation("vocabulary-screen.table.image")}
+						</span>
+						<span className="font-bold text-blue-400 col-span-2 justify-self-start">
+							{translation("vocabulary-screen.table.transcription")}
+						</span>
+						<span className="font-bold text-blue-400 col-span-2 justify-self-end">
+							{translation("vocabulary-screen.table.action")}
+						</span>
 					</div>
 					<Accordion className="bg-blue-100" selectionMode="multiple">
 						{vocabularyQuery.data?.vocabularyList?.map((item) => {
@@ -845,11 +866,11 @@ function CourseVocabulary() {
 									indicator={({ isOpen }) =>
 										isOpen ? (
 											<div className="flex items-center text-blue-400 font-bold gap-4">
-												<span>Ẩn</span>
+												<span>{translation("vocabulary-screen.table.hide")}</span>
 												<span
 													className="hover:underline"
 													onClick={() => handleRenameLevel(item?.levelId, item?.levelName)}>
-													Sửa tên
+													{translation("vocabulary-screen.table.rename")}
 												</span>
 												<span
 													className="hover:underline"
@@ -859,16 +880,16 @@ function CourseVocabulary() {
 															groupId: item?.levelId,
 														})
 													}>
-													Xoá
+													{translation("vocabulary-screen.table.delete")}
 												</span>
 											</div>
 										) : (
 											<div className="flex items-center text-blue-400 font-bold gap-4">
-												<span>Hiện</span>
+												<span>{translation("vocabulary-screen.table.show")}</span>
 												<span
 													className="hover:underline"
 													onClick={() => handleRenameLevel(item?.levelId, item?.levelName)}>
-													Sửa tên
+													{translation("vocabulary-screen.table.rename")}
 												</span>
 												<span
 													className="hover:underline"
@@ -878,7 +899,7 @@ function CourseVocabulary() {
 															groupId: item?.levelId,
 														})
 													}>
-													Xoá
+													{translation("vocabulary-screen.table.delete")}
 												</span>
 											</div>
 										)
@@ -926,7 +947,7 @@ function CourseVocabulary() {
 								type="text"
 								value={groupName}
 								onValueChange={setGroupName}
-								placeholder="Nhập tên nhóm"
+								placeholder={translation("vocabulary-screen.table.add-level-placeholder")}
 								radius="sm"
 								className="bg-white rounded-small"
 								size="lg"
@@ -937,14 +958,13 @@ function CourseVocabulary() {
 								radius="sm"
 								size="lg"
 								isLoading={addLevelMutation.isPending}>
-								Lưu
+								{translation("vocabulary-screen.update")}
 							</Button>
 						</form>
 					)}
 				</div>
 			</div>
-
-			{showTextModal && (
+			{/* {showTextModal && (
 				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
 					<div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
 						<div className="flex justify-between items-center mb-4">
@@ -967,64 +987,22 @@ function CourseVocabulary() {
 						</div>
 					</div>
 				</div>
-			)}
-
-			{/* File Modal */}
-			{showFileModal && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-					<div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-						<div className="flex justify-between items-center mb-4">
-							<h2 className="text-lg font-semibold">Thêm từ vựng từ tệp</h2>
-							<button onClick={() => setShowFileModal(false)}>
-								<IoIosCloseCircle className="size-6" />
-							</button>
-						</div>
-						<p className="text-gray-500 mb-4">Những từ quan trọng sẽ được thêm vào bộ từ vựng</p>
-
-						{/* Hidden file input */}
-						<input
-							type="file"
-							id="fileInput"
-							accept=".txt, .docx, .pdf, .jpg, .png"
-							onChange={handleFileChange}
-							className="hidden"
-						/>
-						<div className="border border-gray-300 bg-gray-200 rounded-md p-12 mb-4 text-center">
-							<button
-								className="bg-white text-gray-700 py-2 px-6 rounded-md mb-4"
-								onClick={() => document.getElementById("fileInput").click()}>
-								Chọn
-							</button>
-							{selectedFile && <p className="mt-4">Đã chọn: {selectedFile.name}</p>}
-							<p>hoặc kéo thả ở đây...</p>
-							<div className="mt-4 flex justify-center gap-6 text-gray-400">
-								<span>(JPG, PNG)</span>
-								<span>(TXT, DOCX, PDF)</span>
-							</div>
-						</div>
-
-						<div className="flex justify-end">
-							<button
-								onClick={() => setShowFileModal(false)}
-								className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md mr-2">
-								Hủy
-							</button>
-							<button className="px-4 py-2 bg-gray-500 text-white rounded-md">Thêm</button>
-						</div>
-					</div>
-				</div>
-			)}
-
-			{/* Delete Confirmation Modal */}
+			)} */}
+			{/* File Modal */}?{/* Delete Confirmation Modal */}
 			<Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
 				<ModalContent>
 					{(onClose) => (
 						<>
-							<ModalHeader className="flex flex-col gap-1">Xác nhận xóa</ModalHeader>
+							<ModalHeader className="flex flex-col gap-1">
+								{translation("vocabulary-screen.table.delete-confirmation")}
+							</ModalHeader>
 							<ModalBody>
 								<p className="text-gray-500 mb-4">
-									Bạn có chắc chắn muốn xóa{" "}
-									{deleteContext?.type === "group" ? "nhóm này" : "từ vựng này"} không?
+									{translation("vocabulary-screen.table.delete-message")}&nbsp;
+									{deleteContext?.type === "group"
+										? translation("vocabulary-screen.table.this-group")
+										: translation("vocabulary-screen.table.this-word")}
+									?
 								</p>
 							</ModalBody>
 							<ModalFooter>
@@ -1034,7 +1012,7 @@ function CourseVocabulary() {
 									onPress={onClose}
 									radius="sm"
 									className="bg-gray-200">
-									Hủy
+									{translation("vocabulary-screen.cancel")}
 								</Button>
 								<Button
 									color="danger"
@@ -1042,20 +1020,21 @@ function CourseVocabulary() {
 									onPress={handleConfirmDelete}
 									radius="sm"
 									isLoading={removeLevelMutation.isPending}>
-									Xóa
+									{translation("vocabulary-screen.table.delete")}
 								</Button>
 							</ModalFooter>
 						</>
 					)}
 				</ModalContent>
 			</Modal>
-
 			<Modal isOpen={showRenameLevelModal} onClose={() => setShowRenameModal(false)}>
 				<ModalContent>
 					{(onClose) => (
 						<>
 							<form onSubmit={handleUpdateLevelName}>
-								<ModalHeader className="flex flex-col gap-1">Đổi tên nhóm từ vựng</ModalHeader>
+								<ModalHeader className="flex flex-col gap-1">
+									{translation("vocabulary-screen.table.rename-word")}
+								</ModalHeader>
 								<ModalBody>
 									<Input
 										type="text"
@@ -1075,7 +1054,7 @@ function CourseVocabulary() {
 										onPress={onClose}
 										radius="sm"
 										className="bg-gray-200">
-										Hủy
+										{translation("vocabulary-screen.cancel")}
 									</Button>
 									<Button
 										type="submit"
@@ -1083,7 +1062,7 @@ function CourseVocabulary() {
 										variant="solid"
 										radius="sm"
 										isLoading={updateLevelNameMutation.isPending}>
-										Lưu
+										{translation("vocabulary-screen.update")}
 									</Button>
 								</ModalFooter>
 							</form>

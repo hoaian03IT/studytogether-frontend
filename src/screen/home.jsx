@@ -365,8 +365,8 @@ const Dashboard = () => {
 						aria-label="Date (Uncontrolled)"
 						isReadOnly={true}
 						defaultValue={{
-							start: today(getLocalTimeZone()).subtract({ days: streak.currentStreak - 1 }),
-							end: today(getLocalTimeZone()).subtract({ days: rangeStreak }),
+							start: today(getLocalTimeZone()).subtract({ days: streak.currentStreak + rangeStreak }),
+							end: today(getLocalTimeZone()).subtract({ days: rangeStreak + 1 }),
 						}}
 					/>
 				</div>
@@ -449,7 +449,7 @@ const Dashboard = () => {
 			<span className="text-2xl font-bold mt-6 text-primary-500">Recent Courses</span>
 			<div className="grid grid-cols-3 gap-2 my-4">
 				{incompleteCourse.map((item) => (
-					<CourseCard item={item} />
+					<CourseCard key={item?.["enrollment id"]} item={item} />
 				))}
 			</div>
 			<span className="text-2xl font-bold mt-6 text-primary-500">Most popular Courses</span>

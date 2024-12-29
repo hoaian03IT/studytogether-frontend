@@ -114,6 +114,73 @@
       "title-buy": "Mua ngay",
       "title-no-price1": "Khóa học này miễn phí cho bạn",
       "title-no-price2": "Có rất nhiều từ vừng hay đang đợi bạn"
+    },
+    "my-owned-course": {
+      "your-course": "Khóa học của bạn",
+      "no-course": "Bạn không sỡ hữu khóa học nào",
+      "confirm-delete": "Xác nhận xóa",
+      "delete-message": "Bạn thực sự muốn xóa khóa học này. Hành động này không thể hoàn tác",
+      "delete": "Xóa",
+      "cancel": "Hủy",
+      "edit": "Chỉnh sửa",
+      "start": "Bắt đầu"
+    },
+    "my-finished-course": {
+      "quit": "Dừng khóa học",
+      "restart": "Bắt đầu lại",
+      "score": "Điểm số",
+      "learnt": "Đã học",
+      "author": "Tác giả",
+      "continue": "Tiếp tục",
+      "no-course": "Bạn chưa tham gia khóa học nào"
+    }, 
+    "course-bar": {
+      "vocabulary":"từ vựng",
+      "example": "ví dụ",
+      "exercise": "bài tập",
+      "information": "thông tin",
+      "business": "kinh doanh"
+    },
+    "vocabulary-screen": {
+      "title": "Tạo bộ từ vựng cho riêng bạn",
+      "placeholder-title": "Bộ từ vựng gia đình",
+      "title-add-level": "Thêm nhóm/cấp độ",
+      "word": "Từ vựng",
+      "word-placeholder": "Nhập từ vựng",
+      "definition": "Định nghĩa",
+      "definition-placeholder": "Nhập định nghĩa",
+      "type": "Loại từ",
+      "transcription": "Bản ghi",
+      "transcription-placeholder": "Bản ghi (cách phát âm)",
+      "audio": "Tệp âm thanh/ phát âm",
+      "image": "Hình ảnh/ minh họa",
+      "levels": "Nhóm/Cấp độ",
+      "add": "Thêm",
+      "type-placeholder": "Loại từ",
+      "audio-placeholder": "Thêm tập tin âm thanh",
+      "levels-selection-placeholder": "Chọn nhóm/cấp độ",
+      "update": "Cập nhật",
+      "cancel":"Hủy",
+      "remove": "Gỡ",
+      "table": {
+        "word": "Từ vựng",
+        "definition": "Định nghĩa",
+        "type": "Loại từ",
+        "transcription": "Bản ghi",
+        "audio": "Âm thanh",
+        "image": "Image",
+        "action": "Hành động",
+        "show": "Hiển thị",	
+        "hide": "Ẩn",
+        "rename": "Đổi tên",
+        "delete": "Xoá",
+        "delete-confirmation": "Xác nhận xoá",
+        "delete-message": "Bạn muốn xoá ",
+        "this-group": "nhóm/cấp độ này",
+        "this-word": "từ này",
+        "rename-word": "Đổi tên từ",
+        "add-level-placeholder": "Nhập tên nhóm/cấp độ"
+      }
     }
   }
 }

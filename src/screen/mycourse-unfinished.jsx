@@ -31,6 +31,7 @@ import { TranslationContext } from "../providers/TranslationProvider.jsx";
 import { queryKeys } from "../react-query/query-keys.js";
 import { pathname } from "../routes/index.js";
 import { EnrollmentService } from "../apis/enrollment.api.js";
+import { LoadingThreeDot } from "../components/loadings/loading-three-dot.jsx";
 
 const UnfinishedCourse = () => {
 	const { translation } = useContext(TranslationContext);
@@ -111,7 +112,7 @@ const UnfinishedCourse = () => {
 		restartCourseMutation.mutateAsync(selectedCourseId).then(async () => {
 			await refreshCourses();
 		});
-		// refreshCourses();s
+		// refreshCourses();
 	};
 
 	const cancelDelete = () => {
@@ -123,7 +124,7 @@ const UnfinishedCourse = () => {
 		<div className="container max-w-screen-xl py-10 px-4 mt-15 bg-gray-100">
 			<div className="max-w-xl mt-10">
 				{isPending || isLoading || isRefetching ? (
-					<p className="text-center text-gray-500">Loading...</p>
+					<LoadingThreeDot />
 				) : courses.length > 0 ? (
 					courses.map((item, index) => (
 						<div key={index} className="bg-white rounded-lg p-4 shadow-lg border">
@@ -160,11 +161,11 @@ const UnfinishedCourse = () => {
 													<DropdownItem
 														onClick={() => openDeleteModal(item["course id"], "quit")}
 														className="rounded-small">
-														Quit
+														{translation("my-finished-course.quit")}
 													</DropdownItem>
 													<DropdownItem
 														onClick={() => openDeleteModal(item["course id"], "restart")}>
-														Restart
+														{translation("my-finished-course.restart")}
 													</DropdownItem>
 												</DropdownMenu>
 											</Dropdown>
@@ -197,9 +198,12 @@ const UnfinishedCourse = () => {
 											className="max-w-2xl"
 										/>
 										<div className="flex justify-between text-sm text-gray-500 mt-1">
-											<span>Score: {item["points"] || 0}</span>
 											<span>
-												Learn: {item["learntWords"]}/{item["totalWords"]}
+												{translation("my-finished-course.score")}: {item["points"] || 0}
+											</span>
+											<span>
+												{translation("my-finished-course.learnt")}: {item["learntWords"]}/
+												{item["totalWords"]}
 											</span>
 										</div>
 									</div>
@@ -212,14 +216,16 @@ const UnfinishedCourse = () => {
 												<p className="text-sm ml-3 font-semibold text-gray-800">
 													{item["username"]}
 												</p>
-												<p className="text-xs ml-3 text-gray-500">Author</p>
+												<p className="text-xs ml-3 text-gray-500">
+													{translation("my-finished-course.author")}
+												</p>
 											</div>
 										</div>
 										<Button
 											className="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-blue-600"
 											endContent={<MdOutlineKeyboardDoubleArrowRight />}
 											onClick={() => navigate(`${pathname.learn}?ci=${item["course id"]}`)}>
-											Continue
+											{translation("my-finished-course.continue")}
 										</Button>
 									</div>
 								</div>
@@ -227,7 +233,7 @@ const UnfinishedCourse = () => {
 						</div>
 					))
 				) : (
-					<p className="text-center text-gray-500"></p>
+					<p className="text-center text-gray-500">{translation("my-finished-course.no-course")}</p>
 				)}
 			</div>
 

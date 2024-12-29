@@ -222,8 +222,8 @@ const CourseParticipant = () => {
 									<div className="grid grid-cols-4 px-2">
 										<h3>{item?.word}</h3>
 										<p>{item?.definition}</p>
-										<p>({item?.type})</p>
-										<p>{item?.transcription}</p>
+										<p>wrong times: {item?.["wrong times"]}</p>
+										<p>{item?.["repeatable"]}</p>
 									</div>
 									<hr className="border-t-2 border-gray-400 w-[100%]" />
 								</div>

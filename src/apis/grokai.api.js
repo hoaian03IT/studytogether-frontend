@@ -6,7 +6,8 @@ const data = {
 	messages: [
 		{
 			role: "system",
-			content: "You are Grok, a chatbot inspired by the Hitchhikers Guide to the Galaxy.",
+			content:
+				"You are a helpful education assistance. You provide clear, concise and various information to help learners/teachers understand vocabulary and examples",
 		},
 		{
 			role: "user",
@@ -31,7 +32,8 @@ class GrokAIService {
 			messages: [
 				{
 					role: "system",
-					content: "You are Grok, a chatbot inspired by the Hitchhikers Guide to the Galaxy.",
+					content:
+						"You are a helpful education assistance. You provide clear, concise and various information to help learners/teachers understand vocabulary and examples",
 				},
 				{
 					role: "user",
@@ -63,24 +65,41 @@ class GrokAIService {
 		const data = {
 			messages: [
 				{
+					role: "system",
+					content:
+						"You are a helpful education assistance. You provide clear, concise and various information to help learners/teachers understand vocabulary and examples",
+				},
+				{
 					role: "user",
-					content: `You only answer by json and there is no new line, just pure json, and json is about examples of one word and the examples is different scenarios. JSON format is 
-                    {"source language": "_my_provide_",
-                    "target language": "_my_provide_",
-                    "word": "_my_provide_with_target_language_",
-                    "definition": _my_provide_with_source_language_, 
-                    "type word": "_my_provide_with_target_language_", 
-                    "title example" "_your_generation_target_language_", // title by target language
-                    "example sentence" "_your_generation_target_language_", // generate explanation by target language
-                    "explanation" "_your_generation_with_source_language_" // explain the example and give more information by source language
-                    }.
-                    Now do your work, my input: {
-                    "source language": "${sourceLanguage}",
-                    "target language": "${targetLanguage}",
-                    "word": "${word}",
-                    "definition": "${definition}",
-                    "type word": "${typeWord}"
-                    }`,
+					content: `You must respond only with JSON in a single-line format. The JSON must include examples for a given word in various scenarios. You must provide 3-4 examples. 
+
+					Format:
+					[{
+					"source language": "Tiếng việt",
+					"target language": "English",
+					"word": "<provided word in target language>",
+					"definition": "<provided definition in source language>",
+					"type word": "<provided type word in target language>",
+					"title example": "<your generated title in target language>",
+					"example sentence": "<your generated example sentence in target language>",
+					"explanation": "<your generated explanation in source language>"
+					}]
+
+					Rules:
+					1. "title example" and "example sentence" must be generated in the target language.
+					2. "explanation" must be generated in the source language.
+					3. Ensure the JSON is syntactically correct and appears as a single line without line breaks.
+
+					Input:
+					{
+					"source language": "Tiếng việt",
+					"target language": "English",
+					"word": "${word}",
+					"definition": "${definition}",
+					"type word": "${typeWord}"
+					}
+
+					Now, remember the language rules I provide then create and return the JSON based on the input.`,
 				},
 			],
 			model: "grok-beta",
@@ -94,7 +113,8 @@ class GrokAIService {
 				Authorization: `Bearer ${xaiApiKey}`,
 			},
 		});
-		return JSON.parse(response?.data?.choices[0]?.message?.content);
+		const listExamples = JSON.parse(response?.data?.choices[0]?.message?.content);
+		return listExamples[Math.floor(Math.random() * listExamples.length)];
 	}
 }
 
