@@ -34,6 +34,7 @@
     "OOPS":"Oops! Something went wrong",
     "HAD_ENROLLMENTS": "Cannot change to private. People enrolled this course",
     "FEEDBACK_SUCCESS": "Your feedback was submitted",
+    "KEEP_STREAK": "Keep your streak",
     "CREATE_COURSE_SUCCESS": "Create course successfully. Please wait for admin's approval",
     "LOADING": "Loading...",
     "header": {

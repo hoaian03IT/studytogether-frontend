@@ -9,7 +9,7 @@ import { CourseCard } from "./course-card";
 export const MostDiscountCourse = ({ limit = "4" }) => {
 	const { translation } = useContext(TranslationContext);
 	const mostDiscountCourseQuery = useQuery({
-		queryKey: [queryKeys.mostPopularCourse],
+		queryKey: [queryKeys.mostDiscountCourse],
 		queryFn: async () => {
 			try {
 				const data = await CourseService.fetchMostDiscountCourse(limit);

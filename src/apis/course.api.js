@@ -164,6 +164,12 @@ class CourseServiceClass {
 		const res = await http.get("/course/most-discount?li=" + limit);
 		return res.data;
 	}
+
+	async fetchSuggestionCourse({ limit = 4, tag }, userState, updateUserState) {
+		const httpAuth = createHttpAuth(userState, updateUserState);
+		const res = await httpAuth.get(`/course/suggestion?li=${limit}&tag=${tag}`);
+		return res.data;
+	}
 }
 
 const CourseService = new CourseServiceClass();

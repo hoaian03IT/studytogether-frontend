@@ -85,42 +85,8 @@ const Revenue = ({ courseId, price }) => {
 		},
 	];
 
-	const activityData = [
-		{
-			id: 1,
-			user: "Kevin",
-			action: "comments on your course",
-			time: "Just now",
-			icon: <FaCommentDots className="text-orange-500 text-xl" />,
-		},
-		{
-			id: 2,
-			user: "John",
-			action: "give a 5 star rating on your course",
-			course: "2021 ui/ux design with figma",
-			time: "5 mins ago",
-			icon: <FaStar className="text-orange-500 text-xl" />,
-		},
-		{
-			id: 3,
-			user: "Sraboni",
-			action: "purchase your course",
-			course: "2021 ui/ux design with figma",
-			time: "6 mins ago",
-			icon: <FaShoppingCart className="text-orange-500 text-xl" />,
-		},
-		{
-			id: 4,
-			user: "Arif",
-			action: "purchase your course",
-			course: "2021 ui/ux design with figma",
-			time: "19 mins ago",
-			icon: <FaShoppingCart className="text-orange-500 text-xl" />,
-		},
-	];
-
 	return (
-		<div className="p-6 bg-white rounded-lg max-w-4xl mx-auto mt-10 shadow-lg">
+		<div>
 			<div className="max-w-4xl mt-10">
 				<div className="bg-white rounded-lg p-4 shadow-lg border mb-6">
 					<div className="flex">

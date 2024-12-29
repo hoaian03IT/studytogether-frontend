@@ -257,7 +257,7 @@ const Dashboard = () => {
 								</div>
 								<div className="absolute inset-0 flex items-center justify-center">
 									<h2 className="text-2xl text-center font-semibold text-gray-700">
-										{percentRightWord}%
+										{Math.round(percentRightWord)}%
 										<br /> correct
 									</h2>
 								</div>
@@ -272,8 +272,8 @@ const Dashboard = () => {
 										)}
 										&nbsp;
 									</strong>
-									words in <strong className="font-bold text-lg text-primary">{learntCourses}</strong>{" "}
-									courses
+									words in <strong className="font-bold text-lg text-primary">{learntCourses}</strong>
+									&nbsp; courses
 								</p>
 								<p className="text-secondary">
 									{learntCourses > 100
@@ -305,7 +305,7 @@ const Dashboard = () => {
 								</NextTooltip>
 								<NextTooltip radius="sm" content="Your max streak">
 									<p className="">
-										Best streak:{" "}
+										Best streak:&nbsp;
 										<strong className="text-secondary text-xl">{streak.maxStreak}</strong>
 									</p>
 								</NextTooltip>
@@ -314,10 +314,18 @@ const Dashboard = () => {
 								aria-label="Date (Uncontrolled)"
 								isReadOnly={true}
 								defaultValue={{
-									start: today(getLocalTimeZone()).subtract({
-										days: streak.currentStreak + rangeStreak,
-									}),
-									end: today(getLocalTimeZone()).subtract({ days: rangeStreak + 1 }),
+									start:
+										rangeStreak === 0
+											? today(getLocalTimeZone()).subtract({
+													days: streak.currentStreak - 1,
+											  })
+											: today(getLocalTimeZone()).subtract({
+													days: rangeStreak + streak.currentStreak,
+											  }),
+									end:
+										rangeStreak === 0
+											? today(getLocalTimeZone())
+											: today(getLocalTimeZone()).subtract({ days: rangeStreak + 1 }),
 								}}
 							/>
 						</div>
