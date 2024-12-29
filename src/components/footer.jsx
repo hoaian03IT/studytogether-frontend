@@ -23,7 +23,7 @@ export const Footer = () => {
 			<div className="container flex justify-between items-start max-w-screen-xl py-4">
 				<div>
 					<img loading="eager" src={logo} alt="StudyTogether" className="w-60" />
-					<p className="text-small ml-2">Master Vocabulary,</p>
+					<p className="text-small ml-2">Expert Vocabulary,</p>
 					<p className="text-small translate-x-10">Unlock Your Future</p>
 				</div>
 				<div>

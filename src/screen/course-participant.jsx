@@ -230,7 +230,7 @@ const CourseParticipant = () => {
 							))
 						) : (
 							<p className="font-light italic text-gray-600 text-center">
-								You have not learnt any words yet
+								You have not learnt any words yets
 							</p>
 						)}
 					</div>
