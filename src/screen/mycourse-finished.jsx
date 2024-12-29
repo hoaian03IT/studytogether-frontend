@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { CourseService } from "../apis/course.api.js";
 import { toast } from "react-toastify";
 import { Button, Avatar } from "@nextui-org/react";
@@ -12,6 +12,7 @@ import { userState } from "../recoil/atoms/user.atom.js";
 import { queryKeys } from "../react-query/query-keys.js";
 import { TranslationContext } from "../providers/TranslationProvider.jsx";
 import { LoadingThreeDot } from "../components/loadings/loading-three-dot.jsx";
+import { EnrollmentService } from "../apis/enrollment.api.js";
 
 const FinishedCourse = () => {
 	const { updateUserState } = useContext(GlobalStateContext);
@@ -33,6 +34,23 @@ const FinishedCourse = () => {
 			}
 		},
 	});
+
+	const restartCourseMutation = useMutation({
+		mutationFn: async (courseId) => {
+			return await EnrollmentService.restartEnrollment(courseId, user, updateUserState);
+		},
+		onSuccess: (data) => {
+			toast.success(translation(data?.messageCode));
+		},
+		onError: (error) => {
+			console.error(error);
+			toast.error(translation(error.response?.data?.errorCode));
+		},
+	});
+
+	const handleRestartCourse = (courseId) => {
+		restartCourseMutation.mutate(courseId);
+	};
 
 	return (
 		<div className="container max-w-screen-xl py-10 px-4 mt-20 bg-gray-100">
@@ -75,6 +93,7 @@ const FinishedCourse = () => {
 									</div>
 								</div>
 								<Button
+									onPress={() => handleRestartCourse(item?.["course id"])}
 									className="px-4 py-2 flex justify-end ml-auto bg-green-500 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-green-600"
 									endContent={<MdOutlineKeyboardDoubleArrowRight />}
 									disabled>
