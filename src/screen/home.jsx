@@ -1,12 +1,6 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
-import { Button, RangeCalendar, Tooltip as NextTooltip, Card, CardBody } from "@nextui-org/react";
+import { RangeCalendar, Tooltip as NextTooltip, Card, CardBody } from "@nextui-org/react";
 import { Image } from "@nextui-org/image";
-import { FaBookBookmark } from "react-icons/fa6";
-import { BsFillPeopleFill } from "react-icons/bs";
-import { FaTrophy } from "react-icons/fa6";
-import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
-import { Avatar } from "@nextui-org/react";
-import { Progress } from "@nextui-org/react";
 import {
 	Chart as ChartJS,
 	ArcElement,
@@ -37,6 +31,7 @@ import { CourseCard } from "../components/course-card";
 import { MostPopularCourse } from "../components/most-popular";
 import { MostDiscountCourse } from "../components/most-discount";
 import clsx from "clsx";
+import bannerVideo from "../assets/video/banner-video.mp4";
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -238,7 +233,7 @@ const Dashboard = () => {
 	};
 
 	return (
-		<div className="p-6 ml-8">
+		<div className="p-8">
 			{user.isLogged ? (
 				<Fragment>
 					<span className="text-2xl font-bold mt-6 text-primary-500">Statistic</span>
@@ -422,7 +417,11 @@ const Dashboard = () => {
 					</div>
 				</Fragment>
 			) : (
-				<Fragment></Fragment>
+				<div className="w-full">
+					<video className="w-full h-[500px] object-cover object-center rounded-small" autoPlay muted loop>
+						<source src={bannerVideo} srcSet={bannerVideo} type="video/mp4" />
+					</video>
+				</div>
 			)}
 			<span className="text-2xl font-bold mt-6 text-primary-500">Most popular Courses</span>
 			<div className="py-4 grid xl:grid-cols-3 gap-4 lg:grid-cols-2 sm:grid-cols-1">
