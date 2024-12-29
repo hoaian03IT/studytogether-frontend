@@ -31,7 +31,7 @@ export const Rating = ({ stars = 5, value = 3, setValue, size = "md", className,
 						<GoStarFill
 							className={clsx(
 								"transition-all hover:scale-125",
-								index + 1 <= current ? `text-${color}-600` : "text-gray-400",
+								index + 1 <= current ? `text-${color}-700` : "text-gray-400",
 								size === "sm"
 									? "size-8"
 									: size === "md"

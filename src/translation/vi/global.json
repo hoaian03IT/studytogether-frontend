@@ -34,6 +34,7 @@
     "OOPS":"Ôi! Hỏng rồi",
     "HAD_ENROLLMENTS": "Không thể đổi sang riêng tư. Đã có người đăng ký khóa học này",
     "FEEDBACK_SUCCESS": "Đánh giá của bạn đã được gửi",
+    "CREATE_COURSE_SUCCESS": "Tạo khoá học thành công, vui lòng đợi kiểm duyệt",
     "LOADING": "Đang tải...",
     "header": {
       "home": "Trang chủ",

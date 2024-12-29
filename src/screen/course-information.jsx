@@ -304,7 +304,7 @@ function CourseInformation() {
 					<div>
 						<div>
 							<h2 className="font-bold uppercase">{courseInfoQuery.data?.["name"]}</h2>
-							<Rating stars={5} value={courseRateQuery.data?.["averageRate"]} size="sm" />
+							<Rating stars={5} value={courseRateQuery.data?.["averageRate"]} size="sm" color="yellow" />
 						</div>
 						<div className="flex items-center justify-between py-4 border-b-1 border-b-gray-300">
 							<User
