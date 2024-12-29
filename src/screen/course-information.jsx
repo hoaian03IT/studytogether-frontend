@@ -25,6 +25,7 @@ import { TranslationContext } from "../providers/TranslationProvider.jsx";
 import { SocketClientContext } from "../providers/socket-client-provider.jsx";
 import { CommentService } from "../apis/comment.api.js";
 import { Rating } from "../components/rating.jsx";
+import { convertUTCToLocalTime } from "../utils/convert-utc-to-local-time.js";
 
 function CourseInformation() {
 	const params = useParams();
@@ -90,6 +91,40 @@ function CourseInformation() {
 			}
 		},
 		enabled: !!params?.courseId,
+	});
+
+	const courseSuggestionQuery = useQuery({
+		queryKey: [queryKeys.courseSuggestion],
+		queryFn: async () => {
+			try {
+				const data = await CourseService.fetchSuggestionCourse(
+					{
+						limit: 2,
+						tag: courseInfoQuery.data?.["tag"],
+					},
+					user,
+					updateUserState,
+				);
+				const courses = data?.courses.reduce((acc, course) => {
+					if (
+						!acc.some(
+							(item) =>
+								item?.["course id"] === course?.["course id"] ||
+								item?.["course id"] === courseInfoQuery.data?.["course id"],
+						)
+					) {
+						acc.push(course);
+					}
+					return acc;
+				}, []);
+
+				console.log(courses);
+				return courses;
+			} catch (error) {
+				toast.error(translation(error.response?.data?.errorCode));
+			}
+		},
+		enabled: !!courseInfoQuery.data?.["tag"],
 	});
 
 	const enrollMutation = useMutation({
@@ -242,13 +277,13 @@ function CourseInformation() {
 											radius="sm">
 											{translation("course-information.title-buy")}
 										</Button>
-										<Button
+										{/* <Button
 											variant="bordered"
 											className="font-bold text-base"
 											size="lg"
 											radius="sm">
 											Add to whitelist
-										</Button>
+										</Button> */}
 									</Fragment>
 								)}
 							</div>
@@ -304,7 +339,7 @@ function CourseInformation() {
 					<div>
 						<div>
 							<h2 className="font-bold uppercase">{courseInfoQuery.data?.["name"]}</h2>
-							<Rating stars={5} value={courseRateQuery.data?.["averageRate"]} size="sm" />
+							<Rating stars={5} value={courseRateQuery.data?.["averageRate"]} size="sm" color="yellow" />
 						</div>
 						<div className="flex items-center justify-between py-4 border-b-1 border-b-gray-300">
 							<User
@@ -376,33 +411,42 @@ function CourseInformation() {
 						)}
 					</div>
 				</div>
-				<div className="col-span-4">
-					<div className="flex min-h-80 w-full rounded-md overflow-hidden">
-						<div className="basis-[45%] bg-third p-6 flex flex-col justify-between">
-							<p className="text-sm text-third-foreground">
-								Webinar, <br /> August 16, 2020
-							</p>
-							<div>
-								<p className="text-4xl text-third-foreground font-bold">Vocabulary for IT student</p>
-								<p className="text-third-foreground font-light">Kitani Sarasvati</p>
+				<div className="col-span-4 space-y-4">
+					{courseSuggestionQuery.data?.length > 0 &&
+						courseSuggestionQuery.data?.slice(0, 2).map((course) => (
+							<div
+								key={course?.["course id"]}
+								className="flex min-h-80 w-full rounded-md overflow-hidden">
+								<div className="basis-[45%] bg-third p-6 flex flex-col justify-between">
+									<p className="text-sm text-third-foreground">
+										{convertUTCToLocalTime(course?.["created at"]).toDateString()}
+									</p>
+									<div>
+										<p className="text-4xl text-third-foreground font-bold">{course?.["name"]}</p>
+										<p className="text-third-foreground font-light">
+											{course?.["first name"]} {course?.["last name"]}
+										</p>
+									</div>
+									<Button
+										as={LinkDom}
+										to={pathname.courseInformation.split(":")[0] + course?.["course id"]}
+										variant="bordered"
+										size="sm"
+										className="border-third-foreground text-third-foreground rounded-sm border-1">
+										Get it Now
+									</Button>
+								</div>
+								<div className="basis-[55%]">
+									<img
+										loading="lazy"
+										draggable={false}
+										className="w-full h-full object-center object-cover"
+										src={course?.["image"]}
+										alt=""
+									/>
+								</div>
 							</div>
-							<Button
-								variant="bordered"
-								size="sm"
-								className="border-third-foreground text-third-foreground rounded-sm border-1">
-								Get it Now
-							</Button>
-						</div>
-						<div className="basis-[55%]">
-							<img
-								loading="lazy"
-								draggable={false}
-								className="w-full h-full object-center object-cover"
-								src="https://peerreviewededucationblog.com/wp-content/uploads/2024/02/ai-autism.jpg"
-								alt=""
-							/>
-						</div>
-					</div>
+						))}
 				</div>
 			</div>
 		</div>

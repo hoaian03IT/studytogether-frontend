@@ -122,12 +122,12 @@ const UnfinishedCourse = () => {
 
 	return (
 		<div className="container max-w-screen-xl py-10 px-4 mt-15 bg-gray-100">
-			<div className="max-w-xl mt-10">
+			<div className="flex items-center justify-between flex-wrap w-full mt-10">
 				{isPending || isLoading || isRefetching ? (
 					<LoadingThreeDot />
 				) : courses.length > 0 ? (
 					courses.map((item, index) => (
-						<div key={index} className="bg-white rounded-lg p-4 shadow-lg border">
+						<div key={index} className="w-[48%] bg-white rounded-lg p-4 shadow-lg border">
 							<div className="flex">
 								{/* Left Section: Image */}
 								<div className="flex-shrink-0">
@@ -135,7 +135,7 @@ const UnfinishedCourse = () => {
 										<Image
 											alt="course thumbnail"
 											src={item["image"]}
-											className="size-48 rounded-lg object-cover object-center"
+											className="size-44 rounded-lg object-cover object-center"
 										/>
 									</Link>
 								</div>
@@ -144,7 +144,9 @@ const UnfinishedCourse = () => {
 								<div className="flex-grow pl-6">
 									<div className="flex items-center justify-between my-4">
 										<Link to={pathname.courseInformation.split(":")[0] + item?.["course id"]}>
-											<h3 className="text-lg font-semibold text-gray-800">{item["name"]}</h3>
+											<h3 className="text-lg font-semibold text-gray-800 line-clamp-1">
+												{item["name"]}
+											</h3>
 										</Link>
 										<div>
 											<Dropdown radius="sm">
@@ -209,9 +211,9 @@ const UnfinishedCourse = () => {
 									</div>
 
 									{/* Author Info & Button */}
-									<div className="flex items-center justify-between">
+									<div className="flex items-center justify-between gap-2">
 										<div className="flex items-center">
-											<Avatar src={item["avatar image"]} />
+											<Avatar src={item["avatar image"]} className="border-1 border-gray-300" />
 											<div>
 												<p className="text-sm ml-3 font-semibold text-gray-800">
 													{item["username"]}

@@ -23,6 +23,8 @@ const queryKeys = {
 	courseRevenue: "course-revenue",
 	userStreak: "user-streak",
 	userStatistic: "user-statistic",
+	mostPopularCourse: "most-popular-course",
+	mostDiscountCourse: "most-discount-course",
 };
 
 export { queryKeys };

@@ -32,16 +32,7 @@ const CourseBusiness = () => {
 		queryFn: async () => {
 			try {
 				let data = await CourseService.fetchCoursePrices(params?.courseId, user, updateUserState);
-				if (data?.["price id"] > 0) {
-					setPrice(data?.["price"]);
-					setIsSettingsVisible(data?.["price"] > 0);
-					setIsDiscountEnabled(data?.["discount"] > 0);
-					if (data?.["discount"] > 0) {
-						setDiscount(data?.["discount"]);
-						setStartDate(parseDate(data?.["discount from"]));
-						setEndDate(parseDate(data?.["discount to"]));
-					}
-				}
+				initData(data);
 				return data;
 			} catch (error) {
 				console.error(error);
@@ -83,6 +74,10 @@ const CourseBusiness = () => {
 		}
 	}, [price]);
 
+	useEffect(() => {
+		initData(coursePriceQuery.data);
+	}, [coursePriceQuery.data]);
+
 	const updatePriceCourseMutation = useMutation({
 		mutationFn: async (payload) => {
 			return await CourseService.updateCoursePrice(payload, user, updateUserState);
@@ -113,6 +108,19 @@ const CourseBusiness = () => {
 			});
 		} else {
 			setIsSettingsVisible(true);
+		}
+	};
+
+	const initData = (data) => {
+		if (data?.["price id"] > 0) {
+			setPrice(data?.["price"]);
+			setIsSettingsVisible(data?.["price"] > 0);
+			setIsDiscountEnabled(data?.["discount"] > 0);
+			if (data?.["discount"] > 0) {
+				setDiscount(data?.["discount"]);
+				setStartDate(parseDate(data?.["discount from"]));
+				setEndDate(parseDate(data?.["discount to"]));
+			}
 		}
 	};
 
@@ -183,21 +191,23 @@ const CourseBusiness = () => {
 				<div className="flex justify-between items-center border-b border-gray-300 mb-6 pb-4">
 					<div className="flex space-x-8">
 						<button
+							type="button"
 							onClick={() => setActiveTab("price")}
 							className={`text-lg font-semibold flex ${
 								activeTab === "price" ? "text-orange-500 border-b-2 border-orange-500" : "text-gray-500"
 							}`}>
 							<AiFillCrown className="text-2xl mr-2" />
-							<span>Thiết lập giá</span>
+							<span>Set Price</span>
 						</button>
 						<button
-							onClick={() => setActiveTab("advance")}
+							type="button"
+							onClick={() => setActiveTab("revenue")}
 							className={`text-lg font-semibold ${
-								activeTab === "advance"
+								activeTab === "revenue"
 									? "text-orange-500 border-b-2 border-orange-500"
 									: "text-gray-500"
 							}`}>
-							Doanh thu
+							Revenue
 						</button>
 					</div>
 					<label className="relative inline-flex items-center cursor-pointer">
@@ -216,129 +226,120 @@ const CourseBusiness = () => {
 					</label>
 				</div>
 
-				{isSettingsVisible && (
-					<div className="bg-white p-8 rounded-md shadow-md">
-						<h2 className="text-2xl font-semibold mb-6">Cài đặt giá khóa học</h2>
+				{activeTab === "price" ? (
+					isSettingsVisible && (
+						<div className="bg-white p-8 rounded-md shadow-md">
+							<h2 className="text-2xl font-semibold mb-6">Set Course's price</h2>
 
-						{/* Price and Duration */}
-						<div className="flex gap-6 mb-6">
-							<div className="w-1/2">
-								<label className="block font-medium text-gray-600 mb-2">Giá ($) </label>
-								<Input
-									color="primary"
-									type="number"
-									value={price}
-									step={0.01}
-									onValueChange={setPrice}
-									placeholder="$ 0.00"
-									variant="bordered"
-									size="lg"
-									radius="sm"
-									endContent={<span>$</span>}
-									isInvalid={!validInputs.price.isValid}
-									errorMessage={validInputs.price.errMsg}
-								/>
-							</div>
-						</div>
-
-						{/* Discount Settings */}
-						<div className="mb-6">
-							<input
-								type="checkbox"
-								checked={isDiscountEnabled}
-								onChange={() => {
-									if (!isDiscountEnabled && price <= 0) {
-										toast.warn("set-price");
-									} else {
-										setIsDiscountEnabled(!isDiscountEnabled);
-									}
-								}}
-								className="mr-2"
-							/>
-							<label className="font-medium text-gray-600">Cài đặt giảm giá</label>
-						</div>
-
-						{isDiscountEnabled && (
+							{/* Price and Duration */}
 							<div className="flex gap-6 mb-6">
-								{/* Discount Percentage */}
-								<div className="w-1/3">
-									<label className="block font-medium text-gray-600 mb-2">Giảm giá (%)</label>
+								<div className="w-1/2">
+									<label className="block font-medium text-gray-600 mb-2">Price ($) </label>
 									<Input
+										color="primary"
 										type="number"
+										value={price}
 										step={0.01}
-										value={discount}
-										onValueChange={setDiscount}
-										placeholder="%0.00"
-										size="lg"
+										onValueChange={setPrice}
+										placeholder="$ 0.00"
 										variant="bordered"
-										radius="sm"
-										isInvalid={!validInputs.discount.isValid}
-										errorMessage={validInputs.discount.errMsg}
-									/>
-								</div>
-
-								{/* Start Date */}
-								<div className="w-1/3 relative">
-									<label className="block font-medium text-gray-600 mb-2">Từ ngày (UTC)</label>
-									<DatePicker
-										granularity="day"
 										size="lg"
-										variant="bordered"
 										radius="sm"
-										aria-label="start date"
-										value={startDate}
-										onChange={setStartDate}
-									/>
-								</div>
-
-								{/* End Date */}
-								<div className="w-1/3 relative">
-									<label className="block font-medium text-gray-600 mb-2">Đến (UTC)</label>
-									<DatePicker
-										granularity="day"
-										size="lg"
-										variant="bordered"
-										radius="sm"
-										isInvalid={!validInputs.endDate.isValid}
-										errorMessage={validInputs.endDate.errMsg}
-										value={endDate}
-										aria-label="end date"
-										onChange={setEndDate}
+										endContent={<span>$</span>}
+										isInvalid={!validInputs.price.isValid}
+										errorMessage={validInputs.price.errMsg}
 									/>
 								</div>
 							</div>
-						)}
 
-						{/* Notifications Settings */}
-						<div className="flex gap-6 mb-6">
-							<div>
-								<input type="checkbox" className="mr-2" defaultChecked />
-								<label className="font-medium text-gray-600">Nhận thông báo doanh thu</label>
+							{/* Discount Settings */}
+							<div className="mb-6">
+								<input
+									type="checkbox"
+									checked={isDiscountEnabled}
+									onChange={() => {
+										if (!isDiscountEnabled && price <= 0) {
+											toast.warn("set-price");
+										} else {
+											setIsDiscountEnabled(!isDiscountEnabled);
+										}
+									}}
+									className="mr-2"
+								/>
+								<label className="font-medium text-gray-600">Set Course's discount</label>
 							</div>
-							<div>
-								<input type="checkbox" className="mr-2" defaultChecked />
-								<label className="font-medium text-gray-600">Báo cáo, phân tích theo kỳ</label>
+
+							{isDiscountEnabled && (
+								<div className="flex gap-6 mb-6">
+									{/* Discount Percentage */}
+									<div className="w-1/3">
+										<label className="block font-medium text-gray-600 mb-2">Discount (%)</label>
+										<Input
+											type="number"
+											step={0.01}
+											value={discount}
+											onValueChange={setDiscount}
+											placeholder="%0.00"
+											size="lg"
+											variant="bordered"
+											radius="sm"
+											isInvalid={!validInputs.discount.isValid}
+											errorMessage={validInputs.discount.errMsg}
+										/>
+									</div>
+
+									{/* Start Date */}
+									<div className="w-1/3 relative">
+										<label className="block font-medium text-gray-600 mb-2">From Date (UTC)</label>
+										<DatePicker
+											granularity="day"
+											size="lg"
+											variant="bordered"
+											radius="sm"
+											aria-label="start date"
+											value={startDate}
+											onChange={setStartDate}
+										/>
+									</div>
+
+									{/* End Date */}
+									<div className="w-1/3 relative">
+										<label className="block font-medium text-gray-600 mb-2">To Date (UTC)</label>
+										<DatePicker
+											granularity="day"
+											size="lg"
+											variant="bordered"
+											radius="sm"
+											isInvalid={!validInputs.endDate.isValid}
+											errorMessage={validInputs.endDate.errMsg}
+											value={endDate}
+											aria-label="end date"
+											onChange={setEndDate}
+										/>
+									</div>
+								</div>
+							)}
+
+							{/* Action Buttons */}
+							<div className="flex gap-4 justify-end">
+								<Button type="reset" color="default" size="lg" radius="sm">
+									Cancel
+								</Button>
+								<Button
+									isLoading={updatePriceCourseMutation.isPending}
+									type="submit"
+									color="secondary"
+									size="lg"
+									radius="sm">
+									Update
+								</Button>
 							</div>
 						</div>
-
-						{/* Action Buttons */}
-						<div className="flex gap-4 justify-end">
-							<Button type="reset" color="default" size="lg" radius="sm">
-								Hủy
-							</Button>
-							<Button
-								isLoading={updatePriceCourseMutation.isPending}
-								type="submit"
-								color="secondary"
-								size="lg"
-								radius="sm">
-								Xác Nhận
-							</Button>
-						</div>
-					</div>
+					)
+				) : (
+					<Revenue courseId={params?.courseId} price={price} />
 				)}
 			</form>
-			<Revenue courseId={params?.courseId} price={price} />
 		</div>
 	);
 };

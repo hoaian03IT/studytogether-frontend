@@ -223,7 +223,7 @@ const CourseParticipant = () => {
 										<h3>{item?.word}</h3>
 										<p>{item?.definition}</p>
 										<p>wrong times: {item?.["wrong times"]}</p>
-										<p>{item?.["repeatable"]}</p>
+										<p>{item?.["repeatable"] ? "Marked" : ""}</p>
 									</div>
 									<hr className="border-t-2 border-gray-400 w-[100%]" />
 								</div>

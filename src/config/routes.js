@@ -39,11 +39,7 @@ const NotFound = lazy(() => import("../screen/not-found.jsx"));
 export const publicRoutes = [
 	{ path: pathname.home, component: HomePage, layout: PrimaryLayout },
 	{ path: pathname.listCourse, component: ListCourse, layout: PrimaryLayout },
-	{
-		path: pathname.courseInformation,
-		component: CourseInformation,
-		layout: PrimaryLayout,
-	},
+
 	{ path: pathname.payment, component: Purchase, layout: PrimaryLayout },
 	{
 		path: pathname.flashCard,
@@ -102,6 +98,11 @@ export const privateRoutes = [
 		path: pathname.courseVocabulary,
 		component: CourseVocabulary,
 		layout: ThirdLayout,
+	},
+	{
+		path: pathname.courseInformation,
+		component: CourseInformation,
+		layout: PrimaryLayout,
 	},
 	{
 		path: pathname.listExamples,

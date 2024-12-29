@@ -111,11 +111,14 @@ function CourseVocabulary() {
 			return await CourseService.addNewLevelCourse(courseId, groupName, user, updateUserState);
 		},
 		onSuccess: ({ newLevel }) => {
-			const oldData = queryClient.getQueryData([queryKeys.courseVocabulary, params?.courseId]);
+			let oldData = queryClient.getQueryData([queryKeys.courseVocabulary, params?.courseId]);
+			if (!oldData.vocabularyList) {
+				oldData.vocabularyList = [];
+			}
 
 			const newVocabularyList = oldData.vocabularyList.concat({
-				levelId: newLevel["level id"].toString(),
-				levelName: newLevel["level name"],
+				levelId: newLevel?.["level id"]?.toString(),
+				levelName: newLevel?.["level name"],
 				words: [],
 			});
 
@@ -184,8 +187,9 @@ function CourseVocabulary() {
 		onSuccess: (data) => {
 			const newWord = data?.newWord;
 			let newVocabularyList = vocabularyQuery.data.vocabularyList;
+			console.log({ newVocabularyList });
 			for (let i = 0; i < newVocabularyList?.length; i++) {
-				if (newVocabularyList[i].levelId === newWord["level id"]) {
+				if (newVocabularyList[i].levelId == newWord["level id"]) {
 					newVocabularyList[i]["words"].push({
 						wordId: newWord?.["word id"],
 						word: newWord?.["word"],
@@ -356,6 +360,7 @@ function CourseVocabulary() {
 			setVocabulary("");
 			setDefinition("");
 			setTypeWord("");
+			setTranscription("");
 			setAudio(null);
 			setImage(null);
 		}
@@ -988,7 +993,8 @@ function CourseVocabulary() {
 					</div>
 				</div>
 			)} */}
-			{/* File Modal */}?{/* Delete Confirmation Modal */}
+			{/* File Modal */}
+			{/* Delete Confirmation Modal */}
 			<Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
 				<ModalContent>
 					{(onClose) => (

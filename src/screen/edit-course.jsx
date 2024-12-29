@@ -178,7 +178,7 @@ const EditCourseInfor = () => {
 					<button
 						className="flex items-center text-secondary text-xl hover:underline transition-all"
 						onClick={() => setEditable(!editable)}>
-						Chỉnh sửa ngay
+						Edit now
 						<TbEdit className="size-6" />
 					</button>
 				</div>
@@ -192,7 +192,7 @@ const EditCourseInfor = () => {
 								isDisabled={!editable}
 								selectedKeys={[formValue.isPrivate]}
 								size="lg"
-								label={<Label>Quyền truy cập</Label>}
+								label={<Label>Access permission</Label>}
 								labelPlacement="outside"
 								radius="sm"
 								isRequired
@@ -210,7 +210,7 @@ const EditCourseInfor = () => {
 								isDisabled={!editable}
 								selectedKeys={[formValue.sourceLanguageId]}
 								size="lg"
-								label={<Label>Ngôn ngữ gốc</Label>}
+								label={<Label>Source language</Label>}
 								placeholder="English"
 								labelPlacement="outside"
 								radius="sm"
@@ -234,7 +234,7 @@ const EditCourseInfor = () => {
 								isDisabled={!editable}
 								selectedKeys={[formValue.targetLanguageId]}
 								size="lg"
-								label={<Label>Ngôn ngữ học</Label>}
+								label={<Label>Target language</Label>}
 								placeholder="Tiếng Việt"
 								labelPlacement="outside"
 								radius="sm"
@@ -259,7 +259,7 @@ const EditCourseInfor = () => {
 							isDisabled={!editable}
 							selectedKeys={[formValue.courseLevelId]}
 							size="lg"
-							label={<Label>Cấp độ</Label>}
+							label={<Label>Level/Collection</Label>}
 							className="col-span-4"
 							placeholder="Cấp độ"
 							labelPlacement="outside"
@@ -282,7 +282,7 @@ const EditCourseInfor = () => {
 							size="lg"
 							name="courseName"
 							type="text"
-							label={<Label>Tên bộ từ vựng</Label>}
+							label={<Label>Course name</Label>}
 							labelPlacement="outside"
 							radius="sm"
 							placeholder="VD: Tiếng anh lớp 6"
@@ -306,7 +306,7 @@ const EditCourseInfor = () => {
 							size="lg"
 							name="tag"
 							type="text"
-							label={<Label>Từ khoá</Label>}
+							label={<Label>Tag</Label>}
 							placeholder="VD: lớp 6"
 							labelPlacement="outside"
 							radius="sm"
@@ -328,7 +328,7 @@ const EditCourseInfor = () => {
 					</div>
 					<div className="col-span-2 row-span-2 flex flex-col w-full h-full">
 						<div className="-translate-y-1">
-							<Label>Hình ảnh</Label>
+							<Label>Image</Label>
 						</div>
 						<div className="flex flex-col justify-center h-full">
 							<img
@@ -382,7 +382,7 @@ const EditCourseInfor = () => {
 						size="lg"
 						name="shortDescription"
 						type="text"
-						label={<Label>Mô tả ngắn</Label>}
+						label={<Label>Short description</Label>}
 						labelPlacement="outside"
 						radius="sm"
 						placeholder="Viết vào ở đây..."
@@ -405,7 +405,7 @@ const EditCourseInfor = () => {
 						isDisabled={!editable}
 						size="lg"
 						disableAutosize
-						label={<Label>Mô tả chi tiết</Label>}
+						label={<Label>Detailed description</Label>}
 						labelPlacement="outside"
 						radius="sm"
 						placeholder="Viết vào ở đây..."
@@ -420,13 +420,13 @@ const EditCourseInfor = () => {
 							<Button
 								type="reset"
 								className="col-start-6 col-span-1 bg-gray-300 text-gray-700 px-4 py-2 rounded">
-								Hủy
+								Cancel
 							</Button>
 							<Button
 								type="submit"
 								className="col-span-1 bg-secondary px-4 py-2 rounded text-white"
 								isLoading={updateCourseMutation.isPending}>
-								Lưu
+								Update
 							</Button>
 						</div>
 					)}
