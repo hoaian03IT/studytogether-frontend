@@ -23,5 +23,5 @@ export const MostPopularCourse = ({ limit = "4" }) => {
 		},
 	});
 
-	return courses?.slice(0, Number(limit)).map((course) => <CourseCard item={course} />);
+	return courses?.slice(0, Number(limit)).map((course) => <CourseCard key={course?.["course id"]} item={course} />);
 };

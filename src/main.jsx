@@ -26,9 +26,9 @@ createRoot(document.getElementById("root")).render(
 	<StrictMode>
 		<BrowserRouter>
 			<NextUIProvider>
-				<QueryClientProvider client={queryClient}>
-					<GoogleOAuthProvider clientId={import.meta.env.VITE_GG_CLIENT_ID}>
-						<RecoilRoot>
+				<RecoilRoot>
+					<QueryClientProvider client={queryClient}>
+						<GoogleOAuthProvider clientId={import.meta.env.VITE_GG_CLIENT_ID}>
 							<GlobalStateProvider>
 								<TranslationProvider>
 									<SocketClientProvider>
@@ -37,9 +37,9 @@ createRoot(document.getElementById("root")).render(
 									</SocketClientProvider>
 								</TranslationProvider>
 							</GlobalStateProvider>
-						</RecoilRoot>
-					</GoogleOAuthProvider>
-				</QueryClientProvider>
+						</GoogleOAuthProvider>
+					</QueryClientProvider>
+				</RecoilRoot>
 			</NextUIProvider>
 		</BrowserRouter>
 	</StrictMode>,

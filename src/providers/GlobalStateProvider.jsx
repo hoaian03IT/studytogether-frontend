@@ -77,41 +77,38 @@ function GlobalStateProvider({ children }) {
 	};
 
 	// query user information
-	useQuery({
+	const userInformationQuery = useQuery({
 		queryKey: [queryKeys.userState],
 		queryFn: async () => {
 			try {
-				if (user?.isLogged) {
-					const data = await UserService.fetchUserInfo(user, updateUserState);
-					setUser((prev) => ({
-						...prev,
-						info: {
-							username: data?.username,
-							phone: data?.phone,
-							firstName: data?.["first name"],
-							lastName: data?.["last name"],
-							avatar: data?.["avatar image"],
-							email: data?.email,
-							role: data?.["role name"],
-							facebookId: data?.["facebook id"],
-							googleId: data?.["google id"],
-						},
-					}));
+				const data = await UserService.fetchUserInfo(user, updateUserState);
+				setUser((prev) => ({
+					...prev,
+					info: {
+						username: data?.username,
+						phone: data?.phone,
+						firstName: data?.["first name"],
+						lastName: data?.["last name"],
+						avatar: data?.["avatar image"],
+						email: data?.email,
+						role: data?.["role name"],
+						facebookId: data?.["facebook id"],
+						googleId: data?.["google id"],
+					},
+				}));
 
-					return data;
-				}
-				return {};
+				return data;
 			} catch (error) {
 				return Promise.reject(error);
 			}
 		},
-		enabled: user?.isLogged,
+		enabled: !!user?.isLogged,
 		staleTime: 1000 * 60 * 5, // 5 minutes
 		cacheTime: 1000 * 60 * 10, // 10 minutes
 	});
 
 	// query user streak
-	useQuery({
+	const userStreakQuery = useQuery({
 		queryKey: [queryKeys.userStreak],
 		queryFn: async () => {
 			const { streakInfo } = await UserService.fetchUserStreak(user, updateUserState);
