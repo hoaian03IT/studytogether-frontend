@@ -1,5 +1,5 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
-import { RangeCalendar, Tooltip as NextTooltip, Card, CardBody } from "@nextui-org/react";
+import { Tooltip as NextTooltip, Card, CardBody } from "@nextui-org/react";
 import { Image } from "@nextui-org/image";
 import {
 	Chart as ChartJS,
@@ -21,8 +21,6 @@ import { useRecoilValue } from "recoil";
 import { userState } from "../recoil/atoms/user.atom";
 import { GlobalStateContext } from "../providers/GlobalStateProvider";
 import { streakState } from "../recoil/atoms/streak.atom";
-import { today, getLocalTimeZone } from "@internationalized/date";
-import { userRangeStreak } from "../recoil/selectors";
 import { convertUTCToLocalTime } from "../utils/convert-utc-to-local-time";
 import { Link } from "react-router-dom";
 import { pathname } from "../routes";
@@ -32,6 +30,7 @@ import { MostPopularCourse } from "../components/most-popular";
 import { MostDiscountCourse } from "../components/most-discount";
 import clsx from "clsx";
 import bannerVideo from "../assets/video/banner-video.mp4";
+import { CalendarStreak } from "../components/calendar-streak";
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -52,7 +51,6 @@ function getLastMonthDays() {
 const Dashboard = () => {
 	const user = useRecoilValue(userState);
 	const streak = useRecoilValue(streakState);
-	const rangeStreak = useRecoilValue(userRangeStreak);
 	const { updateUserState } = useContext(GlobalStateContext);
 
 	const [percentRightWord, setPercentRightWord] = useState(0);
@@ -95,12 +93,12 @@ const Dashboard = () => {
 
 			return data;
 		},
-		enabled: user?.isLogged,
+		enabled: !!user?.isLogged,
 		staleTime: 1000 * 60 * 10,
 		cacheTime: 1000 * 60 * 15,
 	});
 
-	useQuery({
+	const finishedCourseQuery = useQuery({
 		queryKey: [queryKeys.finishedCourses],
 		queryFn: async () => {
 			try {
@@ -112,7 +110,7 @@ const Dashboard = () => {
 				toast.error(translation(error.response.data?.errorCode));
 			}
 		},
-		enabled: user?.isLogged,
+		enabled: !!user?.isLogged,
 	});
 
 	useEffect(() => {
@@ -121,11 +119,11 @@ const Dashboard = () => {
 
 	// update doughnut chart data
 	useEffect(() => {
-		const totalLearntWords = wordStatisticByLanguage.reduce(
+		const totalLearntWords = wordStatisticByLanguage?.reduce(
 			(acc, word) => acc + Number(word?.["total learnt words"]),
 			0,
 		);
-		const totalWrongsWords = wordStatisticByLanguage.reduce(
+		const totalWrongsWords = wordStatisticByLanguage?.reduce(
 			(acc, word) => acc + Number(word?.["total wrong words"]),
 			0,
 		);
@@ -305,24 +303,7 @@ const Dashboard = () => {
 									</p>
 								</NextTooltip>
 							</div>
-							<RangeCalendar
-								aria-label="Date (Uncontrolled)"
-								isReadOnly={true}
-								defaultValue={{
-									start:
-										rangeStreak === 0
-											? today(getLocalTimeZone()).subtract({
-													days: streak.currentStreak - 1,
-											  })
-											: today(getLocalTimeZone()).subtract({
-													days: rangeStreak + streak.currentStreak - 1,
-											  }),
-									end:
-										rangeStreak === 0
-											? today(getLocalTimeZone())
-											: today(getLocalTimeZone()).subtract({ days: rangeStreak }),
-								}}
-							/>
+							<CalendarStreak />
 						</div>
 					</div>
 					<div className="grid grid-cols-8 gap-4 bg-gray-50 p-4 rounded-lg shadow-md mb-4">
