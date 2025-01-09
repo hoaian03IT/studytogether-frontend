@@ -5,6 +5,7 @@ import React, { useContext } from "react";
 import { SocketClientContext } from "../providers/socket-client-provider.jsx";
 import { Link } from "react-router-dom";
 import { TranslationContext } from "../providers/TranslationProvider.jsx";
+import { convertUTCToLocalTime } from "../utils/convert-utc-to-local-time.js";
 
 const NotificationComponent = () => {
 	const { translation } = useContext(TranslationContext);
@@ -19,11 +20,8 @@ const NotificationComponent = () => {
 				<div className="max-h-96 min-h-28 space-y-4 overflow-y-auto">
 					{notifications?.length > 0 ? (
 						notifications.map((notification, index) => {
-							let date = new Date(notification?.["created at"]);
-							date = `${new Intl.DateTimeFormat(navigator.language, {
-								hour: "2-digit",
-								minute: "2-digit",
-							}).format(date)} - ${date.toDateString()}`;
+							let date = convertUTCToLocalTime(notification?.["created at"]);
+
 							return (
 								<div
 									key={index}
@@ -37,7 +35,7 @@ const NotificationComponent = () => {
 												notification?.target
 											}`}
 										</p>
-										<p className="text-xs text-gray-500">{date}</p>
+										<p className="text-xs text-gray-500">{date.toLocaleString()}</p>
 									</div>
 									<div className="ml-auto">
 										<Button

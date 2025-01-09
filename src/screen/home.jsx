@@ -315,12 +315,12 @@ const Dashboard = () => {
 													days: streak.currentStreak - 1,
 											  })
 											: today(getLocalTimeZone()).subtract({
-													days: rangeStreak + streak.currentStreak,
+													days: rangeStreak + streak.currentStreak - 1,
 											  }),
 									end:
 										rangeStreak === 0
 											? today(getLocalTimeZone())
-											: today(getLocalTimeZone()).subtract({ days: rangeStreak + 1 }),
+											: today(getLocalTimeZone()).subtract({ days: rangeStreak }),
 								}}
 							/>
 						</div>

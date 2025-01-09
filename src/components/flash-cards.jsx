@@ -88,7 +88,10 @@ export const FlashCardModal = ({ words, isOpen, onClose }) => {
 									<br />
 									{words[currentIndex]?.transcription}
 								</p>
-								<Audio src={words[currentIndex]?.pronunciation} />
+								<Audio
+									src={words[currentIndex]?.pronunciation}
+									show={!!words[currentIndex]?.pronunciation}
+								/>
 							</div>
 
 							{/* Back Side */}
